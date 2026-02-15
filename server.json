@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.echology-io/decompose",
+  "title": "Decompose",
+  "description": "Structured intelligence for AI agents. Text in, classified semantic units out. Authority detection, risk scoring, entity extraction, irreducibility analysis. No LLM. Deterministic. One function call.",
+  "repository": {
+    "url": "https://github.com/echology-io/decompose",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "decompose",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
