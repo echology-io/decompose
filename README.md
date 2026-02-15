@@ -127,6 +127,6 @@ The LLM is what *your agent* uses. Decompose makes whatever model you're running
 
 Decompose is extracted from [AECai](https://aecai.io), a document intelligence platform for Architecture, Engineering, and Construction firms. The classification patterns, entity extraction, and irreducibility detection are battle-tested against thousands of real AEC documents — specs, contracts, RFIs, inspection reports, pay applications.
 
-**License:** MIT
+**License:** Proprietary — Copyright (c) 2025-2026 Echology, Inc.
 
 **Philosophy:** All intelligence begins with decomposition.

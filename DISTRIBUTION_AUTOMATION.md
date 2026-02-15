@@ -39,7 +39,7 @@ Everything below can be automated via CI, scripts, or scheduled jobs. No human l
 ![Tests](https://github.com/echology-io/decompose/actions/workflows/ci.yml/badge.svg)
 ![PyPI](https://img.shields.io/pypi/v/decompose)
 ![Downloads](https://img.shields.io/pypi/dm/decompose)
-![License](https://img.shields.io/github/license/echology-io/decompose)
+![License](https://img.shields.io/badge/license-proprietary-blue)
 ```
 
 **Automate:** Add to README.md header. Shields.io generates dynamically. Zero maintenance.

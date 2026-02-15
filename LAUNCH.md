@@ -75,7 +75,7 @@ This is the most important thing you do. Everything else is mechanics.
 ### Project Scaffold
 - [ ] `pyproject.toml` — uv/pip, `[project.scripts]`, MCP entrypoint for uvx
 - [ ] `src/decompose/` — src layout, `py.typed`
-- [ ] `LICENSE` — MIT
+- [x] `LICENSE` — Proprietary (Echology, Inc.)
 - [ ] `.github/workflows/ci.yml` — ruff + pytest on push
 - [ ] `.github/workflows/publish.yml` — PyPI on tag
 - [ ] `ruff.toml`
@@ -185,7 +185,7 @@ One line. Zero config. No LLM. Works with any model.
 
 ## Open Core Strategy
 
-**Open (MIT):** Core decompose engine, MCP server, CLI, all extractors.
+**Open (Proprietary, free to use):** Core decompose engine, MCP server, CLI, all extractors.
 
 **Enterprise (future):** AECai-grade features — jurisdiction crossref, simulation-aware verification (Aletheia), holographic resilience (Daedalus), audit ledger.
 

@@ -7,7 +7,7 @@ name = "decompose"
 version = "0.1.0"
 description = "The missing cognitive primitive for AI agents. Structured intelligence from any text."
 readme = "README.md"
-license = "MIT"
+license = "Proprietary"
 requires-python = ">=3.10"
 authors = [
     { name = "Kyle Vines", email = "kyle@echology.io" },
@@ -16,7 +16,7 @@ keywords = ["mcp", "ai", "agents", "decompose", "semantic", "structured", "intel
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: Other/Proprietary License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
