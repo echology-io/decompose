@@ -21,3 +21,6 @@ htmlcov/
 *.swo
 *~
 .mcpregistry_*
+docs/tests/
+lab/results.json
+LAUNCH.md

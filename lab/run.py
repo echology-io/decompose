@@ -163,7 +163,7 @@ def print_report(results: list[dict]):
 
 def main():
     # Find test documents
-    test_dir = Path(__file__).resolve().parent.parent / "docs" / "tests"
+    test_dir = Path(__file__).resolve().parent.parent / "tests" / "fixtures"
 
     if not test_dir.exists():
         print(f"No test directory at {test_dir}", file=sys.stderr)
