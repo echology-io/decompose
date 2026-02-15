@@ -123,7 +123,7 @@ for unit in result["units"]:
 | Field | Values | What It Tells Your Agent |
 |-------|--------|--------------------------|
 | `authority` | mandatory, prohibitive, directive, permissive, conditional, informational | Is this a hard requirement or background? |
-| `risk` | safety_critical, compliance, financial, contractual, advisory, informational | How much does this matter? |
+| `risk` | safety_critical, security, compliance, financial, contractual, advisory, informational | How much does this matter? |
 | `type` | requirement, definition, reference, constraint, narrative, data | What kind of content is this? |
 | `irreducible` | true/false | Must this be preserved verbatim? |
 | `attention` | 0.0 - 10.0 | How much compute should the agent spend here? |
