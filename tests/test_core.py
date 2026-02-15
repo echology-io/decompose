@@ -28,7 +28,7 @@ class TestDecomposeText:
         assert "authority_profile" in meta
         assert "risk_profile" in meta
         assert "processing_ms" in meta
-        assert meta["_decompose"] == "0.1.0"
+        assert meta["_decompose"] == "0.1.1"
 
     def test_compact_mode(self):
         r = decompose_text("General background information.", compact=True)
