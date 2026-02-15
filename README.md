@@ -1,8 +1,8 @@
 # Decompose
 
 [![CI](https://github.com/echology-io/decompose/actions/workflows/ci.yml/badge.svg)](https://github.com/echology-io/decompose/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/decompose)](https://pypi.org/project/decompose/)
-[![Python](https://img.shields.io/pypi/pyversions/decompose)](https://pypi.org/project/decompose/)
+[![PyPI](https://img.shields.io/pypi/v/decompose-mcp)](https://pypi.org/project/decompose-mcp/)
+[![Python](https://img.shields.io/pypi/pyversions/decompose-mcp)](https://pypi.org/project/decompose-mcp/)
 
 <!-- mcp-name: io.github.echology-io/decompose -->
 
@@ -53,7 +53,7 @@ Every unit classified. Every standard extracted. Every risk scored. Your agent k
 ## Install
 
 ```bash
-pip install decompose
+pip install decompose-mcp
 ```
 
 ## Use as MCP Server
@@ -65,7 +65,7 @@ Add to your agent's MCP config (Claude Code, OpenClaw, Cursor, etc.):
   "mcpServers": {
     "decompose": {
       "command": "uvx",
-      "args": ["decompose", "--serve"]
+      "args": ["decompose-mcp", "--serve"]
     }
   }
 }
