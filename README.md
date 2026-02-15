@@ -1,5 +1,9 @@
 # Decompose
 
+[![CI](https://github.com/echology-io/decompose/actions/workflows/ci.yml/badge.svg)](https://github.com/echology-io/decompose/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/decompose)](https://pypi.org/project/decompose/)
+[![Python](https://img.shields.io/pypi/pyversions/decompose)](https://pypi.org/project/decompose/)
+
 **Stop prompting. Start decomposing.**
 
 The missing cognitive primitive for AI agents. Decompose turns any text into classified, structured semantic units — instantly. No LLM. No setup. One function call.
