@@ -122,8 +122,8 @@ typically required 8-12 months for foundation work.
             <p>That six-section spec above? One function call:</p>
 
             <div class="code-block">
-<span class="key">from</span> decompose <span class="key">import</span> decompose
-result = decompose(spec_text)   <span class="cmt"># 4ms, 6 units</span>
+<span class="key">from</span> decompose <span class="key">import</span> decompose_text
+result = decompose_text(spec_text)   <span class="cmt"># ~14ms avg, 6 units</span>
             </div>
 
             <p>Here's what your agent sees instead of 2,045 characters of raw text:</p>
