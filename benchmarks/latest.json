@@ -2,8 +2,8 @@
   "docs": 5,
   "total_chars": 15683,
   "total_units": 34,
-  "total_ms": 12.9,
-  "chars_per_ms": 1217,
+  "total_ms": 13.8,
+  "chars_per_ms": 1132,
   "total_standards": 22,
   "total_irreducible": 19,
   "benchmarks": [
@@ -12,55 +12,50 @@
       "chars": 2679,
       "words": 404,
       "units": 8,
-      "ms": 1.96,
+      "ms": 2.12,
       "standards": 0,
       "irreducible": 6,
-      "actionable": 7,
-      "actionable_pct": 88
+      "actionable": 7
     },
     {
       "file": "contract_excerpt.txt",
       "chars": 3693,
       "words": 580,
       "units": 2,
-      "ms": 3.28,
+      "ms": 3.51,
       "standards": 1,
       "irreducible": 2,
-      "actionable": 2,
-      "actionable_pct": 100
+      "actionable": 2
     },
     {
       "file": "model_card.txt",
       "chars": 2266,
       "words": 339,
       "units": 7,
-      "ms": 1.68,
+      "ms": 1.76,
       "standards": 0,
       "irreducible": 2,
-      "actionable": 2,
-      "actionable_pct": 29
+      "actionable": 2
     },
     {
       "file": "report_geotechnical.txt",
       "chars": 3242,
       "words": 499,
       "units": 14,
-      "ms": 2.48,
+      "ms": 2.65,
       "standards": 6,
       "irreducible": 6,
-      "actionable": 8,
-      "actionable_pct": 57
+      "actionable": 8
     },
     {
       "file": "spec_structural.txt",
       "chars": 3803,
       "words": 580,
       "units": 3,
-      "ms": 3.49,
+      "ms": 3.81,
       "standards": 15,
       "irreducible": 3,
-      "actionable": 3,
-      "actionable_pct": 100
+      "actionable": 3
     }
   ]
 }

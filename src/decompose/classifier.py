@@ -65,6 +65,12 @@ RISK_PATTERNS: dict[str, list[str]] = {
         r"\bstructural\s+(?:integrity|failure|capacity)\b",
         r"\bemergency\b", r"\bhazard(?:ous)?\b",
     ],
+    "security": [
+        r"\battack(?:er|s)?\b", r"\bunauthorized\s+access\b",
+        r"\bvulnerabilit(?:y|ies)\b", r"\bmalicious\b", r"\bmalware\b",
+        r"\bexploit(?:ation)?\b", r"\bauthenticat(?:ion|e|ed)\b",
+        r"\brebinding\b", r"\binjection\b", r"\bbreach(?:es)?\b",
+    ],
     "compliance": [
         r"\bshall\s+comply\b", r"\bin\s+accordance\s+with\b",
         r"\bcode\s+(?:compliance|requirement)\b", r"\bregulat(?:ion|ory)\b",
@@ -78,7 +84,7 @@ RISK_PATTERNS: dict[str, list[str]] = {
     "contractual": [
         r"\bindemnif(?:y|ication)\b", r"\bliabilit(?:y|ies)\b",
         r"\bwarrant(?:y|ies)\b", r"\btermination\b",
-        r"\bbreach\b", r"\bforce\s+majeure\b",
+        r"\bforce\s+majeure\b",
     ],
     "advisory": [
         r"\bfor\s+(?:your\s+)?information\b", r"\bfyi\b",
@@ -138,12 +144,16 @@ def classify(text: str) -> Classification:
 
     # Attention score: risk multiplier * normalized authority score
     risk_mult = {
-        "safety_critical": 4.0, "compliance": 2.0, "financial": 1.5,
-        "contractual": 1.5, "advisory": 0.5, "informational": 0.3,
+        "safety_critical": 4.0, "security": 3.0, "compliance": 2.0,
+        "financial": 1.5, "contractual": 1.5, "advisory": 0.5,
+        "informational": 0.3,
     }.get(risk, 0.5)
     attention = min(10.0, round(min(auth_score, 5.0) * risk_mult, 1))
 
-    actionable = authority in ("mandatory", "prohibitive", "directive") or risk in ("safety_critical", "compliance")
+    actionable = (
+        authority in ("mandatory", "prohibitive", "directive")
+        or risk in ("safety_critical", "security", "compliance")
+    )
 
     return Classification(
         authority=authority,

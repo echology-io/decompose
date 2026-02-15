@@ -36,6 +36,7 @@
     <section>
         <div class="container">
             <p class="section-label">Before / After</p>
+            <p class="section-desc">Real output from the <a href="https://modelcontextprotocol.io/specification/2025-03-26/basic/transports">MCP Transport Specification</a>.</p>
             <div class="panels">
                 <div class="panel">
                     <div class="panel-label">What your agent sees today</div>
@@ -43,52 +44,64 @@
 every word to figure out what matters.</span>
 
 ## Overview
-This document describes the safety and
-compliance requirements for deploying
-autonomous agents in production. It is
-intended as a reference for engineering teams.
+MCP provides a standardized way for applications
+to share contextual information with language
+models, expose tools and capabilities to AI
+systems, and build composable integrations.
 
-## Safety Requirements
-The agent shall comply with all applicable
-safety regulations before executing tool calls.
-Safety classifiers shall reject any request
-scoring above 0.85. The system must not exceed
-4-hour incident response time for safety-critical
-failures. Maximum recursive tool depth is 5 calls.
+## stdio Transport
+Messages are delimited by newlines and MUST NOT
+contain embedded newlines. The server MUST NOT
+write anything to stdout that is not a valid
+MCP message. The client MUST NOT write anything
+to the server stdin that is not a valid message.
 
-## Background
-Autonomous agents have become increasingly
-popular in enterprise settings. Many organizations
-are exploring how to integrate them into existing
-workflows while maintaining compliance standards.
+## Security Warning
+Servers MUST validate the Origin header on all
+incoming connections to prevent DNS rebinding
+attacks. Servers SHOULD bind only to localhost.
+Servers SHOULD implement proper authentication.
+Without these protections, attackers could use
+DNS rebinding to interact with local MCP servers.
+
+## Implementation Guidelines
+Implementors SHOULD build robust consent and
+authorization flows. They should provide clear
+documentation and implement appropriate access
+controls.
                 </div>
                 <div class="panel accent">
                     <div class="panel-label">What decompose returns</div>
-<span class="cmt">3 units. Your agent reads one.</span>
+<span class="cmt">4 units. Your agent reads one.</span>
 
 <span class="dim">Unit 1 &mdash; Overview</span>
 <span class="dim">  attention: <span class="num">0.0</span>  authority: informational</span>
-<span class="dim">  risk: informational  irreducible: false</span>
+<span class="dim">  risk: informational  type: narrative</span>
 <span class="dim">  <span class="cmt">&rarr; skip</span></span>
 
-<span class="hi">Unit 2 &mdash; Safety Requirements</span>
-<span class="hi">  attention: <span class="num">6.0</span>  authority: <span class="str">mandatory</span></span>
-<span class="hi">  risk: <span class="str">compliance</span>  irreducible: <span class="bool">true</span></span>
+<span class="dim">Unit 2 &mdash; stdio Transport</span>
+<span class="dim">  attention: <span class="num">0.9</span>  authority: prohibitive</span>
+<span class="dim">  risk: informational  type: requirement</span>
+<span class="dim">  <span class="cmt">&rarr; low priority</span></span>
+
+<span class="hi">Unit 3 &mdash; Security Warning</span>
+<span class="hi">  attention: <span class="num">4.5</span>  authority: <span class="str">directive</span></span>
+<span class="hi">  risk: <span class="str">security</span>  type: <span class="str">requirement</span></span>
 <span class="hi">  actionable: <span class="bool">true</span></span>
 <span class="hi">  <span class="str">&rarr; read this</span></span>
 
-<span class="dim">Unit 3 &mdash; Background</span>
-<span class="dim">  attention: <span class="num">0.0</span>  authority: informational</span>
-<span class="dim">  risk: informational  irreducible: false</span>
-<span class="dim">  <span class="cmt">&rarr; skip</span></span>
+<span class="dim">Unit 4 &mdash; Implementation Guidelines</span>
+<span class="dim">  attention: <span class="num">0.4</span>  authority: directive</span>
+<span class="dim">  risk: informational  type: informational</span>
+<span class="dim">  <span class="cmt">&rarr; low priority</span></span>
                 </div>
             </div>
             <div class="legend">
-                <p><strong>attention</strong> &mdash; 0&ndash;10 priority score. Unit 2 is 6.0 (read it). Units 1 and 3 are 0.0 (skip them). Your agent just saved 2/3 of its context window.</p>
-                <p><strong>authority</strong> &mdash; "shall" and "must" make Unit 2 mandatory. The other sections are informational &mdash; no action required.</p>
-                <p><strong>risk</strong> &mdash; compliance obligations detected in Unit 2 ("shall comply", regulatory language). Background sections carry no risk.</p>
-                <p><strong>irreducible</strong> &mdash; Unit 2 contains values (0.85 threshold, 4-hour SLA, depth of 5) that cannot be paraphrased. Your model must preserve them verbatim.</p>
-                <p><strong>actionable</strong> &mdash; Unit 2 requires action: configure classifiers, staff incident response, enforce tool depth. The other units require nothing.</p>
+                <p><strong>attention</strong> &mdash; 0&ndash;10 priority score. Unit 3 scores 4.5 (security risk + directive authority). The overview scores 0.0. Your agent knows where to focus.</p>
+                <p><strong>risk: security</strong> &mdash; "attackers", "DNS rebinding", "authentication" trigger security risk detection. The overview and guidelines carry no risk signal.</p>
+                <p><strong>authority</strong> &mdash; MUST/MUST NOT = mandatory/prohibitive. SHOULD = directive. Plain prose = informational. Your agent knows what's binding vs. advisory.</p>
+                <p><strong>actionable</strong> &mdash; Unit 3 requires action: validate Origin headers, bind to localhost, implement auth. The overview requires nothing.</p>
+                <p><strong>source</strong> &mdash; This is real output. Run it yourself: <code>curl spec.modelcontextprotocol.io | python -m decompose</code></p>
             </div>
         </div>
     </section>
@@ -177,11 +190,11 @@ python -m decompose --serve
             <p class="section-desc">Real numbers from the test suite. 5 documents, 15,683 characters, run on Apple Silicon.</p>
             <div class="stats">
                 <div>
-                    <div class="stat-value">2.6ms</div>
+                    <div class="stat-value">2.8ms</div>
                     <div class="stat-label">Avg per document</div>
                 </div>
                 <div>
-                    <div class="stat-value">1,217</div>
+                    <div class="stat-value">1,132</div>
                     <div class="stat-label">Chars/ms throughput</div>
                 </div>
                 <div>
