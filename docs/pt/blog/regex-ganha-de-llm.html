@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quando Regex Ganha de um LLM — Echology</title>
+    <meta name="description" content="Voce nao precisa de um modelo de 70B pra saber que 'shall' significa obrigatorio. Decompose classifica estrutura de documentos em 3ms sem nenhuma chamada de API.">
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+        .post-body { max-width: 720px; margin: 0 auto; }
+        .post-body h2 { font-size: 24px; font-weight: 700; margin: 48px 0 16px; letter-spacing: -0.3px; }
+        .post-body h3 { font-size: 18px; font-weight: 700; margin: 32px 0 12px; }
+        .post-body p { font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 20px; }
+        .post-body p strong { color: var(--fg); }
+        .post-body p code { background: var(--code-bg); padding: 2px 6px; border-radius: 3px; font-size: 14px; color: var(--accent); }
+        .post-body blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 12px 20px;
+            margin: 24px 0;
+            background: var(--code-bg);
+            border-radius: 0 6px 6px 0;
+        }
+        .post-body blockquote p { color: var(--fg); margin: 0; font-size: 15px; }
+        .post-body ul, .post-body ol { color: var(--muted); font-size: 16px; line-height: 1.75; margin-bottom: 20px; padding-left: 24px; }
+        .post-body li { margin-bottom: 8px; }
+        .post-body .code-block { margin: 24px 0; }
+        .post-body .panels { margin: 32px 0; }
+        .post-meta { text-align: center; margin-bottom: 48px; }
+        .post-meta .date { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+        .post-meta .reading { font-size: 13px; color: var(--muted); margin-top: 4px; }
+        .inline-stat { display: inline-block; font-weight: 800; color: var(--accent); }
+        .post-body a { text-decoration: underline; text-underline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/pt/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/aecai">AECai</a>
+                <a href="/pt/decompose">Decompose</a>
+                <a href="/pt/blog" class="active">Blog</a>
+                <a href="/pt/contato">Contato</a>
+                <a href="/blog/regex-beats-llm" class="lang-toggle" title="English">&#127482;&#127480;</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container container--narrow">
+            <h1>Quando Regex<br><span>Ganha de um LLM</span></h1>
+            <p class="sub">Voce nao precisa de um modelo de 70B pra saber que "shall" significa obrigatorio.</p>
+            <div class="post-meta">
+                <div class="date">15 de fevereiro de 2026</div>
+                <div class="reading">8 min de leitura</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container post-body">
+
+            <p>Uma tarefa de classificacao de documentos: dado um trecho da <a href="https://modelcontextprotocol.io/specification/2025-03-26/basic/transports">Especificacao de Transporte do MCP</a>, determine quais partes sao requisitos obrigatorios, quais sao riscos de seguranca e quais sao preenchimento informativo que seu agente pode pular.</p>
+
+            <p>Um LLM faz isso. Voce pode pedir pro Claude ou GPT-4 ler o texto e classificar cada secao. Vai levar 2-10 segundos, custar $0,003-0,02 por chamada, e dar respostas levemente diferentes toda vez que rodar.</p>
+
+            <p>Ou voce pode fazer com regex em <strong>3,78 milissegundos</strong>. Deterministicamente. Offline. De graca.</p>
+
+            <p>E isso que o <a href="https://github.com/echology-io/decompose">Decompose</a> faz. E uma biblioteca Python que divide texto em unidades semanticas classificadas &mdash; sem LLM, sem chave de API, sem GPU. Uma chamada de funcao. Aqui esta a saida completa do processamento da spec de transporte do MCP:</p>
+
+            <h2>A entrada</h2>
+
+            <p>1.786 caracteres de texto de especificacao. Cinco secoes cobrindo transportes, um aviso de seguranca, stdio, SSE (deprecado), streamable HTTP e requisitos de seguranca. O tipo de documento que toda implementacao MCP precisa ler com cuidado.</p>
+
+            <div class="code-block">
+<span class="cmt"># Duas linhas de Python</span>
+<span class="key">from</span> decompose <span class="key">import</span> decompose
+result = decompose(spec_text)   <span class="cmt"># 3,78ms</span>
+            </div>
+
+            <h2>A saida</h2>
+
+            <p>9 unidades. Cada uma tem nivel de autoridade, categoria de risco, score de atencao e flag de acionabilidade. Nenhum LLM foi consultado. Aqui estao as tres que importam:</p>
+
+            <div class="panels">
+                <div class="panel">
+                    <div class="panel-label">Unidade 2 &mdash; Aviso de Seguranca</div>
+<span class="hi">authority: <span class="str">directive</span></span>
+<span class="hi">risk: <span class="str">security</span></span>
+<span class="hi">attention: <span class="num">2.2</span></span>
+<span class="hi">actionable: <span class="bool">true</span></span>
+
+<span class="cmt">"Implementations SHOULD be cautious about
+exposing MCP servers via SSE to untrusted
+networks..."</span>
+
+<span class="str">&rarr; SHOULD = autoridade diretiva.
+   "untrusted networks" = risco de seguranca.
+   Atencao: 2.2</span>
+                </div>
+                <div class="panel accent">
+                    <div class="panel-label">Unidade 9 &mdash; Requisitos de Seguranca</div>
+<span class="hi">authority: <span class="str">mandatory</span></span>
+<span class="hi">risk: <span class="str">security</span></span>
+<span class="hi">attention: <span class="num">3.0</span></span>
+<span class="hi">actionable: <span class="bool">true</span></span>
+
+<span class="cmt">"All implementations MUST:
+ - Use HTTPS for non-local connections
+ - Validate Origin headers on all requests
+ - Implement proper session management
+ - Follow OAuth 2.1 for authentication"</span>
+
+<span class="str">&rarr; MUST = autoridade obrigatoria.
+   Risco de seguranca + obrigatorio = atencao 3.0
+   Esta e a unidade que seu agente le primeiro.</span>
+                </div>
+            </div>
+
+            <p>E as unidades que nao importam:</p>
+
+            <div class="code-block">
+<span class="dim">Unidade 1 &mdash; Transports (visao geral)</span>
+<span class="dim">  authority: mandatory  risk: informational  attention: <span class="num">0.3</span></span>
+<span class="dim">  <span class="cmt">&rarr; "must handle message framing" &mdash; boilerplate</span></span>
+
+<span class="dim">Unidade 3 &mdash; Standard Input/Output (stdio)</span>
+<span class="dim">  authority: informational  risk: informational  attention: <span class="num">0.0</span></span>
+<span class="dim">  <span class="cmt">&rarr; descricao, sem obrigacoes, pular</span></span>
+
+<span class="dim">Unidade 7 &mdash; Streamable HTTP</span>
+<span class="dim">  authority: informational  risk: informational  attention: <span class="num">0.0</span></span>
+<span class="dim">  <span class="cmt">&rarr; mesma coisa &mdash; so descricao, pular</span></span>
+
+<span class="dim">Unidade 8 &mdash; Request-Response Flow</span>
+<span class="dim">  authority: permissive  risk: informational  attention: <span class="num">0.1</span></span>
+<span class="dim">  <span class="cmt">&rarr; "server MAY send multiple messages" &mdash; bom saber</span></span>
+            </div>
+
+            <p>Um agente usando esses scores leria <strong>2 de 9 unidades</strong>. Saberia que os requisitos de seguranca sao obrigatorios (MUST) e o aviso de seguranca e consultivo (SHOULD). Pularia a visao geral, a descricao do stdio e o aviso de deprecacao do SSE. Economizaria 78% da janela de contexto so nesse documento.</p>
+
+            <h2>Como funciona</h2>
+
+            <p>Sem magica. A classificacao roda em tres coisas:</p>
+
+            <h3>1. Deteccao de palavras-chave RFC 2119</h3>
+
+            <p>"MUST", "SHALL", "MUST NOT" &rarr; <code>mandatory</code> ou <code>prohibitive</code>. "SHOULD", "RECOMMENDED" &rarr; <code>directive</code>. "MAY" &rarr; <code>permissive</code>. Sem palavras-chave &rarr; <code>informational</code>.</p>
+
+            <p>Isso nao e opiniao. E o padrao real. A <a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a> foi escrita em 1997 especificamente pra tornar essas palavras inequivocas em especificacoes. Um LLM tem que descobrir isso a partir dos dados de treinamento. Regex so faz match na palavra.</p>
+
+            <h3>2. Padroes de categoria de risco</h3>
+
+            <p>Palavras como "attack", "untrusted", "authentication", "HTTPS" &rarr; <code>security</code>. Valores em dolar e termos financeiros &rarr; <code>financial</code>. "OSHA", "safety-critical", "load-bearing" &rarr; <code>safety-critical</code>. "compliance", "violation", "regulation" &rarr; <code>compliance</code>.</p>
+
+            <p>Esses padroes sao deterministicos. Nao variam entre execucoes. Nao alucinam risco onde nao existe.</p>
+
+            <h3>3. Scoring de atencao</h3>
+
+            <p>Uma formula simples: peso de autoridade &times; multiplicador de risco. Obrigatorio + seguranca = score alto. Informativo + informativo = 0.0. Os numeros nao sao arbitrarios &mdash; sao calibrados pra colocar conteudo genuinamente critico no topo da lista de leitura.</p>
+
+            <p>E isso. Tres sistemas de regex, um splitter de Markdown com reconhecimento de headers e uma calculadora de atencao. Total de codigo: <strong>~2.000 linhas de Python</strong>. Dependencias externas: <strong>zero</strong>.</p>
+
+            <h2>Quando isso realmente ganha de um LLM?</h2>
+
+            <p>Nem sempre. Vou ser especifico sobre os tradeoffs.</p>
+
+            <p><strong>Regex ganha quando:</strong></p>
+            <ul>
+                <li>Voce precisa de classificacao consistente e reproduzivel entre documentos</li>
+                <li>Voce esta pre-processando centenas ou milhares de documentos antes de mandarem pro modelo</li>
+                <li>Voce esta rodando local / air-gapped / controlado por ITAR</li>
+                <li>Voce precisa de uma trilha de auditoria que explique exatamente por que uma secao foi marcada</li>
+                <li>Voce nao pode gastar $0,01 por documento em escala</li>
+                <li>Voce precisa da resposta em 4ms, nao em 4 segundos</li>
+            </ul>
+
+            <p><strong>LLMs ganham quando:</strong></p>
+            <ul>
+                <li>Voce precisa entender nuance, implicacao ou raciocinio entre documentos</li>
+                <li>O documento usa linguagem de dominio especifico que nao casa com padroes standard</li>
+                <li>Voce esta classificando intencao, nao estrutura</li>
+                <li>Voce tem um documento, nao mil</li>
+            </ul>
+
+            <p>O insight e que nao sao mutuamente exclusivos. <strong>Decompose roda antes do seu LLM.</strong> E um pre-processador. Seu agente le 9 unidades de metadata em vez de 1.786 caracteres de texto cru. Decide quais 2 unidades mandar pro modelo pra analise mais profunda. O LLM ainda faz o trabalho dificil &mdash; so faz menos trabalho facil.</p>
+
+            <h2>A conta do custo</h2>
+
+            <p>Digamos que voce tem 10.000 documentos de especificacao. Media de 5.000 caracteres cada.</p>
+
+            <div class="code-block">
+<span class="cmt"># Classificacao por LLM (Claude Sonnet, est.)</span>
+10.000 docs &times; ~2.000 tokens de input &times; $3/M   = <span class="num">$60</span> input
+10.000 docs &times; ~500 tokens de output &times; $15/M   = <span class="num">$75</span> output
+Total: ~<span class="num">$135</span>
+Tempo: ~10.000 &times; 3s = <span class="num">8,3 horas</span> (sequencial)
+
+<span class="cmt"># Decompose</span>
+10.000 docs &times; 14ms = <span class="num">2,3 minutos</span>
+Custo: <span class="num">$0</span>
+            </div>
+
+            <p>Depois do decompose, seu agente talvez mande 20% das unidades pro LLM pra analise mais profunda. Agora seu custo de LLM e $27 em vez de $135, e o modelo recebe texto pre-classificado e estruturalmente anotado em vez de blobs crus.</p>
+
+            <h2>Teste voce mesmo</h2>
+
+            <div class="code-block">
+pip install decompose-mcp
+
+<span class="cmt"># Processar qualquer documento</span>
+<span class="key">from</span> decompose <span class="key">import</span> decompose
+result = decompose(open(<span class="str">"spec.md"</span>).read())
+
+<span class="key">for</span> unit <span class="key">in</span> result[<span class="str">"units"</span>]:
+    <span class="key">if</span> unit[<span class="str">"attention"</span>] > <span class="num">1.0</span>:
+        print(f<span class="str">"{unit['heading']}: {unit['authority']} / {unit['risk']} / {unit['attention']}"</span>)
+
+<span class="cmt"># Ou pipe pelo CLI</span>
+cat spec.md | python -m decompose --compact
+
+<span class="cmt"># Ou rode como ferramenta MCP pro seu agente</span>
+python -m decompose --serve
+            </div>
+
+            <p>Cada unidade retorna com: <code>authority</code>, <code>risk</code>, <code>attention</code>, <code>actionable</code>, <code>irreducible</code>, <code>entities</code>, <code>dates</code>, <code>financial</code>, <code>heading_path</code>. Sem chave de API. Sem setup. Roda num Raspberry Pi.</p>
+
+            <h2>O que estamos construindo</h2>
+
+            <p>Decompose e o primitivo open-source. <a href="https://aecai.io">AECai</a> e o produto &mdash; uma plataforma local-first de inteligencia documental para empresas de Arquitetura, Engenharia e Construcao. Usa Decompose como camada de chunking e classificacao, depois adiciona verificacao contra normas tecnicas, referencia cruzada contra padroes jurisdicionais e busca vetorial em todo o acervo do projeto.</p>
+
+            <p>Ambos sao construidos pela <a href="/pt/">Echology</a>. Ambos rodam no seu hardware. Nenhum dado sai pra nuvem de ninguem.</p>
+
+            <p>Se voce esta construindo agentes que leem documentos, <a href="/pt/contato">vamos conversar</a>. Se quer ver o que o Decompose encontra nos seus documentos, <a href="/pt/contato">manda pra gente</a>.</p>
+
+            <div class="btn-group" style="margin-top: 40px; margin-bottom: 20px;">
+                <a href="https://pypi.org/project/decompose-mcp/" class="btn btn-primary">pip install decompose-mcp</a>
+                <a href="https://github.com/echology-io/decompose" class="btn btn-outline">GitHub</a>
+                <a href="/pt/contato" class="btn btn-outline">Contato</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/contato">Contato</a>
+                <a href="/blog/regex-beats-llm" class="lang-toggle" title="English">&#127482;&#127480;</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

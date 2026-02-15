@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When Regex Beats an LLM — Echology</title>
+    <meta name="description" content="You don't need a 70B model to know 'shall' means mandatory. Decompose classifies document structure in 3ms with zero API calls. Here's how and why.">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-body { max-width: 720px; margin: 0 auto; }
+        .post-body h2 { font-size: 24px; font-weight: 700; margin: 48px 0 16px; letter-spacing: -0.3px; }
+        .post-body h3 { font-size: 18px; font-weight: 700; margin: 32px 0 12px; }
+        .post-body p { font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 20px; }
+        .post-body p strong { color: var(--fg); }
+        .post-body p code { background: var(--code-bg); padding: 2px 6px; border-radius: 3px; font-size: 14px; color: var(--accent); }
+        .post-body blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 12px 20px;
+            margin: 24px 0;
+            background: var(--code-bg);
+            border-radius: 0 6px 6px 0;
+        }
+        .post-body blockquote p { color: var(--fg); margin: 0; font-size: 15px; }
+        .post-body ul, .post-body ol { color: var(--muted); font-size: 16px; line-height: 1.75; margin-bottom: 20px; padding-left: 24px; }
+        .post-body li { margin-bottom: 8px; }
+        .post-body .code-block { margin: 24px 0; }
+        .post-body .panels { margin: 32px 0; }
+        .post-meta { text-align: center; margin-bottom: 48px; }
+        .post-meta .date { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+        .post-meta .reading { font-size: 13px; color: var(--muted); margin-top: 4px; }
+        .inline-stat { display: inline-block; font-weight: 800; color: var(--accent); }
+        .post-body a { text-decoration: underline; text-underline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/about">About</a>
+                <a href="/aecai">AECai</a>
+                <a href="/decompose">Decompose</a>
+                <a href="/blog" class="active">Blog</a>
+                <a href="/contact">Contact</a>
+                <a href="/pt/blog/regex-ganha-de-llm" class="lang-toggle" title="Portugues">&#127463;&#127479;</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container container--narrow">
+            <h1>When Regex<br><span>Beats an LLM</span></h1>
+            <p class="sub">You don't need a 70B model to know that "shall" means mandatory.</p>
+            <div class="post-meta">
+                <div class="date">February 15, 2026</div>
+                <div class="reading">8 min read</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container post-body">
+
+            <p>Here's a document classification task: given a section of the <a href="https://modelcontextprotocol.io/specification/2025-03-26/basic/transports">MCP Transport Specification</a>, determine which parts are mandatory requirements, which are security risks, and which are informational filler your agent can skip.</p>
+
+            <p>An LLM can do this. You can prompt Claude or GPT-4 to read the text and classify each section. It will take 2-10 seconds, cost $0.003-0.02 per call, and give you slightly different answers every time you run it.</p>
+
+            <p>Or you can do it with regex in <strong>3.78 milliseconds</strong>. Deterministically. Offline. For free.</p>
+
+            <p>That's what <a href="https://github.com/echology-io/decompose">Decompose</a> does. It's a Python library that splits text into classified semantic units &mdash; no LLM, no API key, no GPU. One function call. Here's the full output from processing the MCP transport spec:</p>
+
+            <h2>The input</h2>
+
+            <p>1,786 characters of specification text. Five sections covering transports, a security warning, stdio, SSE (deprecated), streamable HTTP, and security requirements. The kind of document every MCP implementation needs to read carefully.</p>
+
+            <div class="code-block">
+<span class="cmt"># Two lines of Python</span>
+<span class="key">from</span> decompose <span class="key">import</span> decompose
+result = decompose(spec_text)   <span class="cmt"># 3.78ms</span>
+            </div>
+
+            <h2>The output</h2>
+
+            <p>9 units. Each one has an authority level, risk category, attention score, and actionability flag. No LLM was consulted. Here are the three that matter:</p>
+
+            <div class="panels">
+                <div class="panel">
+                    <div class="panel-label">Unit 2 &mdash; Security Warning</div>
+<span class="hi">authority: <span class="str">directive</span></span>
+<span class="hi">risk: <span class="str">security</span></span>
+<span class="hi">attention: <span class="num">2.2</span></span>
+<span class="hi">actionable: <span class="bool">true</span></span>
+
+<span class="cmt">"Implementations SHOULD be cautious about
+exposing MCP servers via SSE to untrusted
+networks..."</span>
+
+<span class="str">&rarr; SHOULD = directive authority.
+   "untrusted networks" = security risk.
+   Attention: 2.2</span>
+                </div>
+                <div class="panel accent">
+                    <div class="panel-label">Unit 9 &mdash; Security Requirements</div>
+<span class="hi">authority: <span class="str">mandatory</span></span>
+<span class="hi">risk: <span class="str">security</span></span>
+<span class="hi">attention: <span class="num">3.0</span></span>
+<span class="hi">actionable: <span class="bool">true</span></span>
+
+<span class="cmt">"All implementations MUST:
+ - Use HTTPS for non-local connections
+ - Validate Origin headers on all requests
+ - Implement proper session management
+ - Follow OAuth 2.1 for authentication"</span>
+
+<span class="str">&rarr; MUST = mandatory authority.
+   Security risk + mandatory = attention 3.0
+   This is the unit your agent reads first.</span>
+                </div>
+            </div>
+
+            <p>And the units that don't matter:</p>
+
+            <div class="code-block">
+<span class="dim">Unit 1 &mdash; Transports (overview)</span>
+<span class="dim">  authority: mandatory  risk: informational  attention: <span class="num">0.3</span></span>
+<span class="dim">  <span class="cmt">&rarr; "must handle message framing" &mdash; boilerplate</span></span>
+
+<span class="dim">Unit 3 &mdash; Standard Input/Output (stdio)</span>
+<span class="dim">  authority: informational  risk: informational  attention: <span class="num">0.0</span></span>
+<span class="dim">  <span class="cmt">&rarr; description, no obligations, skip</span></span>
+
+<span class="dim">Unit 7 &mdash; Streamable HTTP</span>
+<span class="dim">  authority: informational  risk: informational  attention: <span class="num">0.0</span></span>
+<span class="dim">  <span class="cmt">&rarr; same &mdash; description only, skip</span></span>
+
+<span class="dim">Unit 8 &mdash; Request-Response Flow</span>
+<span class="dim">  authority: permissive  risk: informational  attention: <span class="num">0.1</span></span>
+<span class="dim">  <span class="cmt">&rarr; "server MAY send multiple messages" &mdash; nice to know</span></span>
+            </div>
+
+            <p>An agent using these scores would read <strong>2 out of 9 units</strong>. It would know the security requirements are mandatory (MUST) and the security warning is advisory (SHOULD). It would skip the overview, the stdio description, and the SSE deprecation notice. It would save 78% of its context window on this document alone.</p>
+
+            <h2>How it works</h2>
+
+            <p>No magic. The classification runs on three things:</p>
+
+            <h3>1. RFC 2119 keyword detection</h3>
+
+            <p>"MUST", "SHALL", "MUST NOT" &rarr; <code>mandatory</code> or <code>prohibitive</code>. "SHOULD", "RECOMMENDED" &rarr; <code>directive</code>. "MAY" &rarr; <code>permissive</code>. No keywords &rarr; <code>informational</code>.</p>
+
+            <p>This isn't an opinion. It's the actual standard. <a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a> was written in 1997 specifically to make these words unambiguous in specifications. An LLM has to figure this out from its training data. Regex just matches the word.</p>
+
+            <h3>2. Risk category patterns</h3>
+
+            <p>Words like "attack", "untrusted", "authentication", "HTTPS" &rarr; <code>security</code>. Dollar amounts and financial terms &rarr; <code>financial</code>. "OSHA", "safety-critical", "load-bearing" &rarr; <code>safety-critical</code>. "compliance", "violation", "regulation" &rarr; <code>compliance</code>.</p>
+
+            <p>These patterns are deterministic. They don't vary between runs. They don't hallucinate risk where there is none.</p>
+
+            <h3>3. Attention scoring</h3>
+
+            <p>A simple formula: authority weight &times; risk multiplier. Mandatory + security = high score. Informational + informational = 0.0. The numbers aren't arbitrary &mdash; they're calibrated to put genuinely critical content at the top of the reading list.</p>
+
+            <p>That's it. Three regex systems, a header-aware Markdown splitter, and an attention calculator. Total code: <strong>~2,000 lines of Python</strong>. Total external dependencies: <strong>zero</strong>.</p>
+
+            <h2>When does this actually beat an LLM?</h2>
+
+            <p>Not always. Let me be specific about the tradeoffs.</p>
+
+            <p><strong>Regex wins when:</strong></p>
+            <ul>
+                <li>You need consistent, reproducible classification across documents</li>
+                <li>You're preprocessing hundreds or thousands of documents before they hit a model</li>
+                <li>You're running locally / air-gapped / ITAR-controlled</li>
+                <li>You need an audit trail that explains exactly why a section was flagged</li>
+                <li>You can't afford $0.01 per document at scale</li>
+                <li>You need the answer in 4ms, not 4 seconds</li>
+            </ul>
+
+            <p><strong>LLMs win when:</strong></p>
+            <ul>
+                <li>You need to understand nuance, implication, or cross-document reasoning</li>
+                <li>The document uses domain-specific language that doesn't match standard patterns</li>
+                <li>You're classifying intent, not structure</li>
+                <li>You have one document, not a thousand</li>
+            </ul>
+
+            <p>The insight is that these aren't mutually exclusive. <strong>Decompose runs before your LLM does.</strong> It's a preprocessor. Your agent reads 9 units of metadata instead of 1,786 characters of raw text. It decides which 2 units to send to the model for deeper analysis. The LLM still does the hard work &mdash; it just does less of the easy work.</p>
+
+            <h2>The cost math</h2>
+
+            <p>Let's say you have 10,000 specification documents. Average 5,000 characters each.</p>
+
+            <div class="code-block">
+<span class="cmt"># LLM classification (Claude Sonnet, est.)</span>
+10,000 docs &times; ~2,000 input tokens &times; $3/M   = <span class="num">$60</span> input
+10,000 docs &times; ~500 output tokens &times; $15/M   = <span class="num">$75</span> output
+Total: ~<span class="num">$135</span>
+Time: ~10,000 &times; 3s = <span class="num">8.3 hours</span> (sequential)
+
+<span class="cmt"># Decompose</span>
+10,000 docs &times; 14ms = <span class="num">2.3 minutes</span>
+Cost: <span class="num">$0</span>
+            </div>
+
+            <p>After decompose, your agent might send 20% of units to the LLM for deeper analysis. Now your LLM cost is $27 instead of $135, and the model sees pre-classified, structurally annotated text instead of raw blobs.</p>
+
+            <h2>Try it</h2>
+
+            <div class="code-block">
+pip install decompose-mcp
+
+<span class="cmt"># Process any document</span>
+<span class="key">from</span> decompose <span class="key">import</span> decompose
+result = decompose(open(<span class="str">"spec.md"</span>).read())
+
+<span class="key">for</span> unit <span class="key">in</span> result[<span class="str">"units"</span>]:
+    <span class="key">if</span> unit[<span class="str">"attention"</span>] > <span class="num">1.0</span>:
+        print(f<span class="str">"{unit['heading']}: {unit['authority']} / {unit['risk']} / {unit['attention']}"</span>)
+
+<span class="cmt"># Or pipe from CLI</span>
+cat spec.md | python -m decompose --compact
+
+<span class="cmt"># Or run as an MCP tool for your agent</span>
+python -m decompose --serve
+            </div>
+
+            <p>Every unit comes back with: <code>authority</code>, <code>risk</code>, <code>attention</code>, <code>actionable</code>, <code>irreducible</code>, <code>entities</code>, <code>dates</code>, <code>financial</code>, <code>heading_path</code>. No API key. No setup. Runs on a Raspberry Pi.</p>
+
+            <h2>What we're building</h2>
+
+            <p>Decompose is the open-source primitive. <a href="https://aecai.io">AECai</a> is the product &mdash; a local-first document intelligence platform for architecture, engineering, and construction firms. It uses Decompose as its chunking and classification layer, then adds verification against building codes, cross-referencing against jurisdictional standards, and vector search across entire project libraries.</p>
+
+            <p>Both are built by <a href="/">Echology</a>. Both run on your hardware. Neither sends data to anyone's cloud.</p>
+
+            <p>If you're building agents that read documents, <a href="/contact">let's talk</a>. If you want to see what Decompose finds in your documents, <a href="/contact">send them over</a>.</p>
+
+            <div class="btn-group" style="margin-top: 40px; margin-bottom: 20px;">
+                <a href="https://pypi.org/project/decompose-mcp/" class="btn btn-primary">pip install decompose-mcp</a>
+                <a href="https://github.com/echology-io/decompose" class="btn btn-outline">GitHub</a>
+                <a href="/contact" class="btn btn-outline">Contact</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
