@@ -2,16 +2,51 @@
 
 from __future__ import annotations
 
+import ipaddress
 import json
+import socket
 import urllib.error
 import urllib.request
 from html.parser import HTMLParser
+from urllib.parse import urlparse
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import TextContent, Tool
 
 from decompose.core import decompose_text
+
+_BLOCKED_NETS = [
+    ipaddress.ip_network("0.0.0.0/8"),
+    ipaddress.ip_network("10.0.0.0/8"),
+    ipaddress.ip_network("100.64.0.0/10"),
+    ipaddress.ip_network("127.0.0.0/8"),
+    ipaddress.ip_network("169.254.0.0/16"),
+    ipaddress.ip_network("172.16.0.0/12"),
+    ipaddress.ip_network("192.168.0.0/16"),
+    ipaddress.ip_network("::1/128"),
+    ipaddress.ip_network("fc00::/7"),
+    ipaddress.ip_network("fe80::/10"),
+]
+
+
+def _validate_url(url: str) -> None:
+    """Reject URLs targeting internal/private networks or non-HTTP schemes."""
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError(f"Unsupported URL scheme: {parsed.scheme!r}")
+    hostname = parsed.hostname
+    if not hostname:
+        raise ValueError("URL has no hostname")
+    try:
+        addrs = socket.getaddrinfo(hostname, None, socket.AF_UNSPEC, socket.SOCK_STREAM)
+    except socket.gaierror as e:
+        raise ValueError(f"Cannot resolve hostname: {e}") from None
+    for _, _, _, _, sockaddr in addrs:
+        ip = ipaddress.ip_address(sockaddr[0])
+        for net in _BLOCKED_NETS:
+            if ip in net:
+                raise ValueError(f"URL resolves to blocked address: {ip}")
 
 server = Server("decompose")
 
@@ -43,6 +78,7 @@ class _HTMLToText(HTMLParser):
 
 def _fetch_url(url: str, timeout: int = 15) -> str:
     """Fetch URL content, convert HTML to plain text. Stdlib only."""
+    _validate_url(url)
     req = urllib.request.Request(
         url,
         headers={"User-Agent": "decompose/0.1", "Accept": "text/markdown, text/plain, text/html"},
@@ -112,7 +148,7 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
         url = arguments["url"]
         try:
             text = _fetch_url(url)
-        except (urllib.error.URLError, TimeoutError, OSError) as e:
+        except (urllib.error.URLError, TimeoutError, OSError, ValueError) as e:
             return [TextContent(type="text", text=json.dumps({"error": f"Failed to fetch URL: {e}"}))]
 
         result = decompose_text(text, compact=arguments.get("compact", False))
