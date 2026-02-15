@@ -59,16 +59,12 @@ nav .container {
 }
 .nav-links a:hover, .nav-links a.active { color: var(--fg); }
 .nav-links a.lang-toggle {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--accent-dim);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 2px 8px;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    border: none;
 }
-.nav-links a.lang-toggle:hover { color: var(--accent); border-color: var(--accent); }
+.nav-links a.lang-toggle:hover { opacity: 0.8; }
 
 .nav-toggle { display: none; background: none; border: none; color: var(--fg); font-size: 24px; cursor: pointer; }
 
