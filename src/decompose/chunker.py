@@ -29,7 +29,11 @@ def chunk_text(text: str, chunk_size: int = DEFAULT_CHUNK_SIZE, overlap: int = D
         return []
 
     if len(text) <= chunk_size:
-        return [Chunk(chunk_id=1, text=text.strip(), start=0, end=len(text), word_count=len(text.split()), char_count=len(text))]
+        stripped = text.strip()
+        return [Chunk(
+            chunk_id=1, text=stripped, start=0, end=len(text),
+            word_count=len(stripped.split()), char_count=len(text),
+        )]
 
     chunks: list[Chunk] = []
     start = 0
@@ -68,7 +72,8 @@ def _parse_markdown_sections(text: str) -> list[dict]:
     matches = list(header_re.finditer(text))
 
     if not matches:
-        return [{"heading": None, "level": 0, "parent": None, "path": [], "text": text, "start": 0, "end": len(text)}]
+        return [{"heading": None, "level": 0, "parent": None, "path": [],
+                 "text": text, "start": 0, "end": len(text)}]
 
     sections = []
     stack: list[tuple[int, str]] = []
@@ -77,7 +82,8 @@ def _parse_markdown_sections(text: str) -> list[dict]:
     if matches[0].start() > 0:
         pre = text[: matches[0].start()]
         if pre.strip():
-            sections.append({"heading": None, "level": 0, "parent": None, "path": [], "text": pre, "start": 0, "end": matches[0].start()})
+            sections.append({"heading": None, "level": 0, "parent": None, "path": [],
+                             "text": pre, "start": 0, "end": matches[0].start()})
 
     for i, m in enumerate(matches):
         level = len(m.group(1))
@@ -92,7 +98,10 @@ def _parse_markdown_sections(text: str) -> list[dict]:
         path = [h for _, h in stack] + [heading]
         stack.append((level, heading))
 
-        sections.append({"heading": heading, "level": level, "parent": parent, "path": path, "text": text[sec_start:sec_end], "start": sec_start, "end": sec_end})
+        sections.append({
+            "heading": heading, "level": level, "parent": parent, "path": path,
+            "text": text[sec_start:sec_end], "start": sec_start, "end": sec_end,
+        })
 
     return sections
 

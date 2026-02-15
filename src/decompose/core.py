@@ -2,15 +2,14 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import time
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 
-from decompose.chunker import Chunk, auto_chunk
-from decompose.classifier import Classification, classify
-from decompose.entities import Entities, extract_entities
-from decompose.irreducibility import IrreducibilityResult, detect_irreducibility
+from decompose.chunker import auto_chunk
+from decompose.classifier import classify
+from decompose.entities import extract_entities
+from decompose.irreducibility import detect_irreducibility
 
 
 @dataclass(slots=True)

@@ -3,8 +3,7 @@
 from __future__ import annotations
 
 import re
-from collections import Counter
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 # ── Authority patterns ────────────────────────────────────────────
 # Universal language-level patterns. "shall" means mandatory in every
@@ -138,7 +137,10 @@ def classify(text: str) -> Classification:
     content_type, _ = _score_patterns(text, CONTENT_TYPE_PATTERNS)
 
     # Attention score: risk multiplier * normalized authority score
-    risk_mult = {"safety_critical": 4.0, "compliance": 2.0, "financial": 1.5, "contractual": 1.5, "advisory": 0.5, "informational": 0.3}.get(risk, 0.5)
+    risk_mult = {
+        "safety_critical": 4.0, "compliance": 2.0, "financial": 1.5,
+        "contractual": 1.5, "advisory": 0.5, "informational": 0.3,
+    }.get(risk, 0.5)
     attention = min(10.0, round(min(auth_score, 5.0) * risk_mult, 1))
 
     actionable = authority in ("mandatory", "prohibitive", "directive") or risk in ("safety_critical", "compliance")

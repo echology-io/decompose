@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AECai — Document Intelligence for AEC Firms</title>
+    <meta name="description" content="AECai reads any document a firm produces or receives and turns it into structured, searchable, verified data. No cloud. Runs on your hardware.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/about">About</a>
+                <a href="/aecai" class="active">AECai</a>
+                <a href="/decompose">Decompose</a>
+                <a href="/blog">Blog</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Every document.<br>Every standard.<br><span>Verified.</span></h1>
+            <p class="sub">AECai is a local-first document intelligence platform for Architecture, Engineering, and Construction firms. It reads, classifies, verifies, and indexes every document your firm produces or receives.</p>
+            <div class="btn-group">
+                <a href="/contact" class="btn btn-primary">Request Assessment</a>
+                <a href="https://github.com/aecai-io/aecai" class="btn btn-outline">View on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">The Pipeline</p>
+            <h2 class="section-title">Five stages. Any document.</h2>
+            <p class="section-desc">Every document flows through the same pipeline. PDF, DOCX, CAD, images — 15+ formats supported.</p>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="tag">Stage 1</div>
+                    <h3>Parse</h3>
+                    <p>TextExtractor reads 15+ formats — PDF, DOCX, DXF, Markdown, CSV, HTML, RTF, images via OCR. Outputs raw text, cleaned text, page splits, metadata.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Stage 2</div>
+                    <h3>Classify</h3>
+                    <p>AI-first classification via local LLM. Detects document type, domains, entities, risk indicators, authority level. Regex fallback when AI is unavailable.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Stage 3</div>
+                    <h3>Enrich</h3>
+                    <p>Five built-in plugins: standards crossref, PII detection, timeline extraction, financial analysis, contract analysis. Priority-ordered and extensible.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Stage 4</div>
+                    <h3>Decompose</h3>
+                    <p>Header-aware semantic chunking. Each unit gets its own classification — authority level, content type, risk relevance. Documents become structured data.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Stage 5</div>
+                    <h3>Index</h3>
+                    <p>768-dim vector embeddings stored in Qdrant. Search your entire archive by meaning, not keywords. Filterable by jurisdiction, discipline, risk level.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">Three Engines</p>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="tag">Engine</div>
+                    <h3>Vanta</h3>
+                    <p>Reads, classifies, and decomposes documents. Simulation-aware pipeline orchestration: deterministic message passing, nested document contexts, self-improving detection patterns, attention-budget scheduling.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Engine</div>
+                    <h3>Aletheia</h3>
+                    <p>Verifies output quality and checks standards against jurisdiction adoptions. Causal consistency graphs, multi-channel error correction, Merkle-tree tamper detection, counterfactual decision logging.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Engine</div>
+                    <h3>Daedalus</h3>
+                    <p>Retrieves patterns from processed archives and generates CAD/BIM scripts. Civil3D and Revit script generation. Holographic redundancy encoding, topological data segregation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">What it detects</p>
+            <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                <div class="card">
+                    <h3>Every Standard Referenced</h3>
+                    <p>ASTM, AASHTO, ACI, IBC, OSHA — detected and cross-referenced against what your jurisdiction actually requires.</p>
+                </div>
+                <div class="card">
+                    <h3>Obligations &amp; Red Flags</h3>
+                    <p>The "shall" clauses, liability traps, deadlines buried in boilerplate that nobody reads until it's too late.</p>
+                </div>
+                <div class="card">
+                    <h3>Deadlines &amp; Milestones</h3>
+                    <p>Notice to proceed, submittal windows, substantial completion — built into a timeline you can actually track.</p>
+                </div>
+                <div class="card">
+                    <h3>Names &amp; Sensitive Data</h3>
+                    <p>PE license numbers, SSNs, contact details — flagged before anything enters any AI system.</p>
+                </div>
+                <div class="card">
+                    <h3>The Money</h3>
+                    <p>Contract value, retainage, liquidated damages, payment terms — the numbers your PM needs on day one.</p>
+                </div>
+                <div class="card">
+                    <h3>Who's Who</h3>
+                    <p>Owner, contractor, engineer of record, subs — the AI figures out the players and their roles without a template.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">Platform</p>
+            <div class="stats">
+                <div>
+                    <div class="stat-value">17</div>
+                    <div class="stat-label">Simulation systems</div>
+                </div>
+                <div>
+                    <div class="stat-value">15+</div>
+                    <div class="stat-label">File formats</div>
+                </div>
+                <div>
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">Temporal workflows</div>
+                </div>
+                <div>
+                    <div class="stat-value">554</div>
+                    <div class="stat-label">Passing tests</div>
+                </div>
+                <div>
+                    <div class="stat-value">31k</div>
+                    <div class="stat-label">Lines of code</div>
+                </div>
+                <div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Cloud dependencies</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow" style="text-align:center;">
+            <h2 class="section-title">Ready to see what's in your documents?</h2>
+            <p class="section-desc">We'll run your documents through the pipeline and show you what AECai finds. No commitment. No data leaves your building.</p>
+            <a href="/contact" class="btn btn-primary">Request Assessment</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

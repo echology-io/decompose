@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import json
-import urllib.request
 import urllib.error
+import urllib.request
 from html.parser import HTMLParser
 
 from mcp.server import Server
@@ -43,7 +43,10 @@ class _HTMLToText(HTMLParser):
 
 def _fetch_url(url: str, timeout: int = 15) -> str:
     """Fetch URL content, convert HTML to plain text. Stdlib only."""
-    req = urllib.request.Request(url, headers={"User-Agent": "decompose/0.1", "Accept": "text/markdown, text/plain, text/html"})
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "decompose/0.1", "Accept": "text/markdown, text/plain, text/html"},
+    )
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         content_type = resp.headers.get("Content-Type", "")
         body = resp.read().decode("utf-8", errors="replace")

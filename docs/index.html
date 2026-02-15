@@ -3,310 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decompose — Structured Intelligence for AI Agents</title>
-    <meta name="description" content="Stop prompting. Start decomposing. The missing cognitive primitive for AI agents.">
-    <meta property="og:title" content="Decompose by Echology">
-    <meta property="og:description" content="Structured intelligence from any text. No LLM. No setup. One function call.">
+    <title>Echology — Simulation-Aware Intelligence</title>
+    <meta name="description" content="Echology builds simulation-aware intelligence tools. Local-first. No cloud. No compromise.">
+    <meta property="og:title" content="Echology">
+    <meta property="og:description" content="Simulation-aware intelligence tools for the real world.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://echology.io">
-    <style>
-        :root {
-            --bg: #0a0a0a;
-            --fg: #e8e8e8;
-            --accent: #c8a84e;
-            --muted: #666;
-            --code-bg: #141414;
-            --border: #222;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--fg);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
-
-        /* Nav */
-        nav {
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        nav .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--fg);
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-        .logo span { color: var(--accent); }
-        nav a {
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 14px;
-            margin-left: 24px;
-            transition: color 0.2s;
-        }
-        nav a:hover { color: var(--fg); }
-
-        /* Hero */
-        .hero {
-            padding: 80px 0 60px;
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 48px;
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            line-height: 1.1;
-            margin-bottom: 16px;
-        }
-        .hero h1 span { color: var(--accent); }
-        .tagline {
-            font-size: 20px;
-            color: var(--muted);
-            max-width: 520px;
-            margin: 0 auto 32px;
-        }
-        .install-box {
-            display: inline-block;
-            background: var(--code-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 24px;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 16px;
-            color: var(--accent);
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-        .install-box:hover { border-color: var(--accent); }
-        .install-hint {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 8px;
-        }
-
-        /* Before/After */
-        .comparison {
-            padding: 60px 0;
-            border-top: 1px solid var(--border);
-        }
-        .comparison h2 {
-            text-align: center;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--muted);
-            margin-bottom: 32px;
-        }
-        .panels {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-        @media (max-width: 600px) {
-            .panels { grid-template-columns: 1fr; }
-            .hero h1 { font-size: 32px; }
-        }
-        .panel {
-            background: var(--code-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            font-size: 13px;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            line-height: 1.7;
-            overflow-x: auto;
-        }
-        .panel-label {
-            font-family: -apple-system, system-ui, sans-serif;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--muted);
-            margin-bottom: 12px;
-        }
-        .panel.after { border-color: var(--accent); }
-        .panel .key { color: var(--accent); }
-        .panel .str { color: #8bc38b; }
-        .panel .bool { color: #c084fc; }
-        .panel .num { color: #f97583; }
-
-        /* Features */
-        .features {
-            padding: 60px 0;
-            border-top: 1px solid var(--border);
-        }
-        .features h2 {
-            text-align: center;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--muted);
-            margin-bottom: 40px;
-        }
-        .feature-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-        @media (max-width: 600px) {
-            .feature-grid { grid-template-columns: 1fr; }
-        }
-        .feature h3 {
-            font-size: 16px;
-            margin-bottom: 6px;
-            color: var(--fg);
-        }
-        .feature p {
-            font-size: 14px;
-            color: var(--muted);
-        }
-
-        /* MCP */
-        .mcp {
-            padding: 60px 0;
-            border-top: 1px solid var(--border);
-            text-align: center;
-        }
-        .mcp h2 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-        .mcp p {
-            color: var(--muted);
-            font-size: 16px;
-            margin-bottom: 24px;
-        }
-        .mcp-config {
-            background: var(--code-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 13px;
-            text-align: left;
-            display: inline-block;
-            max-width: 100%;
-        }
-
-        /* Footer */
-        footer {
-            padding: 40px 0;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            color: var(--muted);
-            font-size: 13px;
-        }
-        footer a { color: var(--accent); text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav>
         <div class="container">
             <a href="/" class="logo">echology<span>.</span></a>
-            <div>
-                <a href="https://github.com/echology-io/decompose">GitHub</a>
-                <a href="https://pypi.org/project/decompose/">PyPI</a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/about">About</a>
+                <a href="/aecai">AECai</a>
+                <a href="/decompose">Decompose</a>
+                <a href="/blog">Blog</a>
+                <a href="/contact">Contact</a>
             </div>
         </div>
     </nav>
 
     <section class="hero">
         <div class="container">
-            <h1>Stop prompting.<br>Start <span>decomposing.</span></h1>
-            <p class="tagline">The missing cognitive primitive for AI agents. Structured intelligence from any text. No LLM required.</p>
-            <div class="install-box" onclick="navigator.clipboard.writeText('pip install decompose')">
-                pip install decompose
-            </div>
-            <div class="install-hint">click to copy</div>
-        </div>
-    </section>
-
-    <section class="comparison">
-        <div class="container">
-            <h2>What your agent sees</h2>
-            <div class="panels">
-                <div class="panel">
-                    <div class="panel-label">Before</div>
-                    The contractor shall provide all
-                    materials per ASTM C150-20. Maximum
-                    load shall not exceed 500 psf per
-                    ASCE 7-22. Notice to proceed within
-                    14 calendar days of contract execution.
-                    Retainage of 10% applies to all
-                    payments. For general background,
-                    the project is located in Denver...
-                </div>
-                <div class="panel after">
-                    <div class="panel-label">After</div>
-                    {<br>
-                    &nbsp;&nbsp;<span class="key">"authority"</span>: <span class="str">"mandatory"</span>,<br>
-                    &nbsp;&nbsp;<span class="key">"risk"</span>: <span class="str">"compliance"</span>,<br>
-                    &nbsp;&nbsp;<span class="key">"type"</span>: <span class="str">"requirement"</span>,<br>
-                    &nbsp;&nbsp;<span class="key">"irreducible"</span>: <span class="bool">true</span>,<br>
-                    &nbsp;&nbsp;<span class="key">"attention"</span>: <span class="num">8.0</span>,<br>
-                    &nbsp;&nbsp;<span class="key">"entities"</span>: [<span class="str">"ASTM C150-20"</span>]<br>
-                    }
-                </div>
+            <h1>Intelligence that<br><span>understands structure.</span></h1>
+            <p class="sub">Echology builds simulation-aware tools that give machines the ability to read, classify, verify, and act on complex documents. Local-first. No cloud. No compromise.</p>
+            <div class="btn-group">
+                <a href="/aecai" class="btn btn-primary">Explore AECai</a>
+                <a href="/decompose" class="btn btn-outline">Try Decompose</a>
             </div>
         </div>
     </section>
 
-    <section class="features">
+    <section>
         <div class="container">
-            <h2>Why agents need this</h2>
-            <div class="feature-grid">
-                <div class="feature">
-                    <h3>No LLM Required</h3>
-                    <p>Pure regex and heuristics. Works offline, air-gapped, on CI. Zero inference cost. Your agent's LLM reasons over the output — decompose handles preprocessing.</p>
+            <p class="section-label">Products</p>
+            <div class="card-grid">
+                <a href="/aecai" class="card" style="text-decoration:none">
+                    <div class="tag">Platform</div>
+                    <h3>AECai</h3>
+                    <p>Document intelligence for Architecture, Engineering, and Construction. 17 simulation-aware systems. Full pipeline: parse, classify, enrich, decompose, index. Runs on your hardware.</p>
+                </a>
+                <a href="/decompose" class="card" style="text-decoration:none">
+                    <div class="tag">MCP Tool</div>
+                    <h3>Decompose</h3>
+                    <p>The missing cognitive primitive for AI agents. Text in, classified structured units out. No LLM. No setup. One function call. Works with any model.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">By the numbers</p>
+            <div class="stats">
+                <div>
+                    <div class="stat-value">17</div>
+                    <div class="stat-label">Simulation-aware systems</div>
                 </div>
-                <div class="feature">
-                    <h3>Deterministic</h3>
-                    <p>Same input, same output, every time. No temperature, no sampling, no drift. Agents can depend on the schema.</p>
+                <div>
+                    <div class="stat-value">29</div>
+                    <div class="stat-label">API endpoints</div>
                 </div>
-                <div class="feature">
-                    <h3>Fast</h3>
-                    <p>11ms for 3 documents. 934 chars/ms throughput. The bottleneck is your agent's reasoning, not decompose.</p>
+                <div>
+                    <div class="stat-value">554</div>
+                    <div class="stat-label">Passing tests</div>
                 </div>
-                <div class="feature">
-                    <h3>Composable</h3>
-                    <p>JSON in, JSON out. Pipe it, chain it, embed it. Works with any model — GLM-5, Llama, Claude, GPT. MCP native.</p>
+                <div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Cloud dependencies</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="mcp">
-        <div class="container">
-            <h2>One line to install</h2>
-            <p>Add to your agent's MCP config. Works with Claude Code, OpenClaw, Cursor, and any MCP-compatible agent.</p>
-            <div class="mcp-config">
-                {<br>
-                &nbsp;&nbsp;<span class="key">"mcpServers"</span>: {<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"decompose"</span>: {<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"command"</span>: <span class="str">"uvx"</span>,<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"args"</span>: [<span class="str">"decompose"</span>, <span class="str">"--serve"</span>]<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
-                &nbsp;&nbsp;}<br>
-                }
-            </div>
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">Philosophy</p>
+            <h2 class="section-title">All intelligence begins with decomposition.</h2>
+            <p class="section-desc">Complex systems become understandable when you break them into their constituent parts, classify each part, and map the relationships between them. That's what our tools do — for documents, for data, for decisions.</p>
         </div>
     </section>
 
     <footer>
         <div class="container">
-            <p>Built by <a href="https://echology.io">Echology, Inc.</a> &middot; Extracted from <a href="https://aecai.io">AECai</a></p>
-            <p style="margin-top: 8px;">All intelligence begins with decomposition.</p>
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </div>
         </div>
     </footer>
 </body>

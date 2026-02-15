@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decompose — The Missing Cognitive Primitive for AI Agents</title>
+    <meta name="description" content="Text in, classified structured units out. No LLM. No setup. One function call. Works with any model.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/about">About</a>
+                <a href="/aecai">AECai</a>
+                <a href="/decompose" class="active">Decompose</a>
+                <a href="/blog">Blog</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Stop prompting.<br><span>Start decomposing.</span></h1>
+            <p class="sub">Decompose is the missing cognitive primitive for AI agents. Text in, classified structured units out. No LLM. No setup. One function call.</p>
+            <div class="btn-group">
+                <a href="https://pypi.org/project/decompose/" class="btn btn-primary">pip install decompose</a>
+                <a href="https://github.com/echology-io/decompose" class="btn btn-outline">View on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">Before / After</p>
+            <div class="panels">
+                <div class="panel">
+                    <div class="panel-label">What your agent sees today</div>
+"The concrete shall have a minimum compressive
+strength of 4,000 psi at 28 days in accordance
+with ASTM C39. Retainage shall be 10% until
+substantial completion."
+                </div>
+                <div class="panel accent">
+                    <div class="panel-label">What decompose returns</div>
+{
+  <span class="key">"authority"</span>: <span class="str">"mandatory"</span>,
+  <span class="key">"risk"</span>: <span class="str">"compliance"</span>,
+  <span class="key">"type"</span>: <span class="str">"requirement"</span>,
+  <span class="key">"irreducible"</span>: <span class="bool">true</span>,
+  <span class="key">"attention"</span>: <span class="num">8.0</span>,
+  <span class="key">"entities"</span>: [<span class="str">"ASTM C39"</span>],
+  <span class="key">"financial"</span>: [<span class="str">"10%"</span>]
+}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">What it does</p>
+            <h2 class="section-title">Every text becomes structured intelligence.</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="tag">Classify</div>
+                    <h3>Authority Detection</h3>
+                    <p>Mandatory, prohibitive, directive, permissive, informational, conditional. Knows the difference between "shall" and "should" and "may."</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Classify</div>
+                    <h3>Risk Scoring</h3>
+                    <p>Safety-critical, compliance, financial, contractual, advisory. Each chunk gets scored and labeled by risk category.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Extract</div>
+                    <h3>Entity Recognition</h3>
+                    <p>Standards (ASTM, AASHTO, ACI, IBC, OSHA, ISO), dates, dollar amounts, percentages. Deterministic regex. No hallucinations.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Analyze</div>
+                    <h3>Irreducibility</h3>
+                    <p>Detects content that must be preserved verbatim — legal mandates, engineering values, safety thresholds. Tells your model what it cannot summarize.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Chunk</div>
+                    <h3>Semantic Splitting</h3>
+                    <p>Header-aware Markdown chunking. Sentence-boundary text splitting. Each chunk preserves its heading path and structural context.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Score</div>
+                    <h3>Attention Budget</h3>
+                    <p>Every unit gets an attention score from 0-10. Your agent knows which chunks matter most without reading all of them.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">Install</p>
+            <h2 class="section-title">One line. Zero config.</h2>
+            <div class="code-block">
+<span class="cmt"># Install</span>
+pip install decompose
+
+<span class="cmt"># Use from Python</span>
+<span class="key">from</span> decompose <span class="key">import</span> decompose_text
+result = decompose_text(<span class="str">"The concrete shall..."</span>)
+
+<span class="cmt"># Use from CLI</span>
+echo <span class="str">"The concrete shall..."</span> | python -m decompose
+
+<span class="cmt"># Use as MCP tool</span>
+python -m decompose --serve
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">MCP Integration</p>
+            <h2 class="section-title">Works with any MCP-compatible agent.</h2>
+            <p class="section-desc">Add one block to your MCP config. Your agent gets two tools: <code>decompose_text</code> and <code>decompose_url</code>.</p>
+            <div class="code-block">
+{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"decompose"</span>: {
+      <span class="key">"command"</span>: <span class="str">"python"</span>,
+      <span class="key">"args"</span>: [<span class="str">"-m"</span>, <span class="str">"decompose"</span>, <span class="str">"--serve"</span>]
+    }
+  }
+}
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">Performance</p>
+            <div class="stats">
+                <div>
+                    <div class="stat-value">&lt;5ms</div>
+                    <div class="stat-label">Per document</div>
+                </div>
+                <div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">LLM calls</div>
+                </div>
+                <div>
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Dependency (mcp)</div>
+                </div>
+                <div>
+                    <div class="stat-value">48</div>
+                    <div class="stat-label">Passing tests</div>
+                </div>
+                <div>
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Deterministic</div>
+                </div>
+                <div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Cloud dependencies</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow" style="text-align:center;">
+            <h2 class="section-title">All intelligence begins with decomposition.</h2>
+            <p class="section-desc">Your model is only as good as what you feed it. Feed it structure.</p>
+            <div class="btn-group">
+                <a href="https://pypi.org/project/decompose/" class="btn btn-primary">pip install decompose</a>
+                <a href="https://github.com/echology-io/decompose" class="btn btn-outline">GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
