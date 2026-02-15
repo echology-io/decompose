@@ -242,6 +242,27 @@ section:first-of-type { border-top: none; }
     margin-bottom: 12px;
 }
 
+/* ── Legend ───────────────────────────────────── */
+
+.legend {
+    margin-top: 24px;
+    padding: 20px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+.legend p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin: 0;
+}
+.legend p strong {
+    color: var(--accent);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+}
+
 /* ── Stats ────────────────────────────────────── */
 
 .stats {

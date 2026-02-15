@@ -39,10 +39,12 @@
             <div class="panels">
                 <div class="panel">
                     <div class="panel-label">What your agent sees today</div>
-"The concrete shall have a minimum compressive
-strength of 4,000 psi at 28 days in accordance
-with ASTM C39. Retainage shall be 10% until
-substantial completion."
+"The agent shall comply with EU AI Act transparency
+requirements for high-risk systems. All decisions
+must be logged with input hashes and output hashes
+for audit. Safety classifiers shall reject any
+request scoring above 0.85. Incident response for
+safety-critical failures must not exceed 4 hours."
                 </div>
                 <div class="panel accent">
                     <div class="panel-label">What decompose returns</div>
@@ -52,10 +54,19 @@ substantial completion."
   <span class="key">"type"</span>: <span class="str">"requirement"</span>,
   <span class="key">"irreducible"</span>: <span class="bool">true</span>,
   <span class="key">"attention"</span>: <span class="num">8.0</span>,
-  <span class="key">"entities"</span>: [<span class="str">"ASTM C39"</span>],
-  <span class="key">"financial"</span>: [<span class="str">"10%"</span>]
+  <span class="key">"actionable"</span>: <span class="bool">true</span>,
+  <span class="key">"irreducibility"</span>: <span class="str">"PRESERVE_KEY_VALUES"</span>
 }
                 </div>
+            </div>
+            <div class="legend">
+                <p><strong>authority</strong> &mdash; "shall" and "must" make this legally binding, not a suggestion</p>
+                <p><strong>risk</strong> &mdash; compliance obligations detected ("shall comply", regulatory language)</p>
+                <p><strong>type</strong> &mdash; this is a requirement, not a definition or narrative</p>
+                <p><strong>irreducible</strong> &mdash; contains values (0.85, 4 hours) that cannot be paraphrased without losing meaning</p>
+                <p><strong>attention</strong> &mdash; 8.0 / 10 &mdash; your agent should prioritize this chunk over boilerplate</p>
+                <p><strong>actionable</strong> &mdash; someone needs to do something about this (log decisions, set up classifiers, staff incident response)</p>
+                <p><strong>irreducibility</strong> &mdash; PRESERVE_KEY_VALUES: specific numbers and thresholds must be kept verbatim</p>
             </div>
         </div>
     </section>
@@ -78,12 +89,12 @@ substantial completion."
                 <div class="card">
                     <div class="tag">Extract</div>
                     <h3>Entity Recognition</h3>
-                    <p>Standards (ASTM, AASHTO, ACI, IBC, OSHA, ISO), dates, dollar amounts, percentages. Deterministic regex. No hallucinations.</p>
+                    <p>Standards, dates, dollar amounts, percentages. Deterministic regex. No hallucinations. No API calls.</p>
                 </div>
                 <div class="card">
                     <div class="tag">Analyze</div>
                     <h3>Irreducibility</h3>
-                    <p>Detects content that must be preserved verbatim — legal mandates, engineering values, safety thresholds. Tells your model what it cannot summarize.</p>
+                    <p>Detects content that must be preserved verbatim &mdash; legal mandates, threshold values, safety limits. Tells your model what it cannot summarize.</p>
                 </div>
                 <div class="card">
                     <div class="tag">Chunk</div>
@@ -93,7 +104,7 @@ substantial completion."
                 <div class="card">
                     <div class="tag">Score</div>
                     <h3>Attention Budget</h3>
-                    <p>Every unit gets an attention score from 0-10. Your agent knows which chunks matter most without reading all of them.</p>
+                    <p>Every unit gets an attention score from 0&ndash;10. Your agent knows which chunks matter most without reading all of them.</p>
                 </div>
             </div>
         </div>
@@ -109,10 +120,10 @@ pip install decompose
 
 <span class="cmt"># Use from Python</span>
 <span class="key">from</span> decompose <span class="key">import</span> decompose_text
-result = decompose_text(<span class="str">"The concrete shall..."</span>)
+result = decompose_text(policy_text)
 
 <span class="cmt"># Use from CLI</span>
-echo <span class="str">"The concrete shall..."</span> | python -m decompose
+cat agent_policy.md | python -m decompose --compact
 
 <span class="cmt"># Use as MCP tool</span>
 python -m decompose --serve
@@ -140,31 +151,32 @@ python -m decompose --serve
 
     <section>
         <div class="container">
-            <p class="section-label">Performance</p>
+            <p class="section-label">Benchmarks</p>
+            <p class="section-desc">Real numbers from the test suite. 5 documents, 15,683 characters, run on Apple Silicon.</p>
             <div class="stats">
                 <div>
-                    <div class="stat-value">&lt;5ms</div>
-                    <div class="stat-label">Per document</div>
+                    <div class="stat-value">2.6ms</div>
+                    <div class="stat-label">Avg per document</div>
                 </div>
                 <div>
-                    <div class="stat-value">0</div>
-                    <div class="stat-label">LLM calls</div>
+                    <div class="stat-value">1,217</div>
+                    <div class="stat-label">Chars/ms throughput</div>
                 </div>
                 <div>
-                    <div class="stat-value">1</div>
-                    <div class="stat-label">Dependency (mcp)</div>
+                    <div class="stat-value">34</div>
+                    <div class="stat-label">Units from 5 docs</div>
+                </div>
+                <div>
+                    <div class="stat-value">56%</div>
+                    <div class="stat-label">Flagged irreducible</div>
+                </div>
+                <div>
+                    <div class="stat-value">$0</div>
+                    <div class="stat-label">Compute cost</div>
                 </div>
                 <div>
                     <div class="stat-value">48</div>
                     <div class="stat-label">Passing tests</div>
-                </div>
-                <div>
-                    <div class="stat-value">100%</div>
-                    <div class="stat-label">Deterministic</div>
-                </div>
-                <div>
-                    <div class="stat-value">0</div>
-                    <div class="stat-label">Cloud dependencies</div>
                 </div>
             </div>
         </div>
