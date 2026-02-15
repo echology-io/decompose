@@ -58,7 +58,7 @@ pip install decompose-mcp
 
 ## Use as MCP Server
 
-Add to your agent's MCP config (Claude Code, OpenClaw, Cursor, etc.):
+Add to your agent's MCP config (Claude Code, Cursor, Windsurf, etc.):
 
 ```json
 {
@@ -74,6 +74,23 @@ Add to your agent's MCP config (Claude Code, OpenClaw, Cursor, etc.):
 Your agent gets two tools:
 - **`decompose_text`** — decompose any text
 - **`decompose_url`** — fetch a URL and decompose its content
+
+### OpenClaw
+
+Install the skill from ClawHub or configure directly:
+
+```json
+{
+  "mcpServers": {
+    "decompose": {
+      "command": "python3",
+      "args": ["-m", "decompose", "--serve"]
+    }
+  }
+}
+```
+
+Or install the skill: `openclaw skill install decompose-mcp`
 
 ## Use as CLI
 
