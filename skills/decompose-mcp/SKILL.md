@@ -109,3 +109,4 @@ Fetch a URL and decompose its content. Handles HTML, Markdown, and plain text.
 - [GitHub](https://github.com/echology-io/decompose)
 - [Documentation](https://echology.io/decompose)
 - [Blog: When Regex Beats an LLM](https://echology.io/blog/regex-beats-llm)
+- [Blog: Why Your Agent Needs a Cognitive Primitive](https://echology.io/blog/cognitive-primitive)
