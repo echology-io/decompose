@@ -97,16 +97,22 @@ Fetch a URL and decompose its content. Handles HTML, Markdown, and plain text.
 - Zero API calls, zero cost, works offline
 - Deterministic — same input always produces same output
 
-## Security
+## Security & Trust
 
-- All processing runs locally. No data leaves your machine.
-- URL fetching blocks internal/private IP ranges (SSRF protection).
-- No API keys required. No external services contacted.
+**Text classification is fully local.** The `decompose_text` tool performs all processing in-process with no network I/O. No data leaves your machine.
+
+**URL fetching performs outbound HTTP requests.** The `decompose_url` tool fetches the target URL, which necessarily involves network I/O to the specified host. This is why the skill declares the `network` permission in `claw.json`. If you do not need URL fetching, you can use `decompose_text` exclusively with no network access required.
+
+**SSRF protection.** URL fetching blocks private/internal IP ranges before connecting: `0.0.0.0/8`, `10.0.0.0/8`, `100.64.0.0/10`, `127.0.0.0/8`, `169.254.0.0/16`, `172.16.0.0/12`, `192.168.0.0/16`, `::1/128`, `fc00::/7`, `fe80::/10`. The implementation resolves the hostname via DNS *before* connecting and checks all returned addresses against the blocklist. See [`src/decompose/mcp_server.py` lines 19-49](https://github.com/echology-io/decompose/blob/main/src/decompose/mcp_server.py#L19-L49).
+
+**No API keys or credentials required.** No external services are contacted except when using `decompose_url` to fetch user-specified URLs.
+
+**Source code is fully auditable.** The complete source is published at [github.com/echology-io/decompose](https://github.com/echology-io/decompose). The PyPI package is built from this repo via GitHub Actions ([`publish.yml`](https://github.com/echology-io/decompose/blob/main/.github/workflows/publish.yml)) using PyPI Trusted Publishers (OIDC), so the published artifact is traceable to a specific commit.
 
 ## Resources
 
-- [PyPI](https://pypi.org/project/decompose-mcp/)
-- [GitHub](https://github.com/echology-io/decompose)
+- [Source Code (GitHub)](https://github.com/echology-io/decompose) — full source, auditable
+- [PyPI](https://pypi.org/project/decompose-mcp/) — published via Trusted Publishers
 - [Documentation](https://echology.io/decompose)
 - [Blog: When Regex Beats an LLM](https://echology.io/blog/regex-beats-llm)
 - [Blog: Why Your Agent Needs a Cognitive Primitive](https://echology.io/blog/cognitive-primitive)
