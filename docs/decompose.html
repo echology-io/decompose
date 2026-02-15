@@ -306,19 +306,6 @@ guaranteed 6% annual return.
         </div>
     </section>
 
-    <script>
-    fetch('/benchmarks.json').then(r=>r.json()).then(b=>{
-        document.getElementById('bench-avg-ms').textContent=b.avg_ms+'ms';
-        document.getElementById('bench-throughput').textContent=b.chars_per_ms.toLocaleString();
-        document.getElementById('bench-units').textContent=b.total_units;
-        document.getElementById('bench-units-label').textContent='Units from '+b.docs+' docs';
-        document.getElementById('bench-irr').textContent=b.irreducible_pct+'%';
-        document.getElementById('bench-tests').textContent=b.tests;
-        document.getElementById('bench-desc').textContent=
-            b.docs+' documents, '+b.total_chars.toLocaleString()+' characters, run on Apple Silicon.';
-    }).catch(()=>{});
-    </script>
-
     <section>
         <div class="container container--narrow" style="text-align:center;">
             <h2 class="section-title">All intelligence begins with decomposition.</h2>
