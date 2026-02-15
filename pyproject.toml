@@ -7,7 +7,7 @@ name = "decompose"
 version = "0.1.0"
 description = "The missing cognitive primitive for AI agents. Structured intelligence from any text."
 readme = "README.md"
-license = "Proprietary"
+license = {text = "Proprietary"}
 requires-python = ">=3.10"
 authors = [
     { name = "Kyle Vines", email = "kyle@echology.io" },
