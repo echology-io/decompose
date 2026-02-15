@@ -1,0 +1,29 @@
+# Agent Safety & Execution Policy
+
+## Tool Execution
+
+All tool calls must be validated against the approved tool registry before execution. The agent shall not invoke any tool not explicitly listed in the current session's tool manifest. Recursive tool calls are permitted to a maximum depth of 5. Any tool returning an error code above 400 must trigger a retry with exponential backoff, capped at 3 attempts.
+
+## Memory & Context
+
+Short-term memory should be scoped to the active conversation. Long-term memory persistence requires explicit user opt-in per GDPR Article 6(1)(a). The agent must not store personally identifiable information in vector indices without anonymization. Context window utilization shall not exceed 85% to preserve reasoning capacity. If context exceeds 100,000 tokens, the agent shall summarize older turns before continuing.
+
+## Output Constraints
+
+Maximum output length is 4,096 tokens per response. All generated code must include error handling for external API calls. The agent shall not produce executable system commands unless the user has enabled privileged mode. Confidence scores below 0.7 should trigger a clarification request rather than a direct answer.
+
+## Rate Limits & Quotas
+
+API rate limits shall not exceed 1,000 requests per minute per key. Batch operations are limited to 50 concurrent requests. Token throughput is capped at 100,000 tokens per minute for standard tier and 500,000 for enterprise. Exceeding rate limits will result in HTTP 429 responses with a Retry-After header.
+
+## Safety Filters
+
+The harm classifier shall reject any request scoring above 0.85. Content flagged for CSAM, weapons synthesis, or targeted harassment must be blocked without exception. Jailbreak detection shall run on every user input at a cost of approximately 50 tokens overhead per request. False positive rate must remain below 2% as measured by monthly evaluation.
+
+## Model Requirements
+
+Minimum inference hardware: 80GB VRAM across 2x A100 or equivalent. Quantized deployment (AWQ 4-bit) requires minimum 24GB VRAM on a single GPU. Model weights total 140GB at full precision (BF16). Recommended batch size for throughput optimization: 32 sequences. Cold start latency shall not exceed 45 seconds on supported hardware.
+
+## Compliance
+
+The agent shall comply with the EU AI Act transparency requirements for high-risk systems. All decisions must be logged with timestamps, input hashes, and output hashes for audit purposes. Data processing agreements must be executed before any enterprise deployment. The provider shall maintain SOC 2 Type II certification. Incident response time for safety-critical failures must not exceed 4 hours.

@@ -1,22 +1,49 @@
 {
-  "generated": "2026-02-15T06:49:37.577447+00:00",
-  "docs": 4,
-  "total_chars": 29531,
-  "total_words": 3916,
-  "total_units": 33,
-  "avg_ms": 6.3,
-  "chars_per_ms": 1173,
-  "irreducible": 4,
-  "irreducible_pct": 12,
-  "actionable": 2,
+  "generated": "2026-02-15T07:07:01.386456+00:00",
+  "docs": 11,
+  "total_chars": 162107,
+  "total_words": 22748,
+  "total_units": 134,
+  "avg_ms": 13.9,
+  "chars_per_ms": 1064,
+  "irreducible": 35,
+  "irreducible_pct": 26,
+  "actionable": 48,
   "tests": 48,
   "files": [
+    {
+      "file": "22-002  Cashen  149 Gilpin St  Report - Stamped.pdf",
+      "chars": 42010,
+      "words": 5827,
+      "units": 24,
+      "ms": 40.8,
+      "irreducible": 12,
+      "actionable": 18
+    },
+    {
+      "file": "agent_policy.txt",
+      "chars": 2679,
+      "words": 404,
+      "units": 8,
+      "ms": 2.14,
+      "irreducible": 6,
+      "actionable": 7
+    },
+    {
+      "file": "How_Anthropic_teams_use_Claude_Code_1768230297.pdf",
+      "chars": 74883,
+      "words": 10603,
+      "units": 43,
+      "ms": 72.3,
+      "irreducible": 0,
+      "actionable": 6
+    },
     {
       "file": "be_clear_and_direct.md",
       "chars": 8869,
       "words": 1207,
       "units": 7,
-      "ms": 8.02,
+      "ms": 8.11,
       "irreducible": 1,
       "actionable": 0
     },
@@ -25,7 +52,7 @@
       "chars": 9782,
       "words": 1325,
       "units": 10,
-      "ms": 8.82,
+      "ms": 8.88,
       "irreducible": 3,
       "actionable": 1
     },
@@ -34,7 +61,7 @@
       "chars": 4977,
       "words": 565,
       "units": 6,
-      "ms": 3.85,
+      "ms": 3.83,
       "irreducible": 0,
       "actionable": 0
     },
@@ -43,9 +70,45 @@
       "chars": 5903,
       "words": 819,
       "units": 10,
-      "ms": 4.49,
+      "ms": 4.5,
       "irreducible": 0,
       "actionable": 1
+    },
+    {
+      "file": "contract_excerpt.txt",
+      "chars": 3693,
+      "words": 580,
+      "units": 2,
+      "ms": 3.55,
+      "irreducible": 2,
+      "actionable": 2
+    },
+    {
+      "file": "model_card.txt",
+      "chars": 2266,
+      "words": 339,
+      "units": 7,
+      "ms": 1.78,
+      "irreducible": 2,
+      "actionable": 2
+    },
+    {
+      "file": "report_geotechnical.txt",
+      "chars": 3242,
+      "words": 499,
+      "units": 14,
+      "ms": 2.69,
+      "irreducible": 6,
+      "actionable": 8
+    },
+    {
+      "file": "spec_structural.txt",
+      "chars": 3803,
+      "words": 580,
+      "units": 3,
+      "ms": 3.81,
+      "irreducible": 3,
+      "actionable": 3
     }
   ]
 }

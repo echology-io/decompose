@@ -14,9 +14,24 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 from decompose.core import decompose_text
 
 
+def read_file(path: Path) -> str:
+    """Read text from any supported file format."""
+    if path.suffix.lower() == ".pdf":
+        try:
+            import fitz  # PyMuPDF
+
+            doc = fitz.open(str(path))
+            text = "\n\n".join(page.get_text() for page in doc)
+            doc.close()
+            return text
+        except ImportError:
+            return ""
+    return path.read_text(errors="replace")
+
+
 def process_file(path: Path) -> dict:
     """Process a single file and return detailed results."""
-    text = path.read_text(errors="replace")
+    text = read_file(path)
     if not text.strip():
         return {"file": path.name, "error": "empty"}
 
@@ -157,7 +172,7 @@ def main():
     # Collect all text files recursively
     files = sorted(
         p for p in test_dir.rglob("*")
-        if p.suffix in (".md", ".txt", ".rst") and p.is_file()
+        if p.suffix in (".md", ".txt", ".rst", ".pdf") and p.is_file()
     )
 
     if not files:
