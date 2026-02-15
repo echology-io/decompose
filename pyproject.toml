@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "decompose-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "The missing cognitive primitive for AI agents. Structured intelligence from any text."
 readme = "README.md"
 license = {text = "Proprietary"}
