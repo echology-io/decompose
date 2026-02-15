@@ -3,7 +3,7 @@
 The missing cognitive primitive for AI agents.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from decompose.core import decompose, decompose_text
 
