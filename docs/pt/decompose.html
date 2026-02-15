@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decompose — O primitivo cognitivo que falta para agentes de IA</title>
     <meta name="description" content="Texto entra, unidades estruturadas e classificadas saem. Sem LLM. Sem setup. Uma chamada de funcao. Funciona com qualquer modelo.">
+    <meta property="og:title" content="Decompose — O primitivo cognitivo que falta para agentes de IA">
+    <meta property="og:description" content="Texto entra, unidades estruturadas e classificadas saem. Sem LLM. Sem setup. Uma chamada.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://echology.io/pt/decompose">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Decompose — O primitivo cognitivo que falta">
+    <meta name="twitter:description" content="Decomponha qualquer texto em unidades semanticas classificadas. Autoridade, risco, atencao, entidades. Sem LLM. Deterministico.">
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -158,6 +165,35 @@ python -m decompose --serve
             <div class="btn-group" style="margin-top: 24px;">
                 <a href="https://github.com/echology-io/decompose" class="btn btn-primary">Ver no GitHub</a>
                 <a href="/pt/contato" class="btn btn-outline">Solicitar demo</a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">OpenClaw / ClawHub</p>
+            <h2 class="section-title">Disponivel no ClawHub.</h2>
+            <p class="section-desc">Instale a skill para qualquer agente compativel com OpenClaw:</p>
+            <div class="code-block">
+clawdhub install decompose-mcp
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">Integracao MCP</p>
+            <h2 class="section-title">Funciona com qualquer agente compativel com MCP.</h2>
+            <p class="section-desc">Adicione um bloco na sua config MCP. Seu agente ganha duas ferramentas: <code>decompose_text</code> e <code>decompose_url</code>.</p>
+            <div class="code-block">
+{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"decompose"</span>: {
+      <span class="key">"command"</span>: <span class="str">"python"</span>,
+      <span class="key">"args"</span>: [<span class="str">"-m"</span>, <span class="str">"decompose"</span>, <span class="str">"--serve"</span>]
+    }
+  }
+}
             </div>
         </div>
     </section>
