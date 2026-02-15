@@ -111,7 +111,10 @@ async def list_tools() -> list[Tool]:
                 "properties": {
                     "text": {"type": "string", "description": "The text to decompose"},
                     "compact": {"type": "boolean", "description": "Omit zero-value fields", "default": False},
-                    "chunk_size": {"type": "integer", "description": "Max chars per unit", "default": 2000},
+                    "chunk_size": {
+                        "type": "integer", "description": "Max chars per unit (100-100000)",
+                        "default": 2000, "minimum": 100, "maximum": 100000,
+                    },
                 },
                 "required": ["text"],
             },

@@ -59,6 +59,13 @@ def decompose_text(
     if not text or not text.strip():
         return {"units": [], "meta": {"total_units": 0, "error": "empty_input"}}
 
+    MAX_INPUT = 10_000_000  # 10 MB
+    if len(text) > MAX_INPUT:
+        return {"units": [], "meta": {"total_units": 0, "error": "input_too_large", "max_bytes": MAX_INPUT}}
+
+    chunk_size = max(100, min(chunk_size, 100_000))
+    overlap = max(0, min(overlap, chunk_size // 2))
+
     # Chunk
     chunks = auto_chunk(text, chunk_size=chunk_size, overlap=overlap)
 

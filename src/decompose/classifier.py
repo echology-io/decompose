@@ -49,7 +49,7 @@ AUTHORITY_PATTERNS: dict[str, dict] = {
     },
     "conditional": {
         "patterns": [
-            r"\bif\b.*\bthen\b", r"\bwhen\b.*\bshall\b", r"\bunless\b",
+            r"\bif\b[^.!?\n]*\bthen\b", r"\bwhen\b[^.!?\n]*\bshall\b", r"\bunless\b",
             r"\bprovided\s+that\b", r"\bsubject\s+to\b",
         ],
         "weight": 0.60,
