@@ -217,6 +217,95 @@ python -m decompose --serve
         </div>
     </section>
 
+    <section>
+        <div class="container">
+            <p class="section-label">How it trains your model</p>
+            <h2 class="section-title">Every unit is a training signal.</h2>
+            <p class="section-desc">Decompose doesn't just help agents read &mdash; it produces the structured labels that make models smarter over time.</p>
+            <div class="panels">
+                <div class="panel">
+                    <div class="panel-label">Raw document (what you have)</div>
+<span class="cmt">Anthropic's CoT prompting guide — 9,782 chars
+of prose, examples, and financial calculations.
+A model sees undifferentiated text.</span>
+
+### Why let Claude think?
+- **Accuracy:** Stepping through problems
+  reduces errors, especially in math, logic,
+  analysis, or generally complex tasks.
+- **Coherence:** Structured thinking leads to
+  more cohesive, well-organized responses.
+
+### Examples
+Best case (12% annually):
+  $10,000 * (1.12)^5 = $17,623.42
+Worst case (market crash):
+  Could lose 50% = $5,000
+
+Guaranteed: $10,000 * (1.06)^5 = $13,382.25
+
+I recommend Option B, the bond with a
+guaranteed 6% annual return.
+                </div>
+                <div class="panel accent">
+                    <div class="panel-label">Decomposed (what your model learns from)</div>
+<span class="cmt">10 units. Each one is a labeled training sample.</span>
+
+<span class="dim">Unit 3 &mdash; Why let Claude think?</span>
+<span class="dim">  authority: <span class="key">permissive</span></span>
+<span class="dim">  risk: informational  attention: <span class="num">0.1</span></span>
+<span class="dim">  irreducible: <span class="bool">false</span> &rarr; SUMMARIZABLE</span>
+<span class="dim">  <span class="cmt">&rarr; model can paraphrase this freely</span></span>
+
+<span class="hi">Unit 7 &mdash; Examples (financial analysis)</span>
+<span class="hi">  authority: <span class="key">informational</span></span>
+<span class="hi">  risk: <span class="str">financial</span>  attention: <span class="num">1.5</span></span>
+<span class="hi">  irreducible: <span class="bool">true</span> &rarr; PRESERVE_VERBATIM</span>
+<span class="hi">  financial: <span class="str">$10,000  $17,623.42  $13,382.25</span></span>
+<span class="hi">  <span class="str">&rarr; model must never alter these numbers</span></span>
+                </div>
+            </div>
+            <div class="legend">
+                <p><strong>irreducible: true</strong> &mdash; The financial calculations ($10,000 &times; 1.06^5 = $13,382.25) contain exact values. A model trained on this label learns: never paraphrase dollar amounts, formulas, or threshold values. This is how you prevent hallucinated numbers.</p>
+                <p><strong>irreducible: false</strong> &mdash; The "Why let Claude think?" section is advisory prose. A model trained on this label learns: safe to summarize, reword, or compress. This is how you save tokens without losing meaning.</p>
+                <p><strong>risk: financial</strong> &mdash; Decompose detected dollar amounts and investment calculations. A model fine-tuned on these labels learns to flag financial content for human review &mdash; even when the surrounding text looks like a tutorial.</p>
+                <p><strong>attention score</strong> &mdash; Unit 7 scores 1.5 (financial risk multiplier). Unit 3 scores 0.1 (permissive + informational). When building RAG or curriculum-weighted training, attention tells you which samples to oversample and which to skip.</p>
+            </div>
+            <div class="card-grid" style="margin-top: 32px;">
+                <div class="card">
+                    <div class="tag">Training</div>
+                    <h3>Curriculum Filtering</h3>
+                    <p>Use attention scores to weight training samples. High-attention units get oversampled. Informational filler gets downsampled. Your model learns to prioritize what matters.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Training</div>
+                    <h3>Instruction Tuning Pairs</h3>
+                    <p>Each unit is a natural (input, label) pair. Input: the raw text. Labels: authority, risk, actionable, irreducible. Fine-tune a model to classify documents the way decompose does.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Training</div>
+                    <h3>Irreducibility Guardrails</h3>
+                    <p>Units flagged PRESERVE_VERBATIM teach the model which content it must never paraphrase &mdash; exact figures, legal mandates, threshold values. This is how you stop hallucinated numbers.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Inference</div>
+                    <h3>Attention-Weighted RAG</h3>
+                    <p>Instead of stuffing entire documents into context, feed only units above your attention threshold. The model sees 1 unit instead of 10, with metadata explaining why it matters.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Inference</div>
+                    <h3>Structural Routing</h3>
+                    <p>heading_path gives your agent document topology without reading the whole thing. Route security units to a safety chain, financial units to an audit chain, informational units to /dev/null.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Inference</div>
+                    <h3>Zero-Cost Preprocessing</h3>
+                    <p>All of this runs locally in ~6ms per document. No API calls. No GPU. No tokens consumed. Structure your data before it ever touches a model.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <script>
     fetch('/benchmarks.json').then(r=>r.json()).then(b=>{
         document.getElementById('bench-avg-ms').textContent=b.avg_ms+'ms';
