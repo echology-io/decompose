@@ -108,9 +108,9 @@ cat document.md | decompose --compact
 ## Use as Library
 
 ```python
-from decompose import decompose
+from decompose import decompose_text
 
-result = decompose("The contractor shall provide all materials per ASTM C150-20.")
+result = decompose_text("The contractor shall provide all materials per ASTM C150-20.")
 
 for unit in result["units"]:
     print(f"[{unit['authority']}] [{unit['risk']}] {unit['text'][:60]}...")
