@@ -340,6 +340,8 @@ section:first-of-type { border-top: none; }
 .post-date { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 .post-title { font-size: 18px; font-weight: 700; color: var(--fg); margin: 6px 0; }
 .post-excerpt { font-size: 14px; color: var(--muted); }
+.post-item--upcoming { opacity: 0.55; }
+.post-item--upcoming:hover { opacity: 0.8; }
 
 /* ── Footer ───────────────────────────────────── */
 
