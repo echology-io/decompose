@@ -233,6 +233,8 @@ section:first-of-type { border-top: none; }
     line-height: 1.7;
 }
 .panel.accent { border-color: var(--accent); }
+.panel .dim { opacity: 0.35; }
+.panel .hi { color: var(--fg); font-weight: 500; }
 .panel-label {
     font-family: -apple-system, system-ui, sans-serif;
     font-size: 11px;
