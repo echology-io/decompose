@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "decompose"
+version = "0.1.0"
+description = "The missing cognitive primitive for AI agents. Structured intelligence from any text."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Kyle Vines", email = "kyle@echology.io" },
+]
+keywords = ["mcp", "ai", "agents", "decompose", "semantic", "structured", "intelligence"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "mcp>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.8",
+]
+
+[project.urls]
+Homepage = "https://echology.io/decompose"
+Repository = "https://github.com/echology-io/decompose"
+Issues = "https://github.com/echology-io/decompose/issues"
+
+[project.scripts]
+decompose = "decompose.cli:main"
+
+[project.entry-points."mcp.servers"]
+decompose = "decompose.mcp_server:serve"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/decompose"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B", "SIM", "TCH"]
+
+[tool.ruff.format]
+quote-style = "double"
