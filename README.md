@@ -90,7 +90,7 @@ Install the skill from ClawHub or configure directly:
 }
 ```
 
-Or install the skill: `openclaw skill install decompose-mcp`
+Or install the skill: `clawdhub install decompose-mcp`
 
 ## Use as CLI
 
@@ -149,6 +149,12 @@ The LLM is what *your agent* uses. Decompose makes whatever model you're running
 ## Built by Echology
 
 Decompose is extracted from [AECai](https://aecai.io), a document intelligence platform for Architecture, Engineering, and Construction firms. The classification patterns, entity extraction, and irreducibility detection are battle-tested against thousands of real AEC documents — specs, contracts, RFIs, inspection reports, pay applications.
+
+### Blog
+
+- [When Regex Beats an LLM](https://echology.io/blog/regex-beats-llm) — Decompose classifies the MCP spec in 3.78ms
+- [Why Your Agent Needs a Cognitive Primitive](https://echology.io/blog/cognitive-primitive) — attention scoring, irreducibility, and routing
+- [What "Simulation-Aware" Actually Means](https://echology.io/blog/simulation-aware) — the architecture behind AECai
 
 **License:** Proprietary — Copyright (c) 2025-2026 Echology, Inc.
 
