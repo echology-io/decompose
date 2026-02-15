@@ -1,0 +1,142 @@
+[
+  {
+    "file": "be_clear_and_direct.md",
+    "chars": 8869,
+    "words": 1207,
+    "avg_ms": 8.02,
+    "total_units": 7,
+    "authority_distribution": {
+      "informational": 6,
+      "permissive": 1
+    },
+    "risk_distribution": {
+      "informational": 6,
+      "financial": 1
+    },
+    "type_distribution": {
+      "informational": 5,
+      "definition": 1,
+      "narrative": 1
+    },
+    "standards_found": [],
+    "dates_found": [],
+    "high_attention_units": [],
+    "irreducible_units": [
+      {
+        "unit": 6,
+        "heading": "Examples",
+        "recommendation": "PRESERVE_VERBATIM",
+        "preview": "led Prompt |     | --- | --- | --- |     | User | Analyze this AcmeCloud outage report and summarize the key points.<br/"
+      }
+    ],
+    "summary": {
+      "actionable": 0,
+      "irreducible": 1,
+      "high_attention": 0,
+      "max_attention": 1.0
+    }
+  },
+  {
+    "file": "let_claude_think_CoT.md",
+    "chars": 9782,
+    "words": 1325,
+    "avg_ms": 8.82,
+    "total_units": 10,
+    "authority_distribution": {
+      "informational": 5,
+      "permissive": 4,
+      "directive": 1
+    },
+    "risk_distribution": {
+      "informational": 7,
+      "financial": 3
+    },
+    "type_distribution": {
+      "informational": 7,
+      "constraint": 3
+    },
+    "standards_found": [],
+    "dates_found": [],
+    "high_attention_units": [],
+    "irreducible_units": [
+      {
+        "unit": 7,
+        "heading": "Examples",
+        "recommendation": "PRESERVE_VERBATIM",
+        "preview": "### Examples    <section title=\"Example: Financial analysis without thinking\">      Without step-by-step thinking, Claud"
+      },
+      {
+        "unit": 8,
+        "heading": "Examples",
+        "recommendation": "PRESERVE_VERBATIM",
+        "preview": "ed when it's time to make the down payment. |    </section>   <section title=\"Example: Financial analysis with thinking\""
+      },
+      {
+        "unit": 9,
+        "heading": "Examples",
+        "recommendation": "PRESERVE_VERBATIM",
+        "preview": "* (1.06)^5 \u2248 \\$13,382.25<br/><br/>4. Consider risk tolerance:<br/>   - Goal is a house down payment (essential, not disc"
+      }
+    ],
+    "summary": {
+      "actionable": 1,
+      "irreducible": 3,
+      "high_attention": 0,
+      "max_attention": 2.2
+    }
+  },
+  {
+    "file": "overview.md",
+    "chars": 4977,
+    "words": 565,
+    "avg_ms": 3.85,
+    "total_units": 6,
+    "authority_distribution": {
+      "informational": 6
+    },
+    "risk_distribution": {
+      "informational": 6
+    },
+    "type_distribution": {
+      "narrative": 1,
+      "informational": 5
+    },
+    "standards_found": [],
+    "dates_found": [],
+    "high_attention_units": [],
+    "irreducible_units": [],
+    "summary": {
+      "actionable": 0,
+      "irreducible": 0,
+      "high_attention": 0,
+      "max_attention": 0.0
+    }
+  },
+  {
+    "file": "prompt_improver.md",
+    "chars": 5903,
+    "words": 819,
+    "avg_ms": 4.49,
+    "total_units": 10,
+    "authority_distribution": {
+      "informational": 9,
+      "directive": 1
+    },
+    "risk_distribution": {
+      "informational": 10
+    },
+    "type_distribution": {
+      "informational": 10
+    },
+    "standards_found": [],
+    "dates_found": [],
+    "high_attention_units": [],
+    "irreducible_units": [],
+    "summary": {
+      "actionable": 1,
+      "irreducible": 0,
+      "high_attention": 0,
+      "max_attention": 0.4
+    }
+  }
+]

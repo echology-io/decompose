@@ -1,0 +1,51 @@
+{
+  "generated": "2026-02-15T06:49:37.577447+00:00",
+  "docs": 4,
+  "total_chars": 29531,
+  "total_words": 3916,
+  "total_units": 33,
+  "avg_ms": 6.3,
+  "chars_per_ms": 1173,
+  "irreducible": 4,
+  "irreducible_pct": 12,
+  "actionable": 2,
+  "tests": 48,
+  "files": [
+    {
+      "file": "be_clear_and_direct.md",
+      "chars": 8869,
+      "words": 1207,
+      "units": 7,
+      "ms": 8.02,
+      "irreducible": 1,
+      "actionable": 0
+    },
+    {
+      "file": "let_claude_think_CoT.md",
+      "chars": 9782,
+      "words": 1325,
+      "units": 10,
+      "ms": 8.82,
+      "irreducible": 3,
+      "actionable": 1
+    },
+    {
+      "file": "overview.md",
+      "chars": 4977,
+      "words": 565,
+      "units": 6,
+      "ms": 3.85,
+      "irreducible": 0,
+      "actionable": 0
+    },
+    {
+      "file": "prompt_improver.md",
+      "chars": 5903,
+      "words": 819,
+      "units": 10,
+      "ms": 4.49,
+      "irreducible": 0,
+      "actionable": 1
+    }
+  ]
+}

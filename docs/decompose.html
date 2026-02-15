@@ -187,22 +187,22 @@ python -m decompose --serve
     <section>
         <div class="container">
             <p class="section-label">Benchmarks</p>
-            <p class="section-desc">Real numbers from the test suite. 5 documents, 15,683 characters, run on Apple Silicon.</p>
+            <p class="section-desc" id="bench-desc">Real numbers from the testing lab, run on Apple Silicon.</p>
             <div class="stats">
                 <div>
-                    <div class="stat-value">2.8ms</div>
+                    <div class="stat-value" id="bench-avg-ms">—</div>
                     <div class="stat-label">Avg per document</div>
                 </div>
                 <div>
-                    <div class="stat-value">1,132</div>
+                    <div class="stat-value" id="bench-throughput">—</div>
                     <div class="stat-label">Chars/ms throughput</div>
                 </div>
                 <div>
-                    <div class="stat-value">34</div>
-                    <div class="stat-label">Units from 5 docs</div>
+                    <div class="stat-value" id="bench-units">—</div>
+                    <div class="stat-label" id="bench-units-label">Units extracted</div>
                 </div>
                 <div>
-                    <div class="stat-value">56%</div>
+                    <div class="stat-value" id="bench-irr">—</div>
                     <div class="stat-label">Flagged irreducible</div>
                 </div>
                 <div>
@@ -210,12 +210,25 @@ python -m decompose --serve
                     <div class="stat-label">Compute cost</div>
                 </div>
                 <div>
-                    <div class="stat-value">48</div>
+                    <div class="stat-value" id="bench-tests">—</div>
                     <div class="stat-label">Passing tests</div>
                 </div>
             </div>
         </div>
     </section>
+
+    <script>
+    fetch('/benchmarks.json').then(r=>r.json()).then(b=>{
+        document.getElementById('bench-avg-ms').textContent=b.avg_ms+'ms';
+        document.getElementById('bench-throughput').textContent=b.chars_per_ms.toLocaleString();
+        document.getElementById('bench-units').textContent=b.total_units;
+        document.getElementById('bench-units-label').textContent='Units from '+b.docs+' docs';
+        document.getElementById('bench-irr').textContent=b.irreducible_pct+'%';
+        document.getElementById('bench-tests').textContent=b.tests;
+        document.getElementById('bench-desc').textContent=
+            b.docs+' documents, '+b.total_chars.toLocaleString()+' characters, run on Apple Silicon.';
+    }).catch(()=>{});
+    </script>
 
     <section>
         <div class="container container--narrow" style="text-align:center;">
