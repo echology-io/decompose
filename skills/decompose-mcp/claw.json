@@ -1,6 +1,6 @@
 {
   "name": "decompose-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Decompose any text into classified semantic units — authority, risk, attention, entities. No LLM. Deterministic.",
   "author": "echology-io",
   "license": "Proprietary",
