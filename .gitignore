@@ -24,3 +24,6 @@ htmlcov/
 docs/tests/
 lab/results.json
 LAUNCH.md
+marketing/.env
+marketing/marketing.db
+marketing/agent.log
