@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Classification Lands in Decompose v0.1.1 — Echology</title>
-    <meta name="description" content="Here's a question that comes up in every compliance review: which parts of this document contain security-relevant content?  Not "important" content. ...">
+    <meta name="description" content="Here's a question that comes up in every compliance review: which parts of this document carry security implications?  Not "which parts mention the wo...">
     <meta property="og:title" content="Security Classification Lands in Decompose v0.1.1 — Echology">
-    <meta property="og:description" content="Here's a question that comes up in every compliance review: which parts of this document contain security-relevant content?  Not "important" content. ...">
+    <meta property="og:description" content="Here's a question that comes up in every compliance review: which parts of this document carry security implications?  Not "which parts mention the wo...">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://echology.io/blog/security-classification-lands-in-decompose-v011">
     <meta property="article:published_time" content="2026-02-16">
@@ -47,6 +47,7 @@
                 <a href="/decompose">Decompose</a>
                 <a href="/blog" class="active">Blog</a>
                 <a href="/contact">Contact</a>
+                <a href="/pt/blog/" class="lang-toggle" title="Portugues">&#127463;&#127479;</a>
             </div>
         </div>
     </nav>
@@ -57,69 +58,106 @@
             <p class="sub"></p>
             <div class="post-meta">
                 <div class="date">February 16, 2026</div>
-                <div class="reading">2 min read</div>
+                <div class="reading">3 min read</div>
             </div>
         </div>
     </section>
 
     <section>
         <div class="container post-body">
-            <p>Here's a question that comes up in every compliance review: which parts of this document contain security-relevant content?</p>
+            <p>Here's a question that comes up in every compliance review: which parts of this document carry security implications?</p>
 
-            <p>Not "important" content. Not "high-priority" content. Security content. The sections that describe authentication flows, credential handling, access control, data exposure risks. The parts your security team needs to read before anything ships.</p>
+            <p>Not "which parts mention the word security." Which parts describe authentication flows, credential handling, transport encryption, or access control boundaries — the sections where a misreading has consequences beyond a confused user.</p>
 
-            <p>Most teams solve this one of two ways. They assign a human to read every document manually and tag the relevant sections. Or they send the whole document to an LLM and ask it to classify security risks. The first approach doesn't scale. The second gives you different answers on Tuesday than it gave you on Monday.</p>
+            <p>If you're building an AI system that processes technical specifications, security policies, or regulatory documents, this question isn't optional. It's the first thing an auditor asks.</p>
 
-            <h2>Decompose Now Classifies Security Risk</h2>
+            <h2>The Problem with LLM-Only Classification</h2>
 
-            <p>Starting with v0.1.1, Decompose ships a <code>security</code> risk category in its classification output. Every semantic unit gets scored. Deterministically. No model inference, no API call, no prompt engineering.</p>
+            <p>You can prompt an LLM to read a document and flag security-relevant sections. It will do a reasonable job. It will also take 2-10 seconds per document, cost you API credits on every call, and — critically — give you different results on Tuesday than it gave you on Monday.</p>
+
+            <p>That's fine for summarization. It's not fine for security classification. When your pipeline flags a section as security-critical, you need to explain why. "The model thought so" doesn't survive a SOC 2 audit.</p>
+
+            <h2>What Changed in v0.1.1</h2>
+
+            <p>Decompose now includes <code>security</code> as a first-class risk category in its classification output. Every semantic unit returned by <code>decompose_text()</code> gets scored across risk dimensions — and security is now one of them.</p>
 
 <div class="code-block">from decompose import decompose_text
 
-result = decompose_text("""
-All API tokens must be rotated every 90 days. Tokens that exceed
-this period will be automatically revoked. Service accounts using
-static credentials are exempt from rotation but require quarterly
-access reviews.
-""")
+text = """
+All MCP transport implementations MUST use TLS 1.2 or higher
+for network connections. Certificate validation MUST NOT be
+disabled in production environments. Authentication tokens
+SHOULD be rotated every 24 hours and MUST be transmitted
+only over encrypted channels.
+"""
 
+result = decompose_text(text)
 for unit in result["units"]:
-    print(f"[risk={unit['risk_score']:.2f}] [{unit['category']}] {unit['text'][:80]}")</div>
+    print(f"Risk: {unit['risk_score']}  Security: {unit.get('security', 0)}")
+    print(f"  {unit['text'][:80]}...")</div>
 
-            <p>The output is the same every time you run it. Same input, same units, same scores, same classifications. No temperature knob. No stochastic variation. The <code>security</code> category now sits alongside the existing risk categories, giving you a structured way to filter, route, and prioritize document sections before any LLM touches them.</p>
+            <p>No API key. No network call. No GPU. The classification runs in single-digit milliseconds on commodity hardware, and it returns the same result every time you run it.</p>
 
-            <h2>What This Looks Like in Practice</h2>
+            <h2>How It Works</h2>
 
-            <p>Feed Decompose a 40-page security policy. It splits the document into semantic units, classifies each one, and flags the sections that deal with authentication, authorization, credential management, and data exposure. Your downstream system — whether that's Claude, GPT-4, or a human reviewer — gets a pre-filtered, pre-classified feed instead of a raw document dump.</p>
+            <p>Decompose uses deterministic pattern matching — regex-based classification against a structured rule set. It identifies RFC 2119 keywords (MUST, SHALL, SHOULD), maps them to authority levels, and scores risk across categories including the new security dimension.</p>
 
-<div class="code-block">security_units = [u for u in result["units"] if u.get("category") == "security"]
-print(f"Found {len(security_units)} security-relevant sections")</div>
+            <p>The security classifier catches:</p>
 
-            <p>This is mechanical work. Pattern matching against known structures. Decompose handles it in single-digit milliseconds so your LLM budget goes toward the parts that actually require reasoning.</p>
+            <ul>
+                <li>Transport and encryption requirements (TLS, certificate validation)</li>
+
+            <ul>
+                <li>Authentication and credential handling patterns</li>
+
+            <ul>
+                <li>Access control and authorization boundaries</li>
+
+            <ul>
+                <li>Data protection and privacy constraints</li>
+
+            <ul>
+                <li>Audit and logging requirements</li>
+
+            <p>Each unit gets a numeric risk score. Units with security implications surface with higher scores. Your downstream system — whether that's an LLM, a rules engine, or a human reviewer — gets a pre-sorted, pre-classified feed instead of a raw wall of text.</p>
 
             <h2>What It Cannot Do</h2>
 
-            <p>Decompose doesn't understand whether a security policy is *good*. It can tell you that a section describes credential rotation. It cannot tell you whether 90-day rotation is sufficient for your threat model, whether the exemption for service accounts creates an unacceptable risk, or whether the quarterly review cadence meets SOC 2 requirements.</p>
+            <p>Decompose doesn't understand context. It doesn't know whether TLS 1.2 is sufficient for your threat model or whether 24-hour token rotation is too aggressive for your infrastructure. It can't tell you that a particular authentication scheme has a known vulnerability, or that two sections contradict each other in ways that create a security gap.</p>
 
-            <p>That's domain reasoning. You need an LLM or a human for that. The point is that Decompose strips away the mechanical classification work so the expensive, slow, intelligent system can focus on judgment calls instead of parsing.</p>
+            <p>That's domain reasoning. An LLM or a human expert handles that.</p>
+
+            <p>Decompose handles the mechanical layer: splitting the document into semantic units, classifying each one, scoring risk, and extracting entities. It gives your LLM a structured, deterministic foundation so the LLM can focus on nuance and cross-referencing instead of parsing.</p>
+
+            <h2>Why This Matters</h2>
+
+            <p>Every AI document pipeline has the same architecture problem. You need deterministic, reproducible preprocessing before you get to the probabilistic reasoning layer. Security classification makes this sharper — because security-relevant sections are exactly the sections where you need an audit trail, where you need reproducibility, and where "the model said so" is the wrong answer.</p>
+
+            <p>If your system processes specs, contracts, policies, or regulatory filings and someone asks "why did it flag this section as security-critical?" — you can point to the rule that matched, the pattern that triggered, and the score that resulted. Deterministically. Every time.</p>
 
             <h2>Also in This Release</h2>
 
-            <p><strong>ClawHub marketplace listing.</strong> Decompose v0.1.1 is published to ClawHub, so you can install it directly from the marketplace alongside your other MCP servers.</p>
+            <ul>
+                <li>Published to the ClawHub marketplace — install directly from OpenClaw</li>
 
-            <p><strong>Updated documentation.</strong> README and SKILL.md now link to blog posts. All site pages carry Open Graph and Twitter Card meta tags, so links to echology.io render properly when shared.</p>
+            <ul>
+                <li>Added CONTRIBUTING.md and LICENSE (BSD 3-Clause)</li>
 
-            <h2>Why Deterministic Classification Matters for Security</h2>
+            <ul>
+                <li>Open Graph and Twitter Card meta tags across all site pages</li>
 
-            <p>If your AI system processes security documents and someone asks "why did it flag this section?" — you need a reproducible answer. "The model thought it looked security-relevant" is not an audit trail. A deterministic classifier that produces identical output on identical input is.</p>
+            <ul>
+                <li>Blog post links in README and SKILL.md</li>
 
-            <p>This is the difference between a system you can debug and a system you can only re-run and hope. In regulated industries — construction, healthcare, finance — document classification decisions carry liability. The classification layer should be the part of your stack you never have to wonder about.</p>
+            <p>44 files changed across 31 commits. The full diff is on GitHub.</p>
 
             <h2>Try It</h2>
 
+            <p>Install from PyPI:</p>
+
 <div class="code-block">pip install decompose-mcp==0.1.1</div>
 
-            <p>As an MCP server:</p>
+            <p>Or add it as an MCP server for Claude Code, Cursor, or any MCP-compatible client:</p>
 
 <div class="code-block">{
   "mcpServers": {
