@@ -3,7 +3,7 @@
   "version": "0.1.2",
   "description": "Decompose any text into classified semantic units — authority, risk, attention, entities. No LLM. Deterministic.",
   "author": "echology-io",
-  "license": "Proprietary",
+  "license": "MIT",
   "permissions": ["network"],
   "entry": "SKILL.md",
   "tags": ["mcp", "nlp", "document-intelligence", "classification", "preprocessing"],
