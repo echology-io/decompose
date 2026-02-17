@@ -56,6 +56,20 @@ CHANNEL: Blog post for echology.io/blog
 - Include code examples that prove points
 - Use specific numbers from the release/diff
 """,
+    "blog_pt": """\
+CHANNEL: Blog post for echology.io/pt/blog (PORTUGUESE TRANSLATION)
+- Write the ENTIRE post in Brazilian Portuguese (pt-BR)
+- Same structure as the English blog: problem opening, tool introduction,
+  code examples, limitations, broader thesis, try-it section
+- Full-length technical post (800-1500 words)
+- Output as clean text/markdown (will be wrapped in HTML template)
+- Keep code blocks and terminal commands in English (they are code)
+- Translate all prose, headings, and explanations to natural pt-BR
+- Do NOT transliterate — write as a native speaker would
+- Use specific numbers from the release/diff
+- First line must be the translated title
+- Second line must be a short translated subtitle
+""",
     "newsletter": """\
 CHANNEL: Newsletter edition
 - Subject line: under 6 words, lowercase, no punctuation
