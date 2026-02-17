@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quando Sua IA Não Consegue Explicar Por Que Marcou um Documento — Echology</title>
+    <meta name="description" content="Classificação de segurança chega ao Decompose v0.1.1 — determinística, local, sem LLM.">
+    <meta property="og:title" content="Quando Sua IA Não Consegue Explicar Por Que Marcou um Documento — Echology">
+    <meta property="og:description" content="Classificação de segurança chega ao Decompose v0.1.1 — determinística, local, sem LLM.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://echology.io/pt/blog/quando-sua-ia-no-consegue-explicar-por-que-marcou-um-documento">
+    <meta property="article:published_time" content="2026-02-17">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+        .post-body { max-width: 720px; margin: 0 auto; }
+        .post-body h2 { font-size: 24px; font-weight: 700; margin: 48px 0 16px; letter-spacing: -0.3px; }
+        .post-body h3 { font-size: 18px; font-weight: 700; margin: 32px 0 12px; }
+        .post-body p { font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 20px; }
+        .post-body p strong { color: var(--fg); }
+        .post-body p code { background: var(--code-bg); padding: 2px 6px; border-radius: 3px; font-size: 14px; color: var(--accent); }
+        .post-body blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 12px 20px;
+            margin: 24px 0;
+            background: var(--code-bg);
+            border-radius: 0 6px 6px 0;
+        }
+        .post-body blockquote p { color: var(--fg); margin: 0; font-size: 15px; }
+        .post-body ul, .post-body ol { color: var(--muted); font-size: 16px; line-height: 1.75; margin-bottom: 20px; padding-left: 24px; }
+        .post-body li { margin-bottom: 8px; }
+        .post-body .code-block { margin: 24px 0; }
+        .post-meta { text-align: center; margin-bottom: 48px; }
+        .post-meta .date { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+        .post-meta .reading { font-size: 13px; color: var(--muted); margin-top: 4px; }
+        .post-body a { text-decoration: underline; text-underline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/pt/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/aecai">AECai</a>
+                <a href="/pt/decompose">Decompose</a>
+                <a href="/pt/blog" class="active">Blog</a>
+                <a href="/pt/contato">Contato</a>
+                <a href="/blog/when-your-ai-cant-explain-why-it-flagged-a-document" class="lang-toggle" title="English">&#127482;&#127480;</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container container--narrow">
+            <h1>Quando Sua IA Não Consegue<br><span>Explicar Por Que Marcou um Documento</span></h1>
+            <p class="sub">Classificação de segurança chega ao Decompose v0.1.1 — determinística, local, sem LLM.</p>
+            <div class="post-meta">
+                <div class="date">17 de fevereiro de 2026</div>
+                <div class="reading">2 min de leitura</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container post-body">
+            <p>---</p>
+
+            <p>Aqui vai um cenário real. Seu pipeline de IA processa um documento de 200 páginas — um memorial descritivo de engenharia, um contrato, uma especificação técnica. A IA marca o documento como "sensível". Você pergunta: por quê? A resposta: um score de confiança. 0.82. Sem rastreabilidade. Sem justificativa reproduzível.</p>
+
+            <p>Você roda de novo. Agora é 0.79. Mesmo documento. Mesmo modelo. Resultado diferente.</p>
+
+            <p>Isso não é uma ferramenta. Isso é um cara-ou-coroa.</p>
+
+            <h2>O problema com classificação probabilística</h2>
+
+            <p>Quando você precisa classificar documentos em ambientes de alta confiança — jurídico, engenharia, compliance — a pergunta nunca é "qual o score?". A pergunta é: "por que essa unidade foi classificada assim, e eu consigo reproduzir esse resultado amanhã?"</p>
+
+            <p>Modelos de linguagem não respondem essa pergunta. Eles geram probabilidades. Rodam em GPU. Custam por token. E o pior: o resultado muda entre chamadas.</p>
+
+            <h2>Decompose v0.1.1: classificação de segurança determinística</h2>
+
+            <p>Na versão 0.1.1 do Decompose, adicionei a categoria <code>security</code> à saída de classificação. Cada unidade semântica do texto agora recebe uma avaliação de risco de segurança — sem LLM, sem API key, sem GPU.</p>
+
+            <p>Uma chamada de função. Resultado idêntico toda vez.</p>
+
+<div class="code-block">from decompose import decompose_text
+
+result = decompose_text(
+    "Access credentials for the production database are stored in /etc/secrets/db.key. "
+    "The root password was last rotated on 2024-01-15."
+)
+
+for unit in result:
+    print(f"[{unit['classification']}] risk={unit['risk_score']} | {unit['text'][:80]}")</div>
+
+            <p>A saída classifica cada unidade semântica com categoria, nível de autoridade e score de risco. A categoria <code>security</code> captura referências a credenciais, chaves, endpoints internos, configurações sensíveis — tudo que um pipeline de compliance precisa rastrear.</p>
+
+            <p>Determinístico. Mesmo input, mesma saída. Sempre.</p>
+
+            <h2>O que mudou na v0.1.1</h2>
+
+            <p>31 commits. 44 arquivos modificados. As mudanças principais:</p>
+
+            <ul>
+                <li>**Categoria `security` na classificação**: nova dimensão de risco aplicada a cada unidade semântica</li>
+
+            <ul>
+                <li>**Publicação no ClawHub marketplace**: instalação direta via OpenClaw</li>
+
+            <ul>
+                <li>**CONTRIBUTING.md e LICENSE**: o projeto agora tem guia de contribuição e licença formal</li>
+
+            <ul>
+                <li>**Open Graph e Twitter Card meta tags**: todas as páginas do site com preview social</li>
+
+            <ul>
+                <li>**Documentação atualizada**: links para blog posts no README e SKILL.md</li>
+
+            <h2>O que o Decompose não faz</h2>
+
+            <p>Vou ser direto. O Decompose não entende contexto semântico profundo. Ele não infere que uma frase sobre "rotação de credenciais" implica risco operacional para um sistema específico. Ele classifica padrões estruturais no texto — não faz raciocínio causal.</p>
+
+            <p>Se você precisa de inferência contextual, precisa de um LLM. Se precisa de classificação reproduzível, rápida e auditável, o Decompose resolve.</p>
+
+            <p>São problemas diferentes. Use a ferramenta certa para cada um.</p>
+
+            <h2>Por que classificação determinística importa</h2>
+
+            <p>Em indústrias reguladas, auditabilidade não é feature — é requisito. Quando um auditor pergunta "por que esse documento foi classificado como sensível?", a resposta precisa ser rastreável até uma regra, não até um peso estatístico em uma rede neural de 70 bilhões de parâmetros.</p>
+
+            <p>O Decompose decompõe texto em unidades semânticas e classifica cada uma com categorias, scores de risco, entidades extraídas e flags de irredutibilidade. Tudo local. Tudo determinístico. Sem chamada de rede.</p>
+
+            <p>Isso significa que você pode rodar em ambientes air-gapped. Pode integrar em pipelines CI/CD. Pode versionar os resultados no git e comparar diffs entre releases de um documento.</p>
+
+            <h2>Instale e teste</h2>
+
+<div class="code-block">pip install decompose-mcp==0.1.1</div>
+
+            <p>Para usar como servidor MCP (compatível com Claude, Cursor e outros clientes):</p>
+
+<div class="code-block">{
+  "mcpServers": {
+    "decompose": {
+      "command": "uvx",
+      "args": ["decompose-mcp", "--serve"]
+    }
+  }
+}</div>
+
+            <p>Ou direto no Python:</p>
+
+<div class="code-block">from decompose import decompose_text
+
+units = decompose_text("Seu texto aqui.")
+print(units)</div>
+
+            <p>Código aberto. Sem API key. Sem GPU. Uma função.</p>
+
+            <p>GitHub: [github.com/echology-io/decompose](https://github.com/echology-io/decompose)</p>
+
+            <p>PyPI: [decompose-mcp](https://pypi.org/project/decompose-mcp/)</p>
+
+            <p>Site: [echology.io](https://echology.io)</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/contato">Contato</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
