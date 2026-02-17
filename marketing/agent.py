@@ -118,6 +118,7 @@ def _process_channel(event: ShippingEvent, channel: str, event_db_id: int,
                 description=excerpt[:200],
                 shipping_event_id=event_db_id,
                 slug=en_slug,
+                markdown=content,
             )
             log.info(f"Blog EN written: {url}")
 
@@ -140,6 +141,7 @@ def _process_channel(event: ShippingEvent, channel: str, event_db_id: int,
                 description_pt=excerpt_pt[:200],
                 shipping_event_id=event_db_id,
                 slug_pt=pt_slug, en_slug=en_slug,
+                markdown=content,
             )
             log.info(f"Blog PT written: {url_pt}")
 

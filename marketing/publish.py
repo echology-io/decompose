@@ -191,6 +191,7 @@ def commit_blog_post(
     h1_line1: str | None = None,
     h1_line2: str | None = None,
     pt_slug: str = "",
+    markdown: str = "",
 ) -> str:
     """Write EN blog HTML, update EN index. Does NOT commit/push (done after PT)."""
     if not slug:
@@ -219,6 +220,11 @@ def commit_blog_post(
 
     post_path = BLOG_DIR / f"{slug}.html"
     post_path.write_text(html)
+
+    # Write markdown source
+    if markdown:
+        md_path = BLOG_DIR / f"{slug}.md"
+        md_path.write_text(markdown)
 
     # Update EN blog index
     index_html = BLOG_INDEX.read_text()
@@ -259,6 +265,7 @@ def commit_blog_post_pt(
     en_slug: str,
     h1_line1: str | None = None,
     h1_line2: str | None = None,
+    markdown: str = "",
 ) -> str:
     """Write PT blog HTML, update PT index. Does NOT commit/push (done by agent)."""
     if not h1_line1:
@@ -285,6 +292,11 @@ def commit_blog_post_pt(
 
     post_path = PT_BLOG_DIR / f"{slug_pt}.html"
     post_path.write_text(html)
+
+    # Write markdown source
+    if markdown:
+        md_path = PT_BLOG_DIR / f"{slug_pt}.md"
+        md_path.write_text(markdown)
 
     # Update PT blog index
     index_html = PT_BLOG_INDEX.read_text()
@@ -319,8 +331,10 @@ def commit_and_push_blog(en_slug: str, pt_slug: str, title: str):
     """Commit all blog changes (EN + PT) and push."""
     files = [
         str(BLOG_DIR / f"{en_slug}.html"),
+        str(BLOG_DIR / f"{en_slug}.md"),
         str(BLOG_INDEX),
         str(PT_BLOG_DIR / f"{pt_slug}.html"),
+        str(PT_BLOG_DIR / f"{pt_slug}.md"),
         str(PT_BLOG_INDEX),
     ]
     subprocess.run(["git", "add"] + files, cwd=str(ROOT_DIR), capture_output=True)
