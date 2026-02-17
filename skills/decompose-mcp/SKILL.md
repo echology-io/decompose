@@ -1,7 +1,6 @@
 ---
 name: decompose-mcp
 description: Decompose any text into classified semantic units — authority, risk, attention, entities. No LLM. Deterministic.
-homepage: https://echology.io/decompose
 metadata: {"clawdbot":{"emoji":"🧩","requires":{"anyBins":["python3","python"]},"install":[{"id":"pip","kind":"uv","pkg":"decompose-mcp","bins":["decompose"],"label":"Install decompose-mcp (pip/uv)"}]}}
 ---
 
