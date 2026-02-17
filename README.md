@@ -132,6 +132,72 @@ for unit in result["units"]:
 
 ---
 
+## What to Build With This
+
+Decompose is not the destination. It's the step before the LLM that most developers skip — not because it's hard, but because nobody showed them it exists. Documents have structure. That structure is classifiable. And classification should happen before reasoning.
+
+```
+Without:  document → chunk → embed → retrieve → LLM → answer  (100% of tokens)
+With:     document → decompose → filter/route → LLM → answer  (20-40% of tokens)
+```
+
+### Filter: attention-weighted RAG
+
+Only embed what matters. Drop the boilerplate before it reaches your vector store.
+
+```python
+from decompose import decompose_text
+
+result = decompose_text(open("contract.md").read())
+
+for unit in result["units"]:
+    if unit["attention"] >= 2.0:
+        embed_and_store(unit["text"], metadata={
+            "authority": unit["authority"],
+            "risk": unit["risk"],
+            "attention": unit["attention"],
+        })
+    # Low-attention units never enter the vector store.
+    # Your retrieval gets more relevant. Your LLM sees less noise.
+```
+
+### Route: risk-based processing
+
+Safety-critical content goes to one chain. Financial content goes to another. Boilerplate gets skipped.
+
+```python
+from decompose import decompose_text
+
+result = decompose_text(spec_text)
+
+for unit in result["units"]:
+    if unit["risk"] == "safety_critical":
+        safety_chain.process(unit)       # Full analysis + human review
+    elif unit["risk"] == "financial":
+        audit_chain.process(unit)         # Flag for finance team
+    elif unit["attention"] < 0.5:
+        pass                              # Skip boilerplate
+    else:
+        general_chain.process(unit)       # Standard LLM analysis
+```
+
+### Measure: token cost reduction
+
+```python
+from decompose import decompose_text
+
+result = decompose_text(spec_text)
+total = len(result["units"])
+high = [u for u in result["units"] if u["attention"] >= 1.0]
+
+print(f"{len(high)}/{total} units need LLM analysis")
+print(f"{100 - len(high) * 100 // total}% token reduction")
+```
+
+See [`examples/`](examples/) for runnable scripts.
+
+---
+
 ## Why No LLM?
 
 Decompose runs on pure regex and heuristics. No Ollama, no API key, no GPU, no inference cost.
@@ -150,12 +216,14 @@ The LLM is what *your agent* uses. Decompose makes whatever model you're running
 
 Decompose is extracted from [AECai](https://aecai.io), a document intelligence platform for Architecture, Engineering, and Construction firms. The classification patterns, entity extraction, and irreducibility detection are battle-tested against thousands of real AEC documents — specs, contracts, RFIs, inspection reports, pay applications.
 
+Free, MIT-licensed, and designed as the on-ramp to understanding document intelligence architecture.
+
 ### Blog
 
 - [When Regex Beats an LLM](https://echology.io/blog/regex-beats-llm) — Decompose classifies the MCP spec in 3.78ms
 - [Why Your Agent Needs a Cognitive Primitive](https://echology.io/blog/cognitive-primitive) — attention scoring, irreducibility, and routing
 - [What "Simulation-Aware" Actually Means](https://echology.io/blog/simulation-aware) — the architecture behind AECai
 
-**License:** Proprietary — Copyright (c) 2025-2026 Echology, Inc.
+**License:** MIT — Copyright (c) 2025-2026 Echology, Inc.
 
 **Philosophy:** All intelligence begins with decomposition.

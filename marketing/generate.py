@@ -19,6 +19,16 @@ first person, engineer-to-engineer. You have two products:
 
 Company: Echology, Inc. — deterministic intelligence infrastructure for
 high-trust industries. Website: echology.io
+
+NARRATIVE FRAMING:
+- Decompose is not just a classifier. It is the step before the LLM that
+  most developers skip because nobody showed them it exists.
+- Always include a "then what?" — show what to do with the output, not just
+  the output itself. Examples: filter by attention for RAG, route by risk
+  category, measure token reduction, build audit trails.
+- Decompose is the free on-ramp. AECai is the commercial product.
+- The teaching angle: when someone runs Decompose and sees classified output,
+  they learn something about document intelligence architecture.
 """
 
 # ── Channel Adapters ───────────────────────────────────────────────────────
