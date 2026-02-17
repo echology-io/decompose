@@ -22,5 +22,17 @@
     "type": "authority_statement",
     "text": "If your AI system processes documents and someone asks 'why did it flag this section as safety-critical?' — what do you answer? 'The model said so' is not an answer. Not in construction. Not in healthcare. Not in any industry where documents have legal weight and wrong answers have professional liability.",
     "note": "Rhetorical question, then a blunt dismissal. Repetition ('Not in X. Not in Y.') for emphasis. Grounds the argument in professional liability, not abstract quality."
+  },
+  {
+    "source": "brand-refresh",
+    "type": "pipeline_narrative",
+    "text": "Classification is not the destination. Here's what happens next: units with attention >= 2.0 go to the LLM. Units marked PRESERVE_VERBATIM get stored as-is. Everything else gets skipped. Three lines of code. 70% token reduction.",
+    "note": "Shows the 'then what?' pattern. Classification leads to action, not just output. Specific numbers. Concrete steps."
+  },
+  {
+    "source": "brand-refresh",
+    "type": "teaching_moment",
+    "text": "When you run Decompose on a document and see 47 units with attention scores from 0.0 to 8.0, something clicks. Documents have structure. That structure is classifiable. And classification should happen before reasoning. This is the architectural insight most developers are missing — not because it's hard, but because nobody showed them.",
+    "note": "The teaching narrative. Not 'here is a tool' but 'here is an understanding.' The last sentence frames it as a gap in education, not intelligence."
   }
 ]
