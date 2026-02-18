@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- English pages -->
+  <url>
+    <loc>https://echology.io/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://echology.io/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://echology.io/pt/" />
+  </url>
+  <url>
+    <loc>https://echology.io/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://echology.io/about" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://echology.io/pt/sobre" />
+  </url>
+  <url>
+    <loc>https://echology.io/decompose</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://echology.io/decompose" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://echology.io/pt/decompose" />
+  </url>
+  <url>
+    <loc>https://echology.io/aecai</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://echology.io/aecai" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://echology.io/pt/aecai" />
+  </url>
+  <url>
+    <loc>https://echology.io/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://echology.io/blog" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://echology.io/pt/blog" />
+  </url>
+  <url>
+    <loc>https://echology.io/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://echology.io/contact" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://echology.io/pt/contato" />
+  </url>
+
+  <!-- Blog posts (EN) -->
+  <url>
+    <loc>https://echology.io/blog/regex-beats-llm</loc>
+    <lastmod>2026-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://echology.io/blog/regex-beats-llm" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://echology.io/pt/blog/regex-ganha-de-llm" />
+  </url>
+  <url>
+    <loc>https://echology.io/blog/cognitive-primitive</loc>
+    <lastmod>2026-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://echology.io/blog/cognitive-primitive" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://echology.io/pt/blog/primitivo-cognitivo" />
+  </url>
+  <url>
+    <loc>https://echology.io/blog/simulation-aware</loc>
+    <lastmod>2026-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://echology.io/blog/simulation-aware" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://echology.io/pt/blog/consciente-de-simulacao" />
+  </url>
+
+  <!-- Portuguese pages -->
+  <url>
+    <loc>https://echology.io/pt/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://echology.io/pt/sobre</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://echology.io/pt/decompose</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://echology.io/pt/aecai</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://echology.io/pt/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://echology.io/pt/contato</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://echology.io/pt/blog/regex-ganha-de-llm</loc>
+    <lastmod>2026-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://echology.io/pt/blog/primitivo-cognitivo</loc>
+    <lastmod>2026-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://echology.io/pt/blog/consciente-de-simulacao</loc>
+    <lastmod>2026-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+</urlset>

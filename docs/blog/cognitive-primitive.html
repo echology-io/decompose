@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Your Agent Needs a Cognitive Primitive — Echology</title>
+    <meta name="description" content="LLMs are good at reasoning. They're bad at reading. Decompose gives your agent structure before it starts thinking — and that changes everything.">
+    <meta property="og:title" content="Why Your Agent Needs a Cognitive Primitive — Echology">
+    <meta property="og:description" content="Safety scored 8.0. Background scored 0.1. Your agent now knows which 30% to read and which 70% to skip.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://echology.io/blog/cognitive-primitive">
+    <meta property="article:published_time" content="2026-02-15">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-body { max-width: 720px; margin: 0 auto; }
+        .post-body h2 { font-size: 24px; font-weight: 700; margin: 48px 0 16px; letter-spacing: -0.3px; }
+        .post-body h3 { font-size: 18px; font-weight: 700; margin: 32px 0 12px; }
+        .post-body p { font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 20px; }
+        .post-body p strong { color: var(--fg); }
+        .post-body p code { background: var(--code-bg); padding: 2px 6px; border-radius: 3px; font-size: 14px; color: var(--accent); }
+        .post-body blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 12px 20px;
+            margin: 24px 0;
+            background: var(--code-bg);
+            border-radius: 0 6px 6px 0;
+        }
+        .post-body blockquote p { color: var(--fg); margin: 0; font-size: 15px; }
+        .post-body ul, .post-body ol { color: var(--muted); font-size: 16px; line-height: 1.75; margin-bottom: 20px; padding-left: 24px; }
+        .post-body li { margin-bottom: 8px; }
+        .post-body .code-block { margin: 24px 0; }
+        .post-body .panels { margin: 32px 0; }
+        .post-meta { text-align: center; margin-bottom: 48px; }
+        .post-meta .date { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+        .post-meta .reading { font-size: 13px; color: var(--muted); margin-top: 4px; }
+        .inline-stat { display: inline-block; font-weight: 800; color: var(--accent); }
+        .post-body a { text-decoration: underline; text-underline-offset: 2px; }
+        .attention-bar { display: flex; align-items: center; gap: 12px; margin: 8px 0; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; }
+        .attention-bar .bar { height: 6px; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
+        .attention-bar .bar-bg { flex: 1; max-width: 200px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .attention-bar .label { color: var(--muted); min-width: 180px; }
+        .attention-bar .score { color: var(--accent); font-weight: 700; min-width: 32px; text-align: right; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/about">About</a>
+                <a href="/aecai">AECai</a>
+                <a href="/decompose">Decompose</a>
+                <a href="/blog" class="active">Blog</a>
+                <a href="/contact">Contact</a>
+                <a href="/pt/blog/primitivo-cognitivo" class="lang-toggle" title="Portugues">&#127463;&#127479;</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container container--narrow">
+            <h1>Why Your Agent Needs<br><span>a Cognitive Primitive</span></h1>
+            <p class="sub">LLMs are good at reasoning. They're bad at reading.</p>
+            <div class="post-meta">
+                <div class="date">February 15, 2026</div>
+                <div class="reading">10 min read</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container post-body">
+
+            <p>Here's a six-section construction specification. Your agent needs to read it and figure out what matters. Go:</p>
+
+            <div class="code-block">
+<span class="cmt">## 1. Scope of Work</span>
+The Contractor shall provide all labor, materials...
+per ACI 318-19 and ASTM C150-22.
+
+<span class="cmt">## 2. General Information</span>
+This project is located at the corner of Main Street...
+The architect of record is Smith & Associates.
+
+<span class="cmt">## 3. Structural Requirements</span>
+Maximum allowable soil bearing pressure shall not
+exceed 4,000 psf... ASTM A615, Grade 60.
+
+<span class="cmt">## 4. Safety Requirements</span>
+All work shall comply with OSHA 1926 safety standards.
+Workers must wear hard hats, safety glasses...
+
+<span class="cmt">## 5. Payment Terms</span>
+Retainage of 10%... Liquidated damages of $2,500
+per calendar day...
+
+<span class="cmt">## 6. Background</span>
+For reference, similar projects in the region have
+typically required 8-12 months for foundation work.
+            </div>
+
+            <p>A raw LLM will read all six sections with equal attention. It will spend the same amount of compute on "The architect of record is Smith &amp; Associates" as it does on "Liquidated damages of $2,500 per calendar day." It will treat the background section with the same importance as the safety section.</p>
+
+            <p>This is the fundamental problem. <strong>Your agent reads everything equally because it has no structure to tell it what matters.</strong></p>
+
+            <h2>What a cognitive primitive is</h2>
+
+            <p>A CPU doesn't reason about data. It has primitives: ADD, COMPARE, LOAD, STORE. High-level thinking is composed from these low-level operations.</p>
+
+            <p>AI agents work the same way. Your orchestration layer &mdash; LangChain, CrewAI, raw API calls, whatever &mdash; composes from primitives. The usual ones: retrieve, summarize, generate, classify. But there's one missing from the stack.</p>
+
+            <blockquote><p>Decomposition: splitting raw text into classified, prioritized semantic units before reasoning begins.</p></blockquote>
+
+            <p>This isn't summarization. Summarization loses information. It's not retrieval. Retrieval requires a query. It's not classification in the ML sense. There's no model, no training data, no probabilities.</p>
+
+            <p>It's <strong>structural analysis</strong>. The same document goes in. Classified units come out. Every time. In 4 milliseconds.</p>
+
+            <h2>What decomposition looks like</h2>
+
+            <p>That six-section spec above? One function call:</p>
+
+            <div class="code-block">
+<span class="key">from</span> decompose <span class="key">import</span> decompose_text
+result = decompose_text(spec_text)   <span class="cmt"># ~14ms avg, 6 units</span>
+            </div>
+
+            <p>Here's what your agent sees instead of 2,045 characters of raw text:</p>
+
+            <div class="attention-bar"><span class="label">4. Safety Requirements</span><div class="bar-bg"><div class="bar" style="width: 80%;"></div></div><span class="score">8.0</span></div>
+            <div class="attention-bar"><span class="label">5. Payment Terms</span><div class="bar-bg"><div class="bar" style="width: 30%;"></div></div><span class="score">3.0</span></div>
+            <div class="attention-bar"><span class="label">1. Scope of Work</span><div class="bar-bg"><div class="bar" style="width: 20%;"></div></div><span class="score">2.0</span></div>
+            <div class="attention-bar"><span class="label">3. Structural Requirements</span><div class="bar-bg"><div class="bar" style="width: 6%;"></div></div><span class="score">0.6</span></div>
+            <div class="attention-bar"><span class="label">2. General Information</span><div class="bar-bg"><div class="bar" style="width: 4%;"></div></div><span class="score">0.4</span></div>
+            <div class="attention-bar"><span class="label">6. Background</span><div class="bar-bg"><div class="bar" style="width: 1%;"></div></div><span class="score">0.1</span></div>
+
+            <p>Section 4 scored <span class="inline-stat">8.0</span>. Section 6 scored <span class="inline-stat">0.1</span>. Your agent now knows which 30% of the document to send to the LLM and which 70% to skip.</p>
+
+            <h3>Why Safety scored 8.0</h3>
+
+            <p>Four words triggered it: <code>shall</code> (mandatory authority), <code>must</code> (mandatory), <code>required</code> (mandatory), and <code>comply</code> (compliance risk). The attention formula is straightforward:</p>
+
+            <div class="code-block">
+authority_weight = <span class="num">1.0</span>   <span class="cmt"># mandatory: 4 pattern matches</span>
+risk_multiplier  = <span class="num">2.0</span>   <span class="cmt"># compliance category</span>
+attention = min(<span class="num">10.0</span>, auth_score &times; risk_mult)
+         = min(<span class="num">10.0</span>, <span class="num">4.0</span> &times; <span class="num">2.0</span>) = <span class="num">8.0</span>
+            </div>
+
+            <p>No machine learning. No embeddings. The word "shall" has meant "mandatory" since <a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a> was published in 1997. It means the same thing in a building spec, a software spec, and a procurement contract. Regex is the right tool here.</p>
+
+            <h3>Why Background scored 0.1</h3>
+
+            <p>No mandatory keywords. No risk indicators. One "permissive" match from generic language. The attention formula bottoms out:</p>
+
+            <div class="code-block">
+authority_weight = <span class="num">0.35</span>  <span class="cmt"># permissive</span>
+risk_multiplier  = <span class="num">0.3</span>   <span class="cmt"># informational</span>
+attention = <span class="num">0.35</span> &times; <span class="num">0.3</span> = <span class="num">0.1</span>
+            </div>
+
+            <p>"Similar projects in the region have typically required 8-12 months." That's useful context, but it's not an obligation, not a risk, and not something your agent needs to act on. Attention: 0.1.</p>
+
+            <h2>What else the primitive extracts</h2>
+
+            <p>Attention is the headline, but each unit carries a full classification:</p>
+
+            <div class="panels">
+                <div class="panel accent">
+                    <div class="panel-label">Unit 5 &mdash; Payment Terms</div>
+<span class="hi">authority: <span class="str">mandatory</span></span>
+<span class="hi">risk: <span class="str">financial</span></span>
+<span class="hi">attention: <span class="num">3.0</span></span>
+<span class="hi">actionable: <span class="bool">true</span></span>
+<span class="hi">irreducible: <span class="bool">true</span></span>
+<span class="hi">entities: <span class="str">[]</span></span>
+<span class="hi">dates: <span class="str">["December 31, 2026"]</span></span>
+<span class="hi">financial: <span class="str">["$2,500", "10%"]</span></span>
+<span class="hi">irreducibility: <span class="str">SUMMARIZABLE</span></span>
+
+<span class="str">&rarr; Deadline, dollar amount, percentage.
+   All extracted. All typed.</span>
+                </div>
+                <div class="panel">
+                    <div class="panel-label">Unit 3 &mdash; Structural Requirements</div>
+<span class="hi">authority: <span class="str">mandatory</span></span>
+<span class="hi">risk: <span class="str">informational</span></span>
+<span class="hi">attention: <span class="num">0.6</span></span>
+<span class="hi">actionable: <span class="bool">true</span></span>
+<span class="hi">irreducible: <span class="bool">true</span></span>
+<span class="hi">entities: <span class="str">["ASTM A615"]</span></span>
+<span class="hi">dates: <span class="str">["January 15, 2026"]</span></span>
+<span class="hi">financial: <span class="str">[]</span></span>
+<span class="hi">irreducibility: <span class="str">PRESERVE_VERBATIM</span></span>
+
+<span class="str">&rarr; "4,000 psf" and "4,000 psi" are
+   engineering values. Cannot paraphrase.
+   PRESERVE_VERBATIM.</span>
+                </div>
+            </div>
+
+            <p>Notice the structural requirements unit: low attention score (0.6) but marked <code>PRESERVE_VERBATIM</code>. Your agent might skip this unit for initial triage, but if it ever summarizes the document, it knows: do not paraphrase "4,000 psf." That number is irreducible. Getting it wrong kills people.</p>
+
+            <h2>How this changes agent architecture</h2>
+
+            <p>Without a decomposition primitive, your agent pipeline looks like this:</p>
+
+            <div class="code-block">
+<span class="dim">document &rarr; chunk &rarr; embed &rarr; retrieve &rarr; LLM &rarr; answer</span>
+
+<span class="cmt"># Every chunk treated equally.
+# The LLM decides what matters.
+# 100% of tokens go to the model.</span>
+            </div>
+
+            <p>With decomposition:</p>
+
+            <div class="code-block">
+document &rarr; <span class="key">decompose</span> &rarr; route &rarr; LLM &rarr; answer
+
+<span class="cmt"># Each unit has authority, risk, attention.
+# High-attention units go to the model.
+# Low-attention units get skipped or summarized.
+# ~30% of tokens go to the model.</span>
+            </div>
+
+            <p>The difference isn't just efficiency. It's <strong>correctness</strong>. Three things change:</p>
+
+            <h3>1. Attention allocation</h3>
+
+            <p>Instead of the LLM deciding what to focus on (which it does poorly for technical documents), the attention scores pre-allocate compute. Safety-critical content gets processed. Background doesn't. Your agent acts like an experienced engineer who knows which sections of a spec to read first.</p>
+
+            <h3>2. Irreducibility awareness</h3>
+
+            <p>When a unit is marked <code>PRESERVE_VERBATIM</code>, your agent knows not to summarize or paraphrase it. "4,000 psf" stays "4,000 psf" &mdash; it doesn't become "about 4,000 psf" or "approximately 4 kips per square foot." This is the difference between a useful tool and a liability.</p>
+
+            <h3>3. Entity-aware routing</h3>
+
+            <p>Decompose extracts every standards reference (ASTM, ASCE, IBC, OSHA), every date, every dollar amount. Your agent can route by entity type: send OSHA references to a safety compliance chain, send financial values to a payment audit chain, send ACI references to a structural analysis chain. No embedding similarity search required. Just pattern matching on structured metadata.</p>
+
+            <h2>What this is not</h2>
+
+            <p>Decompose is not a replacement for LLMs. It's a preprocessor. Some things it explicitly cannot do:</p>
+
+            <ul>
+                <li><strong>Nuance.</strong> "The contractor should consider" and "The contractor should comply" both classify as <code>directive</code>. An LLM knows these have different implications.</li>
+                <li><strong>Cross-reference.</strong> If section 3 says "per the geotechnical report" and section 1 references a different report, Decompose doesn't catch the conflict. That's what your model is for.</li>
+                <li><strong>Intent.</strong> Decompose classifies structure, not meaning. It knows "shall" means mandatory. It doesn't know what the sentence is trying to accomplish.</li>
+                <li><strong>Domain reasoning.</strong> "4,000 psf" is flagged as an engineering value. Decompose doesn't know whether 4,000 psf is reasonable for this soil type. A domain expert (human or LLM) does.</li>
+            </ul>
+
+            <p>This is the point. Your LLM handles nuance, cross-referencing, intent, and domain reasoning. Decompose handles everything else &mdash; the mechanical work of splitting, classifying, scoring, and extracting &mdash; so the LLM can focus on what it's actually good at.</p>
+
+            <h2>Why it has to be deterministic</h2>
+
+            <p>Imagine an agent processing safety compliance documents. Run it Monday, it flags section 4 as safety-critical. Run it Wednesday, it classifies the same section as "advisory" because the LLM was slightly more creative that day.</p>
+
+            <p>That's not a tool. That's a coin flip.</p>
+
+            <p>Decompose returns the same output for the same input. Every time. There's no temperature knob, no sampling variance, no model drift. If "shall" matched <code>mandatory</code> yesterday, it matches <code>mandatory</code> today. If section 4 scored 8.0 in production, it scores 8.0 in your test suite. You can write assertions against it. You can audit it.</p>
+
+            <p>For industries where documents have legal weight &mdash; construction, healthcare, defense, finance &mdash; determinism isn't a nice-to-have. It's table stakes.</p>
+
+            <h2>The primitive pattern</h2>
+
+            <p>The broader point: <strong>agents need more primitives, not more parameters.</strong></p>
+
+            <p>The current trajectory of AI tooling is: make the model bigger, give it more context, add more retrieval. This works, until it doesn't. A 200K context window doesn't help if 70% of the tokens are background noise. RAG doesn't help if the embeddings can't distinguish a mandatory requirement from an informational note.</p>
+
+            <p>Primitives help because they operate at a different layer. They don't compete with the LLM &mdash; they feed it. A well-decomposed document makes every model work better: smaller context, higher signal, structured metadata to route on.</p>
+
+            <p>Decompose is one primitive. There should be more. Entity resolution, temporal ordering, reference graph construction, obligation tracking &mdash; these are all deterministic operations that agents currently outsource to the model. Every one of them could be a regex-and-heuristics library that runs in milliseconds and gives the LLM structured inputs instead of raw text.</p>
+
+            <p>We're building these at <a href="/">Echology</a>. Decompose is the first one we open-sourced.</p>
+
+            <h2>Try it</h2>
+
+            <div class="code-block">
+pip install decompose-mcp
+
+<span class="key">from</span> decompose <span class="key">import</span> decompose
+
+<span class="cmt"># Decompose any document</span>
+result = decompose(open(<span class="str">"contract.md"</span>).read())
+
+<span class="cmt"># Route by attention</span>
+<span class="key">for</span> unit <span class="key">in</span> result[<span class="str">"units"</span>]:
+    <span class="key">if</span> unit[<span class="str">"attention"</span>] >= <span class="num">2.0</span>:
+        llm_analyze(unit)     <span class="cmt"># send to model</span>
+    <span class="key">elif</span> unit[<span class="str">"irreducible"</span>]:
+        preserve(unit)        <span class="cmt"># keep verbatim</span>
+    <span class="key">else</span>:
+        skip(unit)            <span class="cmt"># background noise</span>
+
+<span class="cmt"># Or run as MCP tool for your agent</span>
+python -m decompose --serve
+            </div>
+
+            <p>Every unit comes with <code>authority</code>, <code>risk</code>, <code>attention</code>, <code>actionable</code>, <code>irreducible</code>, <code>entities</code>, <code>dates</code>, <code>financial</code>. No API key. No setup. Runs offline.</p>
+
+            <p>Your LLM handles reasoning. Let something else handle reading.</p>
+
+            <div class="btn-group" style="margin-top: 40px; margin-bottom: 20px;">
+                <a href="https://pypi.org/project/decompose-mcp/" class="btn btn-primary">pip install decompose-mcp</a>
+                <a href="https://github.com/echology-io/decompose" class="btn btn-outline">GitHub</a>
+                <a href="/blog/regex-beats-llm" class="btn btn-outline">First post: When Regex Beats an LLM</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

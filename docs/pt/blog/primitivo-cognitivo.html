@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Por Que Seu Agente Precisa de um Primitivo Cognitivo — Echology</title>
+    <meta name="description" content="LLMs sao bons em raciocinio. Sao ruins em leitura. Decompose da ao seu agente estrutura antes de comecar a pensar — e isso muda tudo.">
+    <meta property="og:title" content="Por Que Seu Agente Precisa de um Primitivo Cognitivo — Echology">
+    <meta property="og:description" content="Seguranca pontuou 8.0. Background pontuou 0.1. Seu agente agora sabe quais 30% ler e quais 70% pular.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://echology.io/pt/blog/primitivo-cognitivo">
+    <meta property="article:published_time" content="2026-02-15">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+        .post-body { max-width: 720px; margin: 0 auto; }
+        .post-body h2 { font-size: 24px; font-weight: 700; margin: 48px 0 16px; letter-spacing: -0.3px; }
+        .post-body h3 { font-size: 18px; font-weight: 700; margin: 32px 0 12px; }
+        .post-body p { font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 20px; }
+        .post-body p strong { color: var(--fg); }
+        .post-body p code { background: var(--code-bg); padding: 2px 6px; border-radius: 3px; font-size: 14px; color: var(--accent); }
+        .post-body blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 12px 20px;
+            margin: 24px 0;
+            background: var(--code-bg);
+            border-radius: 0 6px 6px 0;
+        }
+        .post-body blockquote p { color: var(--fg); margin: 0; font-size: 15px; }
+        .post-body ul, .post-body ol { color: var(--muted); font-size: 16px; line-height: 1.75; margin-bottom: 20px; padding-left: 24px; }
+        .post-body li { margin-bottom: 8px; }
+        .post-body .code-block { margin: 24px 0; }
+        .post-body .panels { margin: 32px 0; }
+        .post-meta { text-align: center; margin-bottom: 48px; }
+        .post-meta .date { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+        .post-meta .reading { font-size: 13px; color: var(--muted); margin-top: 4px; }
+        .inline-stat { display: inline-block; font-weight: 800; color: var(--accent); }
+        .post-body a { text-decoration: underline; text-underline-offset: 2px; }
+        .attention-bar { display: flex; align-items: center; gap: 12px; margin: 8px 0; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; }
+        .attention-bar .bar { height: 6px; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
+        .attention-bar .bar-bg { flex: 1; max-width: 200px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .attention-bar .label { color: var(--muted); min-width: 180px; }
+        .attention-bar .score { color: var(--accent); font-weight: 700; min-width: 32px; text-align: right; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/pt/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/aecai">AECai</a>
+                <a href="/pt/decompose">Decompose</a>
+                <a href="/pt/blog" class="active">Blog</a>
+                <a href="/pt/contato">Contato</a>
+                <a href="/blog/cognitive-primitive" class="lang-toggle" title="English">&#127482;&#127480;</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container container--narrow">
+            <h1>Por Que Seu Agente Precisa<br><span>de um Primitivo Cognitivo</span></h1>
+            <p class="sub">LLMs sao bons em raciocinio. Sao ruins em leitura.</p>
+            <div class="post-meta">
+                <div class="date">15 de fevereiro de 2026</div>
+                <div class="reading">10 min de leitura</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container post-body">
+
+            <p>Aqui esta uma especificacao de construcao com seis secoes. Seu agente precisa le-la e descobrir o que importa. Vai:</p>
+
+            <div class="code-block">
+<span class="cmt">## 1. Escopo do Trabalho</span>
+O Contratado devera fornecer toda mao de obra, materiais...
+conforme ACI 318-19 e ASTM C150-22.
+
+<span class="cmt">## 2. Informacoes Gerais</span>
+Este projeto esta localizado na esquina da Rua Principal...
+O arquiteto responsavel e Smith & Associados.
+
+<span class="cmt">## 3. Requisitos Estruturais</span>
+A pressao maxima admissivel no solo nao devera
+exceder 4.000 psf... ASTM A615, Grau 60.
+
+<span class="cmt">## 4. Requisitos de Seguranca</span>
+Todo trabalho devera estar em conformidade com OSHA 1926.
+Trabalhadores devem usar capacetes, oculos de seguranca...
+
+<span class="cmt">## 5. Condicoes de Pagamento</span>
+Retencao de 10%... Multa por atraso de $2.500
+por dia corrido...
+
+<span class="cmt">## 6. Contexto</span>
+Para referencia, projetos similares na regiao
+normalmente levam 8-12 meses para trabalho de fundacao.
+            </div>
+
+            <p>Um LLM bruto vai ler todas as seis secoes com a mesma atencao. Vai gastar a mesma quantidade de computacao em "O arquiteto responsavel e Smith &amp; Associados" que gasta em "Multa por atraso de $2.500 por dia corrido." Vai tratar a secao de contexto com a mesma importancia que a secao de seguranca.</p>
+
+            <p>Esse e o problema fundamental. <strong>Seu agente le tudo igualmente porque nao tem estrutura para dizer o que importa.</strong></p>
+
+            <h2>O que e um primitivo cognitivo</h2>
+
+            <p>Uma CPU nao raciocina sobre dados. Ela tem primitivos: ADD, COMPARE, LOAD, STORE. Pensamento de alto nivel e composto a partir dessas operacoes de baixo nivel.</p>
+
+            <p>Agentes de IA funcionam da mesma forma. Sua camada de orquestracao &mdash; LangChain, CrewAI, chamadas diretas de API, qualquer coisa &mdash; compoe a partir de primitivos. Os usuais: retrieve, summarize, generate, classify. Mas falta um no stack.</p>
+
+            <blockquote><p>Decomposicao: dividir texto bruto em unidades semanticas classificadas e priorizadas antes do raciocinio comecar.</p></blockquote>
+
+            <p>Isso nao e sumarizacao. Sumarizacao perde informacao. Nao e retrieval. Retrieval requer uma query. Nao e classificacao no sentido de ML. Nao ha modelo, dados de treino, nem probabilidades.</p>
+
+            <p>E <strong>analise estrutural</strong>. O mesmo documento entra. Unidades classificadas saem. Toda vez. Em 4 milissegundos.</p>
+
+            <h2>Como a decomposicao funciona</h2>
+
+            <p>Aquela especificacao de seis secoes? Uma chamada de funcao:</p>
+
+            <div class="code-block">
+<span class="key">from</span> decompose <span class="key">import</span> decompose_text
+result = decompose_text(spec_text)   <span class="cmt"># ~14ms media, 6 unidades</span>
+            </div>
+
+            <p>Aqui esta o que seu agente ve em vez de 2.045 caracteres de texto bruto:</p>
+
+            <div class="attention-bar"><span class="label">4. Requisitos de Seguranca</span><div class="bar-bg"><div class="bar" style="width: 80%;"></div></div><span class="score">8.0</span></div>
+            <div class="attention-bar"><span class="label">5. Condicoes de Pagamento</span><div class="bar-bg"><div class="bar" style="width: 30%;"></div></div><span class="score">3.0</span></div>
+            <div class="attention-bar"><span class="label">1. Escopo do Trabalho</span><div class="bar-bg"><div class="bar" style="width: 20%;"></div></div><span class="score">2.0</span></div>
+            <div class="attention-bar"><span class="label">3. Requisitos Estruturais</span><div class="bar-bg"><div class="bar" style="width: 6%;"></div></div><span class="score">0.6</span></div>
+            <div class="attention-bar"><span class="label">2. Informacoes Gerais</span><div class="bar-bg"><div class="bar" style="width: 4%;"></div></div><span class="score">0.4</span></div>
+            <div class="attention-bar"><span class="label">6. Contexto</span><div class="bar-bg"><div class="bar" style="width: 1%;"></div></div><span class="score">0.1</span></div>
+
+            <p>Secao 4 recebeu <span class="inline-stat">8.0</span>. Secao 6 recebeu <span class="inline-stat">0.1</span>. Seu agente agora sabe quais 30% do documento enviar para o LLM e quais 70% pular.</p>
+
+            <h3>Por que Seguranca recebeu 8.0</h3>
+
+            <p>Quatro palavras ativaram: <code>shall</code> (autoridade obrigatoria), <code>must</code> (obrigatorio), <code>required</code> (obrigatorio), e <code>comply</code> (risco de conformidade). A formula de atencao e direta:</p>
+
+            <div class="code-block">
+authority_weight = <span class="num">1.0</span>   <span class="cmt"># mandatory: 4 correspondencias</span>
+risk_multiplier  = <span class="num">2.0</span>   <span class="cmt"># categoria compliance</span>
+attention = min(<span class="num">10.0</span>, auth_score &times; risk_mult)
+         = min(<span class="num">10.0</span>, <span class="num">4.0</span> &times; <span class="num">2.0</span>) = <span class="num">8.0</span>
+            </div>
+
+            <p>Sem machine learning. Sem embeddings. A palavra "shall" significa "obrigatorio" desde que a <a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a> foi publicada em 1997. Significa a mesma coisa em uma especificacao de construcao, uma especificacao de software e um contrato de compras. Regex e a ferramenta certa aqui.</p>
+
+            <h3>Por que Contexto recebeu 0.1</h3>
+
+            <p>Sem palavras-chave obrigatorias. Sem indicadores de risco. Uma correspondencia "permissiva" da linguagem generica. A formula de atencao atinge o minimo:</p>
+
+            <div class="code-block">
+authority_weight = <span class="num">0.35</span>  <span class="cmt"># permissive</span>
+risk_multiplier  = <span class="num">0.3</span>   <span class="cmt"># informational</span>
+attention = <span class="num">0.35</span> &times; <span class="num">0.3</span> = <span class="num">0.1</span>
+            </div>
+
+            <p>"Projetos similares na regiao normalmente levam 8-12 meses." Contexto util, mas nao e uma obrigacao, nao e um risco, e nao e algo que seu agente precisa agir. Atencao: 0.1.</p>
+
+            <h2>O que mais o primitivo extrai</h2>
+
+            <p>Atencao e a manchete, mas cada unidade carrega uma classificacao completa:</p>
+
+            <div class="panels">
+                <div class="panel accent">
+                    <div class="panel-label">Unidade 5 &mdash; Condicoes de Pagamento</div>
+<span class="hi">authority: <span class="str">mandatory</span></span>
+<span class="hi">risk: <span class="str">financial</span></span>
+<span class="hi">attention: <span class="num">3.0</span></span>
+<span class="hi">actionable: <span class="bool">true</span></span>
+<span class="hi">irreducible: <span class="bool">true</span></span>
+<span class="hi">dates: <span class="str">["December 31, 2026"]</span></span>
+<span class="hi">financial: <span class="str">["$2,500", "10%"]</span></span>
+
+<span class="str">&rarr; Prazo, valor em dolar, percentual.
+   Tudo extraido. Tudo tipado.</span>
+                </div>
+                <div class="panel">
+                    <div class="panel-label">Unidade 3 &mdash; Requisitos Estruturais</div>
+<span class="hi">authority: <span class="str">mandatory</span></span>
+<span class="hi">risk: <span class="str">informational</span></span>
+<span class="hi">attention: <span class="num">0.6</span></span>
+<span class="hi">actionable: <span class="bool">true</span></span>
+<span class="hi">irreducible: <span class="bool">true</span></span>
+<span class="hi">entities: <span class="str">["ASTM A615"]</span></span>
+<span class="hi">irreducibility: <span class="str">PRESERVE_VERBATIM</span></span>
+
+<span class="str">&rarr; "4.000 psf" e "4.000 psi" sao valores
+   de engenharia. Nao podem ser parafraseados.
+   PRESERVE_VERBATIM.</span>
+                </div>
+            </div>
+
+            <p>Observe a unidade de requisitos estruturais: pontuacao de atencao baixa (0.6) mas marcada <code>PRESERVE_VERBATIM</code>. Seu agente pode pular essa unidade na triagem inicial, mas se algum dia resumir o documento, ele sabe: nao parafrasear "4.000 psf." Esse numero e irredutivel. Erra-lo mata pessoas.</p>
+
+            <h2>Como isso muda a arquitetura do agente</h2>
+
+            <p>Sem um primitivo de decomposicao, o pipeline do seu agente e assim:</p>
+
+            <div class="code-block">
+<span class="dim">documento &rarr; chunk &rarr; embed &rarr; retrieve &rarr; LLM &rarr; resposta</span>
+
+<span class="cmt"># Todo chunk tratado igualmente.
+# O LLM decide o que importa.
+# 100% dos tokens vao para o modelo.</span>
+            </div>
+
+            <p>Com decomposicao:</p>
+
+            <div class="code-block">
+documento &rarr; <span class="key">decompose</span> &rarr; rotear &rarr; LLM &rarr; resposta
+
+<span class="cmt"># Cada unidade tem authority, risk, attention.
+# Unidades de alta atencao vao para o modelo.
+# Unidades de baixa atencao sao puladas ou resumidas.
+# ~30% dos tokens vao para o modelo.</span>
+            </div>
+
+            <p>A diferenca nao e apenas eficiencia. E <strong>corretude</strong>. Tres coisas mudam:</p>
+
+            <h3>1. Alocacao de atencao</h3>
+
+            <p>Em vez do LLM decidir no que focar (o que ele faz mal para documentos tecnicos), os scores de atencao pre-alocam computacao. Conteudo critico de seguranca e processado. Contexto nao. Seu agente age como um engenheiro experiente que sabe quais secoes de uma especificacao ler primeiro.</p>
+
+            <h3>2. Consciencia de irredutibilidade</h3>
+
+            <p>Quando uma unidade e marcada <code>PRESERVE_VERBATIM</code>, seu agente sabe que nao deve resumir ou parafrasear. "4.000 psf" permanece "4.000 psf" &mdash; nao se torna "aproximadamente 4.000 psf" ou "cerca de 4 kips por pe quadrado." Essa e a diferenca entre uma ferramenta util e uma responsabilidade legal.</p>
+
+            <h3>3. Roteamento consciente de entidades</h3>
+
+            <p>Decompose extrai cada referencia a normas (ASTM, ASCE, IBC, OSHA), cada data, cada valor em dolar. Seu agente pode rotear por tipo de entidade: enviar referencias OSHA para uma cadeia de conformidade de seguranca, valores financeiros para uma cadeia de auditoria de pagamento, referencias ACI para uma cadeia de analise estrutural. Sem busca por similaridade de embeddings. Apenas correspondencia de padroes em metadados estruturados.</p>
+
+            <h2>O que isso nao e</h2>
+
+            <p>Decompose nao e substituto de LLMs. E um pre-processador. Algumas coisas que ele explicitamente nao faz:</p>
+
+            <ul>
+                <li><strong>Nuance.</strong> "O contratado deveria considerar" e "O contratado devera cumprir" ambos classificam como <code>directive</code>. Um LLM sabe que esses tem implicacoes diferentes.</li>
+                <li><strong>Referencia cruzada.</strong> Se a secao 3 diz "conforme o relatorio geotecnico" e a secao 1 referencia um relatorio diferente, Decompose nao detecta o conflito. E para isso que seu modelo serve.</li>
+                <li><strong>Intencao.</strong> Decompose classifica estrutura, nao significado. Sabe que "shall" significa obrigatorio. Nao sabe o que a frase esta tentando realizar.</li>
+                <li><strong>Raciocinio de dominio.</strong> "4.000 psf" e sinalizado como valor de engenharia. Decompose nao sabe se 4.000 psf e razoavel para esse tipo de solo. Um especialista (humano ou LLM) sabe.</li>
+            </ul>
+
+            <p>Esse e o ponto. Seu LLM cuida de nuance, referencia cruzada, intencao e raciocinio de dominio. Decompose cuida de todo o resto &mdash; o trabalho mecanico de dividir, classificar, pontuar e extrair &mdash; para que o LLM possa focar no que ele realmente faz bem.</p>
+
+            <h2>Por que precisa ser deterministico</h2>
+
+            <p>Imagine um agente processando documentos de conformidade de seguranca. Roda na segunda-feira, sinaliza a secao 4 como critica de seguranca. Roda na quarta-feira, classifica a mesma secao como "consultiva" porque o LLM estava um pouco mais criativo naquele dia.</p>
+
+            <p>Isso nao e uma ferramenta. E um cara ou coroa.</p>
+
+            <p>Decompose retorna a mesma saida para a mesma entrada. Toda vez. Nao tem botao de temperatura, variacao de amostragem, nem drift de modelo. Se "shall" correspondeu a <code>mandatory</code> ontem, corresponde a <code>mandatory</code> hoje. Se a secao 4 pontuou 8.0 em producao, pontua 8.0 na sua suite de testes. Voce pode escrever assercoes contra isso. Pode audita-lo.</p>
+
+            <p>Para industrias onde documentos tem peso legal &mdash; construcao, saude, defesa, financas &mdash; determinismo nao e um diferencial. E pre-requisito.</p>
+
+            <h2>O padrao primitivo</h2>
+
+            <p>O ponto mais amplo: <strong>agentes precisam de mais primitivos, nao de mais parametros.</strong></p>
+
+            <p>A trajetoria atual de ferramentas de IA e: tornar o modelo maior, dar mais contexto, adicionar mais retrieval. Isso funciona, ate nao funcionar. Uma janela de contexto de 200K nao ajuda se 70% dos tokens sao ruido de fundo. RAG nao ajuda se os embeddings nao conseguem distinguir um requisito obrigatorio de uma nota informativa.</p>
+
+            <p>Primitivos ajudam porque operam em uma camada diferente. Nao competem com o LLM &mdash; alimentam-no. Um documento bem decomposto faz qualquer modelo funcionar melhor: menor contexto, maior sinal, metadados estruturados para rotear.</p>
+
+            <p>Decompose e um primitivo. Deveria haver mais. Resolucao de entidades, ordenacao temporal, construcao de grafos de referencia, rastreamento de obrigacoes &mdash; sao todas operacoes deterministicas que agentes atualmente terceirizam para o modelo. Cada uma delas poderia ser uma biblioteca de regex-e-heuristicas que roda em milissegundos e da ao LLM entradas estruturadas em vez de texto bruto.</p>
+
+            <p>Estamos construindo esses primitivos na <a href="/">Echology</a>. Decompose e o primeiro que abrimos como open source.</p>
+
+            <h2>Experimente</h2>
+
+            <div class="code-block">
+pip install decompose-mcp
+
+<span class="key">from</span> decompose <span class="key">import</span> decompose
+
+<span class="cmt"># Decomponha qualquer documento</span>
+result = decompose(open(<span class="str">"contrato.md"</span>).read())
+
+<span class="cmt"># Roteie por atencao</span>
+<span class="key">for</span> unit <span class="key">in</span> result[<span class="str">"units"</span>]:
+    <span class="key">if</span> unit[<span class="str">"attention"</span>] >= <span class="num">2.0</span>:
+        llm_analyze(unit)     <span class="cmt"># enviar ao modelo</span>
+    <span class="key">elif</span> unit[<span class="str">"irreducible"</span>]:
+        preserve(unit)        <span class="cmt"># manter literal</span>
+    <span class="key">else</span>:
+        skip(unit)            <span class="cmt"># ruido de fundo</span>
+
+<span class="cmt"># Ou rode como ferramenta MCP para seu agente</span>
+python -m decompose --serve
+            </div>
+
+            <p>Cada unidade vem com <code>authority</code>, <code>risk</code>, <code>attention</code>, <code>actionable</code>, <code>irreducible</code>, <code>entities</code>, <code>dates</code>, <code>financial</code>. Sem API key. Sem setup. Roda offline.</p>
+
+            <p>Seu LLM cuida do raciocinio. Deixe outra coisa cuidar da leitura.</p>
+
+            <div class="btn-group" style="margin-top: 40px; margin-bottom: 20px;">
+                <a href="https://pypi.org/project/decompose-mcp/" class="btn btn-primary">pip install decompose-mcp</a>
+                <a href="https://github.com/echology-io/decompose" class="btn btn-outline">GitHub</a>
+                <a href="/pt/blog/regex-ganha-de-llm" class="btn btn-outline">Primeiro post: Quando Regex Ganha de um LLM</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/contato">Contato</a>
+                <a href="/blog/cognitive-primitive" class="lang-toggle" title="English">&#127482;&#127480;</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
