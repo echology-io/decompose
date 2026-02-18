@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — Echology</title>
+    <meta name="description" content="Get in touch with Echology. Request an AECai assessment or ask about Decompose.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/about">About</a>
+                <a href="/aecai">AECai</a>
+                <a href="/decompose">Decompose</a>
+                <a href="/blog">Blog</a>
+                <a href="/contact" class="active">Contact</a>
+                <a href="/pt/contato" class="lang-toggle" title="Portugues">&#127463;&#127479;</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container container--narrow">
+            <h1>Let's<br><span>talk.</span></h1>
+            <p class="sub">Request an AECai document assessment, ask about Decompose, or just say hello.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <form id="contact-form" onsubmit="return handleSubmit(event)">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="company">Company</label>
+                    <input type="text" id="company" name="company">
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <select id="subject" name="subject">
+                        <option value="AECai Document Assessment">AECai Document Assessment</option>
+                        <option value="Decompose Integration">Decompose Integration</option>
+                        <option value="Partnership">Partnership</option>
+                        <option value="General Inquiry">General Inquiry</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="6" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow" style="text-align:center;">
+            <p class="section-label">Direct</p>
+            <p class="section-desc">
+                <a href="mailto:kyle@echology.io">kyle@echology.io</a><br>
+                <a href="https://github.com/echology-io">github.com/echology-io</a><br>
+                Charleston, South Carolina
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    function handleSubmit(e) {
+        e.preventDefault();
+        var f = document.getElementById('contact-form');
+        var name = f.name.value;
+        var email = f.email.value;
+        var company = f.company.value || '(not provided)';
+        var subject = f.subject.value;
+        var message = f.message.value;
+        var body = 'Name: ' + name + '\n'
+            + 'Email: ' + email + '\n'
+            + 'Company: ' + company + '\n'
+            + 'Subject: ' + subject + '\n\n'
+            + message;
+        window.location.href = 'mailto:kyle@echology.io'
+            + '?subject=' + encodeURIComponent('[Echology] ' + subject + ' — ' + name)
+            + '&body=' + encodeURIComponent(body);
+        return false;
+    }
+    </script>
+</body>
+</html>

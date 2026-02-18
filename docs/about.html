@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — Echology</title>
+    <meta name="description" content="Echology builds simulation-aware intelligence tools. Founded by Kyle Vines.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/about" class="active">About</a>
+                <a href="/aecai">AECai</a>
+                <a href="/decompose">Decompose</a>
+                <a href="/blog">Blog</a>
+                <a href="/contact">Contact</a>
+                <a href="/pt/sobre" class="lang-toggle" title="Portugues">&#127463;&#127479;</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container container--narrow">
+            <h1>Building tools that<br><span>think in structure.</span></h1>
+            <p class="sub">Echology is a software company that builds simulation-aware intelligence tools. We believe AI should understand documents the way engineers do — structurally, precisely, and with full accountability.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">The Problem</p>
+            <h2 class="section-title">Documents are the dark matter of every industry.</h2>
+            <p class="section-desc" style="text-align:left; max-width:100%;">
+                Every firm — engineering, legal, financial, construction — drowns in documents. Specs, contracts, reports, submittals, change orders. Thousands per project. Millions per firm.
+            </p>
+            <p class="section-desc" style="text-align:left; max-width:100%; margin-top: 16px;">
+                Existing AI tools treat documents as flat text. They dump content into a context window and hope for the best. But documents have structure — authority levels, risk classifications, legal obligations, cross-references, numerical precision requirements. Flat text loses all of that.
+            </p>
+            <p class="section-desc" style="text-align:left; max-width:100%; margin-top: 16px;">
+                The tools exist — embeddings, vector databases, LLMs. All accessible. What's missing is the architecture that connects them correctly. That gap is where Echology operates.
+            </p>
+            <p class="section-desc" style="text-align:left; max-width:100%; margin-top: 16px;">
+                Echology builds tools that understand that structure. Our simulation-aware architecture doesn't just read documents — it decomposes them into classified semantic units, verifies claims against known standards, and produces auditable intelligence.
+            </p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">Principles</p>
+            <div class="card-grid" style="grid-template-columns: 1fr;">
+                <div class="card">
+                    <h3>Local-first</h3>
+                    <p>Your data stays on your hardware. No cloud. No API keys. No data leaving the building. This isn't a feature — it's a requirement for firms that handle privileged, ITAR-controlled, or client-confidential content.</p>
+                </div>
+                <div class="card">
+                    <h3>Simulation-aware</h3>
+                    <p>Our systems don't just process — they model. Causal graphs explain every classification. Multi-channel verification catches errors. Merkle trees make outputs tamper-evident. Attention budgets allocate compute where it matters. Every decision is logged, explainable, and auditable.</p>
+                </div>
+                <div class="card">
+                    <h3>Deterministic where it counts</h3>
+                    <p>AI is powerful but unpredictable. We use AI for classification and reasoning, but wrap it in deterministic systems — hash-chained audit trails, regex-based authority detection, schema validation. The output is reproducible and defensible.</p>
+                </div>
+                <div class="card">
+                    <h3>Built for professionals</h3>
+                    <p>Our users are engineers, PMs, and principals at firms that build bridges, hospitals, and power plants. They need tools that are accurate, accountable, and auditable. Not chatbots — intelligence infrastructure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">Company</p>
+            <p class="section-desc" style="text-align:left; max-width:100%;">
+                Echology, Inc. was founded by Kyle Vines. Based in Charleston, South Carolina.
+            </p>
+            <p class="section-desc" style="text-align:left; max-width:100%; margin-top: 16px;">
+                I started Echology because I watched the same pattern repeat everywhere. Teams get access to LLMs, embeddings, vector databases — and then throw raw documents at the model because nobody showed them there's a step before that. A structural step where you classify what matters before reasoning begins.
+            </p>
+            <p class="section-desc" style="text-align:left; max-width:100%; margin-top: 16px;">
+                Decompose is that step, packaged as a free tool. When someone runs it and sees classified output, they learn something they didn't know before. That understanding is the real product.
+            </p>
+            <p class="section-desc" style="text-align:left; max-width:100%; margin-top: 16px;">
+                AECai is the commercial platform built on this architecture, designed for AEC firms where wrong answers carry professional liability. Decompose is the open-source on-ramp.
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

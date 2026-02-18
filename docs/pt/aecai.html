@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AECai — Inteligencia Documental para Empresas de AEC</title>
+    <meta name="description" content="AECai le qualquer documento que uma empresa produz ou recebe e transforma em dados estruturados, pesquisaveis e verificados. Sem nuvem. Roda no seu hardware.">
+    <meta property="og:title" content="AECai — Inteligencia Documental para Empresas de AEC">
+    <meta property="og:description" content="17 sistemas conscientes de simulacao. Todo documento classificado, verificado e indexado. Sem nuvem. Roda no seu hardware.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://echology.io/pt/aecai">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="AECai — Inteligencia Documental para Empresas de AEC">
+    <meta name="twitter:description" content="17 sistemas conscientes de simulacao. Todo documento classificado, verificado e indexado. Sem nuvem.">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/pt/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/aecai" class="active">AECai</a>
+                <a href="/pt/decompose">Decompose</a>
+                <a href="/pt/blog">Blog</a>
+                <a href="/pt/contato">Contato</a>
+                <a href="/aecai" class="lang-toggle" title="English">&#127482;&#127480;</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Todo documento.<br>Toda norma.<br><span>Verificado.</span></h1>
+            <p class="sub">AECai e uma plataforma local-first de inteligencia documental para empresas de Arquitetura, Engenharia e Construcao. Le, classifica, verifica e indexa todo documento que sua empresa produz ou recebe.</p>
+            <div class="btn-group">
+                <a href="/pt/contato" class="btn btn-primary">Solicitar Avaliacao</a>
+                <a href="https://aecai.io" class="btn btn-outline">Visitar aecai.io</a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">O Pipeline</p>
+            <h2 class="section-title">Cinco etapas. Qualquer documento.</h2>
+            <p class="section-desc">Todo documento passa pelo mesmo pipeline. PDF, DOCX, CAD, imagens — mais de 15 formatos suportados.</p>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="tag">Etapa 1</div>
+                    <h3>Parsing</h3>
+                    <p>TextExtractor le mais de 15 formatos — PDF, DOCX, DXF, Markdown, CSV, HTML, RTF, imagens via OCR. Gera texto bruto, texto limpo, divisoes por pagina, metadata.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Etapa 2</div>
+                    <h3>Classificacao</h3>
+                    <p>Classificacao AI-first via LLM local. Detecta tipo de documento, dominios, entidades, indicadores de risco, nivel de autoridade. Fallback por regex quando AI nao esta disponivel.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Etapa 3</div>
+                    <h3>Enriquecimento</h3>
+                    <p>Cinco plugins nativos: crossref de normas, deteccao de PII, extracao de cronograma, analise financeira, analise contratual. Priorizados e extensiveis.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Etapa 4</div>
+                    <h3>Decomposicao</h3>
+                    <p>Segmentacao semantica com reconhecimento de headers. Cada unidade recebe sua propria classificacao — nivel de autoridade, tipo de conteudo, relevancia de risco. Documentos viram dados estruturados.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Etapa 5</div>
+                    <h3>Indexacao</h3>
+                    <p>Embeddings vetoriais de 768 dimensoes armazenados no Qdrant. Pesquise todo seu acervo por significado, nao por palavras-chave. Filtravel por jurisdicao, disciplina, nivel de risco.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">Tres Engines</p>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="tag">Engine</div>
+                    <h3>Vanta</h3>
+                    <p>Le, classifica e decompoe documentos. Orquestracao de pipeline consciente de simulacao: message passing deterministico, contextos de documentos aninhados, padroes de deteccao auto-aprimoraveis, agendamento por orcamento de atencao.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Engine</div>
+                    <h3>Aletheia</h3>
+                    <p>Verifica qualidade de saida e checa normas contra adocoes jurisdicionais. Grafos de consistencia causal, correcao de erros multicanal, deteccao de adulteracao por arvore Merkle, logging de decisoes contrafactuais.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Engine</div>
+                    <h3>Daedalus</h3>
+                    <p>Recupera padroes de acervos processados e gera scripts CAD/BIM. Geracao de scripts Civil3D e Revit. Codificacao holografica de redundancia, segregacao topologica de dados.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">O que detecta</p>
+            <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                <div class="card">
+                    <h3>Toda Norma Referenciada</h3>
+                    <p>ASTM, AASHTO, ACI, IBC, OSHA — detectadas e cruzadas contra o que sua jurisdicao realmente exige.</p>
+                </div>
+                <div class="card">
+                    <h3>Obrigacoes e Alertas</h3>
+                    <p>As clausulas "shall", armadilhas de responsabilidade, prazos enterrados no boilerplate que ninguem le ate ser tarde demais.</p>
+                </div>
+                <div class="card">
+                    <h3>Prazos e Marcos</h3>
+                    <p>Notice to proceed, janelas de submittals, substantial completion — organizados num cronograma que voce consegue acompanhar.</p>
+                </div>
+                <div class="card">
+                    <h3>Nomes e Dados Sensiveis</h3>
+                    <p>Numeros de CREA, CPFs, dados de contato — sinalizados antes de qualquer coisa entrar em qualquer sistema de IA.</p>
+                </div>
+                <div class="card">
+                    <h3>O Dinheiro</h3>
+                    <p>Valor do contrato, retencao, multas por atraso, condicoes de pagamento — os numeros que seu gerente de projeto precisa no dia um.</p>
+                </div>
+                <div class="card">
+                    <h3>Quem e Quem</h3>
+                    <p>Proprietario, empreiteiro, engenheiro responsavel, subcontratados — a IA identifica os envolvidos e seus papeis sem precisar de template.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">Plataforma</p>
+            <div class="stats">
+                <div>
+                    <div class="stat-value">17</div>
+                    <div class="stat-label">Sistemas de simulacao</div>
+                </div>
+                <div>
+                    <div class="stat-value">15+</div>
+                    <div class="stat-label">Formatos de arquivo</div>
+                </div>
+                <div>
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">Workflows Temporal</div>
+                </div>
+                <div>
+                    <div class="stat-value">554</div>
+                    <div class="stat-label">Testes passando</div>
+                </div>
+                <div>
+                    <div class="stat-value">31k</div>
+                    <div class="stat-label">Linhas de codigo</div>
+                </div>
+                <div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Dependencias de nuvem</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow" style="text-align:center;">
+            <h2 class="section-title">Quer ver o que tem nos seus documentos?</h2>
+            <p class="section-desc">Rodamos seus documentos pelo pipeline e mostramos o que o AECai encontra. Sem compromisso. Nenhum dado sai do seu predio.</p>
+            <a href="/pt/contato" class="btn btn-primary">Solicitar Avaliacao</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/contato">Contato</a>
+                <a href="/aecai" class="lang-toggle" title="English">&#127482;&#127480;</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

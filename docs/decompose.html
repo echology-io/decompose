@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decompose — The Missing Cognitive Primitive for AI Agents</title>
+    <meta name="description" content="Text in, classified structured units out. No LLM. No setup. One function call. Works with any model.">
+    <meta property="og:title" content="Decompose — The Missing Cognitive Primitive for AI Agents">
+    <meta property="og:description" content="Text in, classified structured units out. No LLM. No setup. One function call.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://echology.io/decompose">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Decompose — The Missing Cognitive Primitive">
+    <meta name="twitter:description" content="Decompose any text into classified semantic units. Authority, risk, attention, entities. No LLM. Deterministic.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/about">About</a>
+                <a href="/aecai">AECai</a>
+                <a href="/decompose" class="active">Decompose</a>
+                <a href="/blog">Blog</a>
+                <a href="/contact">Contact</a>
+                <a href="/pt/decompose" class="lang-toggle" title="Portugues">&#127463;&#127479;</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Stop prompting.<br><span>Start decomposing.</span></h1>
+            <p class="sub">Decompose is the missing cognitive primitive for AI agents. Text in, classified structured units out. No LLM. No setup. One function call.</p>
+            <div class="btn-group">
+                <a href="https://pypi.org/project/decompose-mcp/" class="btn btn-primary">pip install decompose-mcp</a>
+                <a href="https://github.com/echology-io/decompose" class="btn btn-outline">View on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">Before / After</p>
+            <p class="section-desc">Real output from the <a href="https://modelcontextprotocol.io/specification/2025-03-26/basic/transports">MCP Transport Specification</a>.</p>
+            <div class="panels">
+                <div class="panel">
+                    <div class="panel-label">What your agent sees today</div>
+<span class="cmt">Your agent gets this blob. It has to read
+every word to figure out what matters.</span>
+
+## Overview
+MCP provides a standardized way for applications
+to share contextual information with language
+models, expose tools and capabilities to AI
+systems, and build composable integrations.
+
+## stdio Transport
+Messages are delimited by newlines and MUST NOT
+contain embedded newlines. The server MUST NOT
+write anything to stdout that is not a valid
+MCP message. The client MUST NOT write anything
+to the server stdin that is not a valid message.
+
+## Security Warning
+Servers MUST validate the Origin header on all
+incoming connections to prevent DNS rebinding
+attacks. Servers SHOULD bind only to localhost.
+Servers SHOULD implement proper authentication.
+Without these protections, attackers could use
+DNS rebinding to interact with local MCP servers.
+
+## Implementation Guidelines
+Implementors SHOULD build robust consent and
+authorization flows. They should provide clear
+documentation and implement appropriate access
+controls.
+                </div>
+                <div class="panel accent">
+                    <div class="panel-label">What decompose returns</div>
+<span class="cmt">4 units. Your agent reads one.</span>
+
+<span class="dim">Unit 1 &mdash; Overview</span>
+<span class="dim">  attention: <span class="num">0.0</span>  authority: informational</span>
+<span class="dim">  risk: informational  type: narrative</span>
+<span class="dim">  <span class="cmt">&rarr; skip</span></span>
+
+<span class="dim">Unit 2 &mdash; stdio Transport</span>
+<span class="dim">  attention: <span class="num">0.9</span>  authority: prohibitive</span>
+<span class="dim">  risk: informational  type: requirement</span>
+<span class="dim">  <span class="cmt">&rarr; low priority</span></span>
+
+<span class="hi">Unit 3 &mdash; Security Warning</span>
+<span class="hi">  attention: <span class="num">4.5</span>  authority: <span class="str">directive</span></span>
+<span class="hi">  risk: <span class="str">security</span>  type: <span class="str">requirement</span></span>
+<span class="hi">  actionable: <span class="bool">true</span></span>
+<span class="hi">  <span class="str">&rarr; read this</span></span>
+
+<span class="dim">Unit 4 &mdash; Implementation Guidelines</span>
+<span class="dim">  attention: <span class="num">0.4</span>  authority: directive</span>
+<span class="dim">  risk: informational  type: informational</span>
+<span class="dim">  <span class="cmt">&rarr; low priority</span></span>
+                </div>
+            </div>
+            <div class="legend">
+                <p><strong>attention</strong> &mdash; 0&ndash;10 priority score. Unit 3 scores 4.5 (security risk + directive authority). The overview scores 0.0. Your agent knows where to focus.</p>
+                <p><strong>risk: security</strong> &mdash; "attackers", "DNS rebinding", "authentication" trigger security risk detection. The overview and guidelines carry no risk signal.</p>
+                <p><strong>authority</strong> &mdash; MUST/MUST NOT = mandatory/prohibitive. SHOULD = directive. Plain prose = informational. Your agent knows what's binding vs. advisory.</p>
+                <p><strong>actionable</strong> &mdash; Unit 3 requires action: validate Origin headers, bind to localhost, implement auth. The overview requires nothing.</p>
+                <p><strong>source</strong> &mdash; This is real output. Run it yourself: <code>curl spec.modelcontextprotocol.io | python -m decompose</code></p>
+            </div>
+            <div class="btn-group" style="margin-top: 32px;">
+                <a href="https://pypi.org/project/decompose-mcp/" class="btn btn-primary">Try it now</a>
+                <a href="/contact" class="btn btn-outline">Talk to us</a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">What it does</p>
+            <h2 class="section-title">Every text becomes structured intelligence.</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="tag">Classify</div>
+                    <h3>Authority Detection</h3>
+                    <p>Mandatory, prohibitive, directive, permissive, informational, conditional. Knows the difference between "shall" and "should" and "may."</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Classify</div>
+                    <h3>Risk Scoring</h3>
+                    <p>Safety-critical, compliance, financial, contractual, advisory. Each chunk gets scored and labeled by risk category.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Extract</div>
+                    <h3>Entity Recognition</h3>
+                    <p>Standards, dates, dollar amounts, percentages. Deterministic regex. No hallucinations. No API calls.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Analyze</div>
+                    <h3>Irreducibility</h3>
+                    <p>Detects content that must be preserved verbatim &mdash; legal mandates, threshold values, safety limits. Tells your model what it cannot summarize.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Chunk</div>
+                    <h3>Semantic Splitting</h3>
+                    <p>Header-aware Markdown chunking. Sentence-boundary text splitting. Each chunk preserves its heading path and structural context.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Score</div>
+                    <h3>Attention Budget</h3>
+                    <p>Every unit gets an attention score from 0&ndash;10. Your agent knows which chunks matter most without reading all of them.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">Install</p>
+            <h2 class="section-title">One line. Zero config.</h2>
+            <div class="code-block">
+<span class="cmt"># Install</span>
+pip install decompose-mcp
+
+<span class="cmt"># Use from Python</span>
+<span class="key">from</span> decompose <span class="key">import</span> decompose_text
+result = decompose_text(policy_text)
+
+<span class="cmt"># Use from CLI</span>
+cat agent_policy.md | python -m decompose --compact
+
+<span class="cmt"># Use as MCP tool</span>
+python -m decompose --serve
+            </div>
+            <div class="btn-group" style="margin-top: 24px;">
+                <a href="https://github.com/echology-io/decompose" class="btn btn-primary">View on GitHub</a>
+                <a href="/contact" class="btn btn-outline">Request a demo</a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">OpenClaw / ClawHub</p>
+            <h2 class="section-title">Available on ClawHub.</h2>
+            <p class="section-desc">Install the skill for any OpenClaw-compatible agent:</p>
+            <div class="code-block">
+clawdhub install decompose-mcp
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow">
+            <p class="section-label">MCP Integration</p>
+            <h2 class="section-title">Works with any MCP-compatible agent.</h2>
+            <p class="section-desc">Add one block to your MCP config. Your agent gets two tools: <code>decompose_text</code> and <code>decompose_url</code>.</p>
+            <div class="code-block">
+{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"decompose"</span>: {
+      <span class="key">"command"</span>: <span class="str">"python"</span>,
+      <span class="key">"args"</span>: [<span class="str">"-m"</span>, <span class="str">"decompose"</span>, <span class="str">"--serve"</span>]
+    }
+  }
+}
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">Benchmarks</p>
+            <p class="section-desc" id="bench-desc">11 documents, 162,107 characters, run on Apple Silicon.</p>
+            <div class="stats">
+                <div>
+                    <div class="stat-value" id="bench-avg-ms">13.9ms</div>
+                    <div class="stat-label">Avg per document</div>
+                </div>
+                <div>
+                    <div class="stat-value" id="bench-throughput">1,064</div>
+                    <div class="stat-label">Chars/ms throughput</div>
+                </div>
+                <div>
+                    <div class="stat-value" id="bench-units">134</div>
+                    <div class="stat-label" id="bench-units-label">Units from 11 docs</div>
+                </div>
+                <div>
+                    <div class="stat-value" id="bench-irr">26%</div>
+                    <div class="stat-label">Flagged irreducible</div>
+                </div>
+                <div>
+                    <div class="stat-value">$0</div>
+                    <div class="stat-label">Compute cost</div>
+                </div>
+                <div>
+                    <div class="stat-value" id="bench-tests">48</div>
+                    <div class="stat-label">Passing tests</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">How it trains your model</p>
+            <h2 class="section-title">Every unit is a training signal.</h2>
+            <p class="section-desc">Decompose doesn't just help agents read &mdash; it produces the structured labels that make models smarter over time.</p>
+            <div class="panels">
+                <div class="panel">
+                    <div class="panel-label">Raw document (what you have)</div>
+<span class="cmt">Anthropic's CoT prompting guide — 9,782 chars
+of prose, examples, and financial calculations.
+A model sees undifferentiated text.</span>
+
+### Why let Claude think?
+- **Accuracy:** Stepping through problems
+  reduces errors, especially in math, logic,
+  analysis, or generally complex tasks.
+- **Coherence:** Structured thinking leads to
+  more cohesive, well-organized responses.
+
+### Examples
+Best case (12% annually):
+  $10,000 * (1.12)^5 = $17,623.42
+Worst case (market crash):
+  Could lose 50% = $5,000
+
+Guaranteed: $10,000 * (1.06)^5 = $13,382.25
+
+I recommend Option B, the bond with a
+guaranteed 6% annual return.
+                </div>
+                <div class="panel accent">
+                    <div class="panel-label">Decomposed (what your model learns from)</div>
+<span class="cmt">10 units. Each one is a labeled training sample.</span>
+
+<span class="dim">Unit 3 &mdash; Why let Claude think?</span>
+<span class="dim">  authority: <span class="key">permissive</span></span>
+<span class="dim">  risk: informational  attention: <span class="num">0.1</span></span>
+<span class="dim">  irreducible: <span class="bool">false</span> &rarr; SUMMARIZABLE</span>
+<span class="dim">  <span class="cmt">&rarr; model can paraphrase this freely</span></span>
+
+<span class="hi">Unit 7 &mdash; Examples (financial analysis)</span>
+<span class="hi">  authority: <span class="key">informational</span></span>
+<span class="hi">  risk: <span class="str">financial</span>  attention: <span class="num">1.5</span></span>
+<span class="hi">  irreducible: <span class="bool">true</span> &rarr; PRESERVE_VERBATIM</span>
+<span class="hi">  financial: <span class="str">$10,000  $17,623.42  $13,382.25</span></span>
+<span class="hi">  <span class="str">&rarr; model must never alter these numbers</span></span>
+                </div>
+            </div>
+            <div class="legend">
+                <p><strong>irreducible: true</strong> &mdash; The financial calculations ($10,000 &times; 1.06^5 = $13,382.25) contain exact values. A model trained on this label learns: never paraphrase dollar amounts, formulas, or threshold values. This is how you prevent hallucinated numbers.</p>
+                <p><strong>irreducible: false</strong> &mdash; The "Why let Claude think?" section is advisory prose. A model trained on this label learns: safe to summarize, reword, or compress. This is how you save tokens without losing meaning.</p>
+                <p><strong>risk: financial</strong> &mdash; Decompose detected dollar amounts and investment calculations. A model fine-tuned on these labels learns to flag financial content for human review &mdash; even when the surrounding text looks like a tutorial.</p>
+                <p><strong>attention score</strong> &mdash; Unit 7 scores 1.5 (financial risk multiplier). Unit 3 scores 0.1 (permissive + informational). When building RAG or curriculum-weighted training, attention tells you which samples to oversample and which to skip.</p>
+            </div>
+            <div class="card-grid" style="margin-top: 32px;">
+                <div class="card">
+                    <div class="tag">Training</div>
+                    <h3>Curriculum Filtering</h3>
+                    <p>Use attention scores to weight training samples. High-attention units get oversampled. Informational filler gets downsampled. Your model learns to prioritize what matters.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Training</div>
+                    <h3>Instruction Tuning Pairs</h3>
+                    <p>Each unit is a natural (input, label) pair. Input: the raw text. Labels: authority, risk, actionable, irreducible. Fine-tune a model to classify documents the way decompose does.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Training</div>
+                    <h3>Irreducibility Guardrails</h3>
+                    <p>Units flagged PRESERVE_VERBATIM teach the model which content it must never paraphrase &mdash; exact figures, legal mandates, threshold values. This is how you stop hallucinated numbers.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Inference</div>
+                    <h3>Attention-Weighted RAG</h3>
+                    <p>Instead of stuffing entire documents into context, feed only units above your attention threshold. The model sees 1 unit instead of 10, with metadata explaining why it matters.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Inference</div>
+                    <h3>Structural Routing</h3>
+                    <p>heading_path gives your agent document topology without reading the whole thing. Route security units to a safety chain, financial units to an audit chain, informational units to /dev/null.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Inference</div>
+                    <h3>Zero-Cost Preprocessing</h3>
+                    <p>All of this runs locally in ~14ms per document. No API calls. No GPU. No tokens consumed. Structure your data before it ever touches a model.</p>
+                </div>
+            </div>
+            <div class="btn-group" style="margin-top: 32px;">
+                <a href="https://pypi.org/project/decompose-mcp/" class="btn btn-primary">Get started</a>
+                <a href="https://github.com/echology-io/decompose" class="btn btn-outline">Read the docs</a>
+                <a href="/contact" class="btn btn-outline">Talk to us</a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="section-label">What you build next</p>
+            <h2 class="section-title">Classification is the first 14ms. Here's the rest.</h2>
+            <p class="section-desc">Decompose gives you structured units. These examples show what to do with them.</p>
+            <div class="card-grid">
+                <a href="https://github.com/echology-io/decompose/blob/main/examples/rag_pipeline.py" class="card" style="text-decoration:none">
+                    <div class="tag">RAG</div>
+                    <h3>Attention-Filtered Retrieval</h3>
+                    <p>Only embed units above your attention threshold. Your vector store gets the mandatory clauses and safety requirements — not the boilerplate. Retrieval gets more relevant. Your LLM sees less noise.</p>
+                </a>
+                <a href="https://github.com/echology-io/decompose/blob/main/examples/agent_router.py" class="card" style="text-decoration:none">
+                    <div class="tag">Routing</div>
+                    <h3>Risk-Based Processing</h3>
+                    <p>Route safety-critical units to a specialized analysis chain with human review. Route financial content to audit. Skip boilerplate entirely. Three lines of code, 70% fewer tokens to the model.</p>
+                </a>
+                <a href="https://github.com/echology-io/decompose/blob/main/examples/compliance_audit.py" class="card" style="text-decoration:none">
+                    <div class="tag">Audit</div>
+                    <h3>Deterministic Audit Trail</h3>
+                    <p>Every classification is traceable to the patterns that triggered it. Run it twice on the same input — same output every time. For industries where "the model said so" isn't an acceptable answer.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container container--narrow" style="text-align:center;">
+            <h2 class="section-title">All intelligence begins with decomposition.</h2>
+            <p class="section-desc">Your model is only as good as what you feed it. Feed it structure.</p>
+            <div class="btn-group">
+                <a href="https://pypi.org/project/decompose-mcp/" class="btn btn-primary">pip install decompose-mcp</a>
+                <a href="https://github.com/echology-io/decompose" class="btn btn-outline">GitHub</a>
+                <a href="/contact" class="btn btn-outline">Contact</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

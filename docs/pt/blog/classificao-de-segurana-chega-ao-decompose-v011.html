@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificação de Segurança Chega ao Decompose v0.1.1 — Echology</title>
+    <meta name="description" content="Uma categoria de risco que faltava — e por que seu pipeline precisa dela">
+    <meta property="og:title" content="Classificação de Segurança Chega ao Decompose v0.1.1 — Echology">
+    <meta property="og:description" content="Uma categoria de risco que faltava — e por que seu pipeline precisa dela">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://echology.io/pt/blog/classificao-de-segurana-chega-ao-decompose-v011">
+    <meta property="article:published_time" content="2026-02-16">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+        .post-body { max-width: 720px; margin: 0 auto; }
+        .post-body h2 { font-size: 24px; font-weight: 700; margin: 48px 0 16px; letter-spacing: -0.3px; }
+        .post-body h3 { font-size: 18px; font-weight: 700; margin: 32px 0 12px; }
+        .post-body p { font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 20px; }
+        .post-body p strong { color: var(--fg); }
+        .post-body p code { background: var(--code-bg); padding: 2px 6px; border-radius: 3px; font-size: 14px; color: var(--accent); }
+        .post-body blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 12px 20px;
+            margin: 24px 0;
+            background: var(--code-bg);
+            border-radius: 0 6px 6px 0;
+        }
+        .post-body blockquote p { color: var(--fg); margin: 0; font-size: 15px; }
+        .post-body ul, .post-body ol { color: var(--muted); font-size: 16px; line-height: 1.75; margin-bottom: 20px; padding-left: 24px; }
+        .post-body li { margin-bottom: 8px; }
+        .post-body .code-block { margin: 24px 0; }
+        .post-meta { text-align: center; margin-bottom: 48px; }
+        .post-meta .date { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+        .post-meta .reading { font-size: 13px; color: var(--muted); margin-top: 4px; }
+        .post-body a { text-decoration: underline; text-underline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/pt/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/aecai">AECai</a>
+                <a href="/pt/decompose">Decompose</a>
+                <a href="/pt/blog" class="active">Blog</a>
+                <a href="/pt/contato">Contato</a>
+                <a href="/blog/security-classification-lands-in-decompose-v011" class="lang-toggle" title="English">&#127482;&#127480;</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container container--narrow">
+            <h1>Classificação de Segurança<br><span>Chega ao Decompose v0.1.1</span></h1>
+            <p class="sub">Uma categoria de risco que faltava — e por que seu pipeline precisa dela</p>
+            <div class="post-meta">
+                <div class="date">16 de fevereiro de 2026</div>
+                <div class="reading">3 min de leitura</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container post-body">
+            <p>---</p>
+
+            <p>Você recebe um documento. Pode ser um contrato, uma especificação técnica, um relatório de engenharia. Seu pipeline precisa decidir: este texto contém informação sensível? Credenciais expostas? Dados pessoais? Cláusulas de confidencialidade?</p>
+
+            <p>Com um LLM, você manda o texto inteiro para uma API, espera 2-4 segundos, paga por token, e recebe uma resposta que pode mudar se você rodar de novo amanhã. Em um ambiente regulado — saúde, construção civil, financeiro — essa inconsistência não é um inconveniente. É um risco operacional.</p>
+
+            <p>O Decompose sempre classificou texto em unidades semânticas de forma determinística. Mesma entrada, mesma saída, toda vez. Sem LLM, sem chave de API, sem GPU. Mas até a versão 0.1.0, a classificação de risco cobria categorias como <code>legal</code>, <code>financial</code>, <code>technical</code> — e ignorava <code>security</code>.</p>
+
+            <p>Isso mudou na v0.1.1.</p>
+
+            <h2>O que mudou</h2>
+
+            <p>A categoria <code>security</code> agora faz parte da saída de classificação. Quando o Decompose decompõe um texto, cada unidade semântica recebe um score de risco. A partir da v0.1.1, riscos de segurança — credenciais expostas, referências a vulnerabilidades, dados pessoais, cláusulas de confidencialidade — são detectados e classificados como parte do pipeline determinístico.</p>
+
+            <p>Uma chamada de função. Sem modelo treinado. Sem dependência de nuvem.</p>
+
+<div class="code-block">from decompose import decompose_text
+
+text = """
+Acesso ao servidor de produção:
+Host: 10.0.0.42
+Usuário: admin
+Senha: s3nh@_pr0duc40_2024
+Porta SSH: 22
+"""
+
+result = decompose_text(text)
+for unit in result:
+    print(f"[{unit['classification']}] risco={unit['risk_score']} → {unit['text'][:60]}")</div>
+
+            <p>A saída classifica cada unidade com sua categoria de risco. Credenciais são sinalizadas como <code>security</code>. Determinístico. Reproduzível. Sem latência de rede.</p>
+
+            <h2>O que mais entrou na v0.1.1</h2>
+
+            <p>Além da categoria de segurança, esta release trouxe:</p>
+
+            <ul>
+                <li>**Publicação no ClawHub marketplace** — o Decompose agora pode ser instalado como servidor MCP diretamente via ClawHub/OpenClaw</li>
+
+            <ul>
+                <li>**Seção de instalação via ClawHub** na página do produto</li>
+
+            <ul>
+                <li>**Meta tags Open Graph e Twitter Card** em todas as páginas do site</li>
+
+            <ul>
+                <li>**Links para o blog** no README e SKILL.md</li>
+
+            <ul>
+                <li>**Arquivo CONTRIBUTING.md** para colaboradores</li>
+
+            <ul>
+                <li>**Licença formal** adicionada ao repositório</li>
+
+            <p>São 31 commits, 44 arquivos modificados. Infraestrutura de projeto real, não cosméticos.</p>
+
+            <h2>Como funciona a classificação</h2>
+
+            <p>O Decompose não usa embeddings. Não usa modelo de linguagem. A classificação é baseada em análise determinística do texto — padrões léxicos, estrutura sintática, heurísticas calibradas. O resultado é um JSON estruturado com unidades semânticas, cada uma com:</p>
+
+            <ul>
+                <li>`classification`: categoria semântica da unidade</li>
+
+            <ul>
+                <li>`risk_score`: score numérico de risco</li>
+
+            <ul>
+                <li>`authority_level`: nível de autoridade da declaração</li>
+
+            <ul>
+                <li>`entities`: entidades extraídas</li>
+
+            <ul>
+                <li>`irreducible`: flag de irredutibilidade</li>
+
+            <p>A categoria <code>security</code> se encaixa nesse framework existente. Não é um módulo separado — é uma expansão do vocabulário de classificação.</p>
+
+            <h2>Configuração MCP</h2>
+
+            <p>Se você usa Claude Code, Cursor, ou qualquer cliente MCP, a configuração é direta:</p>
+
+<div class="code-block">{
+  "mcpServers": {
+    "decompose": {
+      "command": "uvx",
+      "args": ["decompose-mcp", "--serve"]
+    }
+  }
+}</div>
+
+            <p>O agente ganha acesso a <code>decompose_text</code> e <code>decompose_url</code> como ferramentas. A classificação de segurança funciona automaticamente — não precisa habilitar nada.</p>
+
+            <h2>O que o Decompose não faz</h2>
+
+            <p>Clareza sobre limitações:</p>
+
+            <ul>
+                <li>**Não é um scanner de vulnerabilidades.** Ele classifica texto — não executa código, não faz análise estática, não testa endpoints.</li>
+
+            <ul>
+                <li>**Não substitui um DLP.** Se você precisa de Data Loss Prevention em escala empresarial com políticas granulares, o Decompose não é isso.</li>
+
+            <ul>
+                <li>**Não é probabilístico.** Isso é uma vantagem e uma limitação. Ele não vai "descobrir" padrões novos que não estão nas heurísticas. Mas também não vai inventar falsos positivos diferentes a cada execução.</li>
+
+            <ul>
+                <li>**Não processa imagens, áudio ou binários.** Texto. HTML. Markdown. Esse é o escopo.</li>
+
+            <h2>Por que isso importa</h2>
+
+            <p>Em pipelines de dados que processam documentos de construção civil, contratos, especificações técnicas — a pergunta "este documento contém informação sensível?" aparece antes de qualquer outra decisão de roteamento.</p>
+
+            <p>Se a resposta depende de um LLM, você tem três problemas: custo por documento, latência por chamada, e não-determinismo entre execuções. Em um audit trail, "o modelo disse que era seguro" não é uma resposta aceitável. "A classificação determinística retornou risk_score=0 para security em todas as 14 unidades do documento" — isso é auditável.</p>
+
+            <p>O Decompose não compete com LLMs. Ele cobre a camada que vem antes: triagem determinística, classificação reproduzível, extração estruturada. O LLM entra depois, nos casos que realmente precisam de raciocínio. O resto — e na maioria dos pipelines, "o resto" é 80-90% do volume — se resolve com uma chamada de função que roda em milissegundos.</p>
+
+            <h2>Instale agora</h2>
+
+<div class="code-block">pip install decompose-mcp==0.1.1</div>
+
+            <p>Código aberto. Repositório em [github.com/echology-io/decompose](https://github.com/echology-io/decompose).</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/contato">Contato</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
