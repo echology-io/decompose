@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onde o Decompose Se Encaixa — Echology</title>
+    <meta name="description" content="O Decompose não é o produto completo. É a etapa estrutural que torna tudo o mais possível. Veja o quadro completo.">
+    <meta property="og:title" content="Onde o Decompose Se Encaixa — Echology">
+    <meta property="og:description" content="O Decompose é o primitivo cognitivo open-source. O AECai é a plataforma completa. Veja como eles se conectam.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://echology.io/pt/blog/onde-o-decompose-se-encaixa">
+    <meta property="article:published_time" content="2026-02-20">
+    <meta name="twitter:card" content="summary">
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+        .post-body { max-width: 720px; margin: 0 auto; }
+        .post-body h2 { font-size: 24px; font-weight: 700; margin: 48px 0 16px; letter-spacing: -0.3px; }
+        .post-body h3 { font-size: 18px; font-weight: 700; margin: 32px 0 12px; }
+        .post-body p { font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 20px; }
+        .post-body p strong { color: var(--fg); }
+        .post-body p code { background: var(--code-bg); padding: 2px 6px; border-radius: 3px; font-size: 14px; color: var(--accent); }
+        .post-body blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 12px 20px;
+            margin: 24px 0;
+            background: var(--code-bg);
+            border-radius: 0 6px 6px 0;
+        }
+        .post-body blockquote p { color: var(--fg); margin: 0; font-size: 15px; }
+        .post-body ul, .post-body ol { color: var(--muted); font-size: 16px; line-height: 1.75; margin-bottom: 20px; padding-left: 24px; }
+        .post-body li { margin-bottom: 8px; }
+        .post-body .code-block { margin: 24px 0; }
+        .post-body .panels { margin: 32px 0; }
+        .post-meta { text-align: center; margin-bottom: 48px; }
+        .post-meta .date { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+        .post-meta .reading { font-size: 13px; color: var(--muted); margin-top: 4px; }
+        .post-body a { text-decoration: underline; text-underline-offset: 2px; }
+
+        /* ── Pipeline Diagram ─────────────────────── */
+        .pipeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 32px 0;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 13px;
+        }
+        .pipeline-row {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+        .pipeline-stage {
+            flex: 1;
+            padding: 14px 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+            background: var(--code-bg);
+            position: relative;
+        }
+        .pipeline-stage .stage-num {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .pipeline-stage .stage-name {
+            font-weight: 700;
+            color: var(--fg);
+            font-size: 14px;
+        }
+        .pipeline-stage .stage-desc {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+        .pipeline-stage.highlight {
+            border-color: var(--accent);
+            background: rgba(200, 168, 78, 0.08);
+        }
+        .pipeline-stage.highlight .stage-name {
+            color: var(--accent);
+        }
+        .pipeline-arrow {
+            text-align: center;
+            color: var(--muted);
+            font-size: 18px;
+            padding: 6px 0;
+        }
+
+        /* ── Architecture Diagram ─────────────────── */
+        .arch-diagram {
+            margin: 32px 0;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+        .arch-layer {
+            border: 1px solid var(--border);
+            background: var(--code-bg);
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+        .arch-layer.open-source {
+            border-color: var(--accent);
+            background: rgba(200, 168, 78, 0.06);
+        }
+        .arch-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+        .arch-label.gold { color: var(--accent); }
+        .arch-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--fg);
+        }
+        .arch-title.gold { color: var(--accent); }
+        .arch-desc {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+        .arch-engines {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .arch-engine {
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 3px;
+            text-align: center;
+        }
+        .arch-engine .eng-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--fg);
+        }
+        .arch-engine .eng-role {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+        .arch-connector {
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+            padding: 4px 0;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+
+        /* ── Comparison Diagram ───────────────────── */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 32px 0;
+        }
+        .compare-col {
+            border: 1px solid var(--border);
+            background: var(--code-bg);
+            padding: 20px;
+            border-radius: 4px;
+        }
+        .compare-col.gold {
+            border-color: var(--accent);
+            background: rgba(200, 168, 78, 0.06);
+        }
+        .compare-col h4 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            color: var(--muted);
+        }
+        .compare-col.gold h4 { color: var(--accent); }
+        .compare-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .compare-col ul li {
+            font-size: 13px;
+            color: var(--muted);
+            padding: 4px 0;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            line-height: 1.5;
+        }
+        .compare-col.gold ul li { color: var(--fg); }
+
+        @media (max-width: 600px) {
+            .compare-grid { grid-template-columns: 1fr; }
+            .arch-engines { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/pt/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/aecai">AECai</a>
+                <a href="/pt/decompose">Decompose</a>
+                <a href="/pt/blog" class="active">Blog</a>
+                <a href="/pt/contato">Contato</a>
+                <a href="/blog/where-decompose-fits" class="lang-toggle" title="English">&#127482;&#127480;</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container container--narrow">
+            <h1>Onde o Decompose<br><span>Realmente Se Encaixa</span></h1>
+            <p class="sub">Não é o produto completo. É a etapa estrutural que torna tudo o mais possível.</p>
+            <div class="post-meta">
+                <div class="date">20 de fevereiro de 2026</div>
+                <div class="reading">6 min de leitura</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container post-body">
+
+            <p>As pessoas encontram o <a href="/pt/decompose">Decompose</a> e acham que encontraram o produto. Não encontraram. O Decompose é uma etapa em um sistema muito maior. É o primitivo cognitivo open-source &mdash; a etapa estrutural que acontece antes de o raciocínio começar.</p>
+
+            <p>O produto completo é o <a href="/pt/aecai">AECai</a>. Esta publicação explica como eles se conectam, o que cada parte faz e por que tornamos open-source a parte que tornamos.</p>
+
+            <h2>O pipeline</h2>
+
+            <p>Todo documento que entra no AECai passa por cinco etapas. O Decompose é a Etapa 4.</p>
+
+            <div class="pipeline">
+                <div class="pipeline-row">
+                    <div class="pipeline-stage">
+                        <span class="stage-num">Etapa 1</span>
+                        <span class="stage-name">Parsear</span>
+                        <span class="stage-desc">PDF, DOCX, DXF, imagens &rarr; texto bruto</span>
+                    </div>
+                </div>
+                <div class="pipeline-arrow">&darr;</div>
+                <div class="pipeline-row">
+                    <div class="pipeline-stage">
+                        <span class="stage-num">Etapa 2</span>
+                        <span class="stage-name">Classificar</span>
+                        <span class="stage-desc">Tipo de documento, domínio, indicadores de risco</span>
+                    </div>
+                </div>
+                <div class="pipeline-arrow">&darr;</div>
+                <div class="pipeline-row">
+                    <div class="pipeline-stage">
+                        <span class="stage-num">Etapa 3</span>
+                        <span class="stage-name">Enriquecer</span>
+                        <span class="stage-desc">Normas, PII, cronogramas, financeiros, contratos</span>
+                    </div>
+                </div>
+                <div class="pipeline-arrow">&darr;</div>
+                <div class="pipeline-row">
+                    <div class="pipeline-stage highlight">
+                        <span class="stage-num">Etapa 4 &mdash; Open Source</span>
+                        <span class="stage-name">Decompose</span>
+                        <span class="stage-desc">Chunking semântico, autoridade, risco, pontuação de atenção</span>
+                    </div>
+                </div>
+                <div class="pipeline-arrow">&darr;</div>
+                <div class="pipeline-row">
+                    <div class="pipeline-stage">
+                        <span class="stage-num">Etapa 5</span>
+                        <span class="stage-name">Indexar</span>
+                        <span class="stage-desc">Embeddings vetoriais &rarr; Qdrant &rarr; arquivo pesquisável</span>
+                    </div>
+                </div>
+            </div>
+
+            <p>As Etapas 1&ndash;3 preparam o documento. A Etapa 4 lhe dá estrutura. A Etapa 5 o torna pesquisável. O Decompose é a dobradiça &mdash; é onde o texto bruto se torna unidades semânticas classificadas e pontuadas sobre as quais tudo downstream pode raciocinar.</p>
+
+            <h2>O que o Decompose faz (e não faz)</h2>
+
+            <p>O Decompose é uma biblioteca autônoma. Você pode <code>pip install decompose-mcp</code> agora mesmo e usá-lo sem o AECai, sem a Echology, sem mais nada. Ele faz exatamente uma coisa:</p>
+
+            <blockquote><p>Texto entra, unidades semânticas classificadas saem. Autoridade, risco, atenção, entidades. Sem LLM. Determinístico.</p></blockquote>
+
+            <p>Só isso. Ele não parseia PDFs. Não executa OCR. Não pesquisa um banco de dados vetorial. Não conversa com um LLM. Recebe texto e retorna estrutura.</p>
+
+            <div class="compare-grid">
+                <div class="compare-col gold">
+                    <h4>O Decompose faz</h4>
+                    <ul>
+                        <li>Dividir texto em unidades semânticas</li>
+                        <li>Classificar autoridade (obrigatório, diretivo, permissivo)</li>
+                        <li>Pontuar risco (segurança, financeiro, conformidade)</li>
+                        <li>Calcular atenção (prioridade de 0&ndash;10)</li>
+                        <li>Extrair entidades (normas, datas, valores)</li>
+                        <li>Sinalizar conteúdo irredutível</li>
+                        <li>Executar em ~14ms, deterministicamente</li>
+                    </ul>
+                </div>
+                <div class="compare-col">
+                    <h4>O AECai adiciona</h4>
+                    <ul>
+                        <li>Parsear mais de 15 formatos de arquivo (PDF, DOCX, DXF, imagens)</li>
+                        <li>Classificação de documentos com IA via LLM local</li>
+                        <li>Referência cruzada de normas por jurisdição</li>
+                        <li>Detecção e redação de PII</li>
+                        <li>Plugins de análise de cronograma e financeira</li>
+                        <li>Busca vetorial em todo o seu arquivo</li>
+                        <li>Verificação, trilhas de auditoria e certificados</li>
+                        <li>Geração de scripts CAD/BIM</li>
+                        <li>Orquestração de fluxos de trabalho (Temporal)</li>
+                        <li>Servidor de API completo (FastAPI)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p>O Decompose é o primitivo cognitivo. O AECai é a plataforma de inteligência construída sobre ele.</p>
+
+            <h2>Os três motores</h2>
+
+            <p>O AECai tem três motores. Cada um lida com uma fase diferente da inteligência de documentos. O Decompose vive dentro do primeiro.</p>
+
+            <div class="arch-diagram">
+                <div class="arch-layer">
+                    <div class="arch-label">Seus documentos</div>
+                    <div class="arch-desc">PDFs, especificações, contratos, submittals, RFIs, desenhos &mdash; tudo que sua empresa produz ou recebe</div>
+                </div>
+                <div class="arch-connector">&darr;</div>
+                <div class="arch-engines">
+                    <div class="arch-engine">
+                        <div class="eng-name">Vanta</div>
+                        <div class="eng-role">Ler &amp; classificar</div>
+                    </div>
+                    <div class="arch-engine">
+                        <div class="eng-name">Aletheia</div>
+                        <div class="eng-role">Verificar &amp; auditar</div>
+                    </div>
+                    <div class="arch-engine">
+                        <div class="eng-name">Daedalus</div>
+                        <div class="eng-role">Recuperar &amp; agir</div>
+                    </div>
+                </div>
+                <div class="arch-connector">&darr;</div>
+                <div class="arch-layer open-source">
+                    <div class="arch-label gold">Open source &mdash; dentro do Vanta</div>
+                    <div class="arch-title gold">Decompose</div>
+                    <div class="arch-desc">A etapa estrutural. Todo documento que o Vanta lê é decomposto em unidades semânticas classificadas antes de qualquer outra coisa acontecer. Esta é a parte que tornamos open-source.</div>
+                </div>
+                <div class="arch-connector">&darr;</div>
+                <div class="arch-layer">
+                    <div class="arch-label">Inteligência estruturada</div>
+                    <div class="arch-desc">Arquivo pesquisável, saídas verificadas, trilhas de auditoria, scripts gerados &mdash; o entregável real</div>
+                </div>
+            </div>
+
+            <p><strong>Vanta</strong> é o motor de ingestão. Ele lê documentos, os classifica, executa plugins de enriquecimento e chama o Decompose para quebrá-los em unidades semânticas. Parsear &rarr; Classificar &rarr; Enriquecer &rarr; Decompose &rarr; Indexar. Esse é o pipeline do Vanta.</p>
+
+            <p><strong>Aletheia</strong> é o motor de verificação. Ele verifica unidades decompostas em relação a normas específicas por jurisdição, valida referências cruzadas, executa verificações de consistência e emite certificados de auditoria. Quando o AECai diz que um documento é aprovado, o Aletheia é a razão.</p>
+
+            <p><strong>Daedalus</strong> é o motor de recuperação e ação. Ele pesquisa o arquivo indexado, encontra padrões entre documentos e gera saídas &mdash; incluindo scripts para Civil3D e Revit. Quando um engenheiro pergunta "mostre-me toda especificação de fundação que referencia ACI 318," o Daedalus responde.</p>
+
+            <h2>Por que tornamos esta parte open-source</h2>
+
+            <p>Três razões.</p>
+
+            <p><strong>1. Ela ensina a arquitetura.</strong> Se você entende o que o Decompose faz &mdash; dividir texto em unidades classificadas com pontuações de autoridade, risco e atenção &mdash; você entende o padrão de design fundamental por trás de todo o AECai. Estrutura antes do raciocínio. Classificação antes da geração. Pré-processamento determinístico antes da inferência probabilística.</p>
+
+            <p><strong>2. É útil por conta própria.</strong> Você não precisa da plataforma AECai completa para se beneficiar da decomposição. Se você está construindo um pipeline RAG, um agente de IA ou qualquer sistema que processa documentos &mdash; o Decompose melhora o seu modelo ao lhe dar estrutura antes de começar a pensar.</p>
+
+            <p><strong>3. É a entrada.</strong> Equipes que começam com o Decompose aprendem o vocabulário: níveis de autoridade, categorias de risco, pontuações de atenção, irredutibilidade. Quando estiverem prontas para a plataforma completa &mdash; parseamento, verificação, busca, auditoria &mdash; elas já falam a linguagem.</p>
+
+            <h2>O quadro completo</h2>
+
+            <p>Aqui está a forma mais simples de pensar sobre isso:</p>
+
+            <div class="code-block">
+<span class="cmt">  Echology (a empresa)</span>
+<span class="cmt">  &boxvr;&boxh;&boxh; Decompose   &mdash;  open source, gratuito, pip install</span>
+<span class="cmt">  &boxur;&boxh;&boxh; AECai        &mdash;  plataforma comercial</span>
+<span class="cmt">       &boxvr;&boxh;&boxh; Vanta     (ler + classificar + decompor + indexar)</span>
+<span class="cmt">       &boxvr;&boxh;&boxh; Aletheia  (verificar + auditar + certificar)</span>
+<span class="cmt">       &boxur;&boxh;&boxh; Daedalus  (buscar + recuperar + gerar)</span>
+            </div>
+
+            <p>O Decompose é o primitivo cognitivo. O AECai é o que acontece quando você pega esse primitivo e constrói uma plataforma de inteligência de documentos empresariais ao redor dele. Vanta, Aletheia e Daedalus são os três motores que fazem essa plataforma funcionar.</p>
+
+            <p>Tudo roda localmente. Sem nuvem. Nenhum dado sai do seu prédio. Isso não é uma limitação &mdash; para os setores que atendemos, é o requisito.</p>
+
+            <h2>Onde se encaixa no AEC</h2>
+
+            <p>Empresas de AEC lidam com documentos que têm peso legal. Especificações, contratos, submittals, RFIs &mdash; não são artigos, são obrigações. O Decompose transforma cada um deles em unidades pontuadas e classificadas sobre as quais sistemas downstream podem raciocinar.</p>
+
+            <div class="card-grid" style="margin: 32px 0;">
+                <div class="card">
+                    <div class="tag">Especificações</div>
+                    <h3>Revisão de Especificações</h3>
+                    <p>Uma especificação estrutural de 200 páginas chega. O Decompose encontra as 40 cláusulas obrigatórias, sinaliza os 12 requisitos críticos de segurança, extrai cada referência ASTM e ACI, e pontua cada seção por atenção. Seu engenheiro lê 30 páginas em vez de 200.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Contratos</div>
+                    <h3>Análise de Contratos</h3>
+                    <p>Multas por atraso, retenção, indenização, seguros mínimos &mdash; enterrados no texto padrão. O Decompose traz à superfície cada obrigação financeira e sinaliza cláusulas irredutíveis que não podem ser parafraseadas. Seu gerente de projeto vê o dinheiro no primeiro dia.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Submittals</div>
+                    <h3>Processamento de Submittals</h3>
+                    <p>Fichas técnicas de produtos, desenhos de fabricação, certificados de materiais. O Decompose classifica quais seções carregam requisitos de conformidade obrigatórios versus conteúdo informativo de marketing. Encaminhe as seções de conformidade ao seu engenheiro. Pule o resto.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">RFIs</div>
+                    <h3>Triagem de RFIs</h3>
+                    <p>Um RFI referencia três seções de especificação e pergunta sobre uma substituição. O Decompose quebra as seções referenciadas em unidades, as pontua e traz à superfície as restrições obrigatórias que a substituição precisa satisfazer. Sua resposta é fundamentada, não especulativa.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">QA/QC</div>
+                    <h3>Conformidade com Normas</h3>
+                    <p>Alimente suas normas internas no Decompose. Alimente os documentos recebidos no Decompose. Compare as unidades estruturadas. Cada lacuna entre "o que exigimos" e "o que eles enviaram" torna-se visível e auditável.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Treinamento</div>
+                    <h3>Fine-Tuning de Modelos</h3>
+                    <p>Cada unidade decomposta é uma amostra de treinamento rotulada: autoridade, risco, atenção, irredutibilidade. Construa um corpus de documentos AEC, decomponha todos eles e você terá dados de treinamento estruturados para IA específica do domínio. Sem rotulagem manual.</p>
+                </div>
+            </div>
+
+            <h2>Onde se encaixa além do AEC</h2>
+
+            <p>O Decompose foi construído para AEC, mas a arquitetura é universal. Qualquer setor que processa documentos com obrigações, risco e requisitos de conformidade pode usá-lo. Aqui estão os fluxos de trabalho que estamos vendo.</p>
+
+            <h3>Jurídico</h3>
+
+            <p>Escritórios de advocacia processam contratos, regulamentos, peças processuais e documentação de conformidade. O Decompose classifica níveis de autoridade ("deverá" vs. "deveria" vs. "pode"), extrai cada obrigação e prazo, e sinaliza cláusulas que devem ser preservadas literalmente. <strong>Fluxo de trabalho:</strong> Documento de entrada &rarr; Decompose &rarr; encaminhar cláusulas obrigatórias para revisão do advogado, pular seções informativas &rarr; gerar resumo de obrigações com trilha de auditoria.</p>
+
+            <h3>Seguros</h3>
+
+            <p>Subscritores leem apólices, endossos e documentos de sinistros o dia todo. O Decompose traz à superfície cada limite de cobertura, exclusão e cláusula condicional com pontuações de atenção. <strong>Fluxo de trabalho:</strong> Documento de apólice &rarr; Decompose &rarr; extrair termos e condições financeiras &rarr; sinalizar exclusões e limitações &rarr; comparar com envios de sinistros para lacunas de cobertura.</p>
+
+            <h3>Saúde &amp; Ciências da Vida</h3>
+
+            <p>Protocolos clínicos, submissões regulatórias e documentação de conformidade carregam requisitos críticos de segurança. O Decompose identifica procedimentos obrigatórios, sinaliza valores de dosagem e limiar como irredutíveis, e pontua o risco por seção. <strong>Fluxo de trabalho:</strong> Documento de protocolo &rarr; Decompose &rarr; sinalizar seções críticas de segurança &rarr; preservar dosagens literalmente &rarr; encaminhar para revisão de conformidade.</p>
+
+            <h3>Governo &amp; Defesa</h3>
+
+            <p>Aquisições federais, SOWs e orientações regulatórias seguem linguagem de autoridade estrita (FAR, DFARS, NIST). O Decompose classifica cada requisito por nível de autoridade e extrai referências a normas. <strong>Fluxo de trabalho:</strong> RFP ou SOW &rarr; Decompose &rarr; extrair cada requisito "deverá" &rarr; mapear para lista de verificação de conformidade &rarr; identificar lacunas na resposta da proposta.</p>
+
+            <h3>Serviços Financeiros</h3>
+
+            <p>Documentos de empréstimo, registros regulatórios e relatórios de auditoria contêm obrigações enterradas em prosa densa. O Decompose extrai cada valor monetário, percentual e prazo, sinaliza seções de risco financeiro e pontua a atenção. <strong>Fluxo de trabalho:</strong> Registro regulatório &rarr; Decompose &rarr; extrair entidades financeiras &rarr; sinalizar obrigações de conformidade &rarr; alimentar dados estruturados para modelos de risco.</p>
+
+            <h3>Qualquer Pipeline RAG</h3>
+
+            <p>Se você está construindo geração aumentada por recuperação (RAG) para qualquer domínio &mdash; o Decompose é a etapa de pré-processamento que faz funcionar melhor. Em vez de incorporar chunks de texto bruto, incorpore unidades semânticas classificadas. Sua busca vetorial retorna cláusulas obrigatórias e requisitos de segurança em vez de parágrafos aleatórios.</p>
+
+            <div class="code-block">
+<span class="cmt"># Generic workflow for any industry</span>
+
+<span class="cmt"># 1. Decompose the document</span>
+<span class="key">from</span> decompose <span class="key">import</span> decompose_text
+units = decompose_text(document_text)[<span class="str">"units"</span>]
+
+<span class="cmt"># 2. Route by priority</span>
+critical = [u <span class="key">for</span> u <span class="key">in</span> units <span class="key">if</span> u[<span class="str">"attention"</span>] >= <span class="num">3.0</span>]
+review   = [u <span class="key">for</span> u <span class="key">in</span> units <span class="key">if</span> u[<span class="str">"risk"</span>] != <span class="str">"informational"</span>]
+skip     = [u <span class="key">for</span> u <span class="key">in</span> units <span class="key">if</span> u[<span class="str">"attention"</span>] < <span class="num">0.5</span>]
+
+<span class="cmt"># 3. Protect what can't be changed</span>
+verbatim = [u <span class="key">for</span> u <span class="key">in</span> units <span class="key">if</span> u[<span class="str">"irreducible"</span>]]
+
+<span class="cmt"># 4. Send only what matters to your LLM</span>
+<span class="key">for</span> unit <span class="key">in</span> critical:
+    response = llm.analyze(unit[<span class="str">"text"</span>], unit[<span class="str">"metadata"</span>])
+            </div>
+
+            <p>O padrão é sempre o mesmo: decompor primeiro, rotear por estrutura, proteger o que é irredutível, e enviar apenas o conteúdo de alta atenção ao modelo. O setor muda. A arquitetura não.</p>
+
+            <h2>Experimente</h2>
+
+            <p>Comece com o Decompose. Veja como a estrutura se parece.</p>
+
+            <div class="code-block">
+pip install decompose-mcp
+
+<span class="cmt"># Decompose any text</span>
+<span class="key">from</span> decompose <span class="key">import</span> decompose_text
+result = decompose_text(open(<span class="str">"contract.md"</span>).read())
+
+<span class="cmt"># Or run as an MCP tool for your AI agent</span>
+python -m decompose --serve
+            </div>
+
+            <p>Quando você estiver pronto para o pipeline completo &mdash; parseamento, verificação, busca, auditoria, geração de scripts &mdash; esse é o <a href="/pt/aecai">AECai</a>.</p>
+
+            <div class="btn-group" style="margin-top: 40px; margin-bottom: 20px;">
+                <a href="/pt/decompose" class="btn btn-primary">Decompose</a>
+                <a href="/pt/aecai" class="btn btn-outline">AECai</a>
+                <a href="/pt/contato" class="btn btn-outline">Fale conosco</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/pt/sobre">Sobre</a>
+                <a href="/pt/contato">Contato</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
