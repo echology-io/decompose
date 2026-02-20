@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Policy QC — Document Compare Engine</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+:root {
+    --bg: #0a0e14;
+    --surface: #111820;
+    --surface2: #1a2230;
+    --border: #253040;
+    --text: #d4dae4;
+    --text-dim: #7a8a9e;
+    --accent: #3b9eff;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --yellow: #f39c12;
+    --gold: #c9a84c;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:.75rem}
+.logo svg{width:32px;height:32px}
+.logo h1{font-size:1.25rem;font-weight:600;letter-spacing:-.02em}
+.logo h1 span{color:var(--accent)}
+.logo-sub{font-size:.75rem;color:var(--text-dim);margin-top:2px}
+.powered{font-size:.75rem;color:var(--text-dim);display:flex;align-items:center;gap:.4rem}
+.powered a{color:var(--gold);text-decoration:none;font-weight:600}
+
+main{padding:2rem;max-width:1400px;margin:0 auto}
+
+.main-tabs{display:flex;gap:0;margin-bottom:2rem;border-bottom:2px solid var(--border)}
+.main-tab{padding:.75rem 1.5rem;font-size:.9rem;cursor:pointer;border:none;background:transparent;color:var(--text-dim);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.main-tab:hover{color:var(--text)}
+.main-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.set-selector{display:flex;gap:1rem;margin-bottom:2rem}
+.set-card{flex:1;background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.25rem;cursor:pointer;transition:all .2s}
+.set-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.set-card.active{border-color:var(--accent);background:var(--surface2)}
+.set-card h3{font-size:1rem;margin-bottom:.5rem}
+.set-card .meta{font-size:.8rem;color:var(--text-dim);line-height:1.6}
+
+/* Drop zone */
+.drop-zone{border:2px dashed var(--border);border-radius:16px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all .3s;background:var(--surface);position:relative}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--accent);background:rgba(59,158,255,.04)}
+.drop-zone.dragover{transform:scale(1.01);box-shadow:0 0 30px rgba(59,158,255,.1)}
+.drop-zone-icon{font-size:3rem;margin-bottom:1rem;opacity:.4}
+.drop-zone h3{font-size:1.1rem;margin-bottom:.5rem;font-weight:500}
+.drop-zone p{font-size:.85rem;color:var(--text-dim);margin-bottom:1rem}
+.drop-zone .browse-btn{display:inline-block;padding:.5rem 1.5rem;background:var(--accent);color:#fff;border-radius:8px;font-size:.85rem;font-weight:500;cursor:pointer}
+.drop-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+.file-list{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.5rem}
+.file-chip{display:flex;align-items:center;gap:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem .75rem;font-size:.8rem}
+.file-chip .fi{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff;font-weight:700}
+.fi.pdf{background:#e74c3c}.fi.docx{background:#3498db}.fi.xlsx{background:#27ae60}
+.file-chip .rm{cursor:pointer;color:var(--text-dim);font-size:1.1rem;line-height:1;padding:0 2px}
+.file-chip .rm:hover{color:var(--red)}
+
+.process-btn{display:inline-block;margin-top:1rem;padding:.65rem 2rem;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s}
+.process-btn:hover{background:#2b8ae6;transform:translateY(-1px)}
+.process-btn:disabled{background:var(--border);color:var(--text-dim);cursor:not-allowed;transform:none}
+
+.server-note{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:.75rem}
+.server-note .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot.online{background:var(--green)}.dot.offline{background:var(--red)}
+
+/* Summary & comparison table */
+.summary-bar{display:flex;gap:1rem;margin-bottom:2rem}
+.stat{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;text-align:center}
+.stat .num{font-size:2rem;font-weight:700;line-height:1;margin-bottom:.25rem}
+.stat .label{font-size:.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em}
+.stat.match .num{color:var(--green)}.stat.partial .num{color:var(--yellow)}.stat.discrepancy .num{color:var(--red)}
+
+.sources-header{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:10px 10px 0 0;overflow:hidden}
+.sources-header .field-col{width:200px;min-width:200px;padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim);border-right:1px solid var(--border)}
+.sources-header .source-col{flex:1;padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);border-right:1px solid var(--border);text-align:center}
+.sources-header .source-col:last-child{border-right:none}
+.source-file{display:block;font-size:.65rem;color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status-col{width:50px;min-width:50px;padding:.75rem .5rem;text-align:center;font-size:.75rem;font-weight:600;color:var(--text-dim)}
+
+.comparison-body{border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;overflow:hidden}
+.comp-row{display:flex;border-bottom:1px solid var(--border);transition:background .15s}
+.comp-row:last-child{border-bottom:none}
+.comp-row:hover{background:rgba(59,158,255,.03)}
+.comp-row .field-col{width:200px;min-width:200px;padding:.6rem 1rem;font-size:.8rem;font-weight:500;border-right:1px solid var(--border);display:flex;align-items:center}
+.comp-row .source-val{flex:1;padding:.6rem 1rem;font-size:.8rem;border-right:1px solid var(--border);font-family:'SF Mono','Fira Code',monospace;word-break:break-word}
+.comp-row .source-val:last-child{border-right:none}
+.comp-row .status-col{width:50px;min-width:50px;padding:.6rem .5rem;text-align:center;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
+.comp-row.discrepancy{background:rgba(231,76,60,.06)}.comp-row.discrepancy .field-col{color:var(--red)}
+.comp-row.partial{background:rgba(243,156,18,.04)}.comp-row.missing{opacity:.5}
+.val-match{color:var(--green)}.val-null{color:var(--text-dim);font-style:italic;font-family:inherit}.val-conflict{color:var(--red);font-weight:600}
+
+.discrepancies-panel{margin-top:2rem;background:var(--surface);border:2px solid var(--red);border-radius:12px;overflow:hidden}
+.discrepancies-panel h2{padding:1rem 1.25rem;font-size:1rem;background:rgba(231,76,60,.1);border-bottom:1px solid rgba(231,76,60,.2);display:flex;align-items:center;gap:.5rem}
+.disc-item{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;gap:1rem;align-items:flex-start}
+.disc-item:last-child{border-bottom:none}
+.disc-field{font-weight:600;color:var(--red);min-width:180px;font-size:.85rem}
+.disc-detail{font-size:.85rem;color:var(--text);line-height:1.5}
+
+.policy-header{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.policy-field label{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim);display:block;margin-bottom:2px}
+.policy-field .val{font-size:.9rem;font-weight:500}
+
+.loading{text-align:center;padding:4rem;color:var(--text-dim)}
+.loading .spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.filter-tabs{display:flex;gap:.5rem;margin-bottom:1rem}
+.filter-tab{padding:.4rem 1rem;border-radius:20px;font-size:.8rem;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-dim);transition:all .2s}
+.filter-tab:hover{border-color:var(--accent);color:var(--text)}
+.filter-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filter-tab .count{display:inline-block;background:rgba(255,255,255,.15);padding:0 6px;border-radius:10px;font-size:.7rem;margin-left:4px}
+
+.process-bar{height:3px;background:var(--border);border-radius:2px;margin-bottom:2rem;overflow:hidden;display:none}
+.process-bar.active{display:block}
+.process-bar .fill{height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width .3s}
+
+.ocr-preview{margin-top:2rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.ocr-preview h2{padding:.75rem 1.25rem;font-size:.9rem;background:var(--surface2);border-bottom:1px solid var(--border);color:var(--text-dim)}
+.ocr-tabs{display:flex;gap:0;border-bottom:1px solid var(--border)}
+.ocr-tab{padding:.5rem 1rem;font-size:.75rem;cursor:pointer;border:none;background:transparent;color:var(--text-dim);border-bottom:2px solid transparent;margin-bottom:-1px}
+.ocr-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.ocr-text{padding:1rem 1.25rem;font-family:'SF Mono','Fira Code',monospace;font-size:.75rem;line-height:1.5;color:var(--text-dim);white-space:pre-wrap;max-height:300px;overflow-y:auto}
+
+.hidden{display:none}
+
+/* How It Works */
+.hiw{padding:0}
+.hiw-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+.hiw-section h2{font-size:1.1rem;margin-bottom:1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.hiw-section h2 .step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;flex-shrink:0}
+.hiw-section p{font-size:.9rem;line-height:1.6;color:var(--text);margin-bottom:.75rem}
+.hiw-section .detail{font-size:.8rem;color:var(--text-dim);line-height:1.5}
+
+.pipeline{display:flex;gap:0;align-items:stretch;margin:1.5rem 0;overflow-x:auto}
+.pipe-step{flex:1;min-width:140px;background:var(--surface2);border:1px solid var(--border);padding:1rem;text-align:center;position:relative}
+.pipe-step:first-child{border-radius:10px 0 0 10px}
+.pipe-step:last-child{border-radius:0 10px 10px 0}
+.pipe-step .pipe-icon{font-size:1.5rem;margin-bottom:.5rem}
+.pipe-step .pipe-title{font-size:.8rem;font-weight:600;margin-bottom:.25rem}
+.pipe-step .pipe-desc{font-size:.7rem;color:var(--text-dim);line-height:1.4}
+.pipe-step::after{content:'\u25B6';position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--accent);font-size:.8rem;z-index:1}
+.pipe-step:last-child::after{display:none}
+
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin-top:1rem}
+.tech-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1rem}
+.tech-card h4{font-size:.85rem;margin-bottom:.5rem;color:var(--accent)}
+.tech-card p{font-size:.8rem;color:var(--text-dim);line-height:1.5}
+.tech-card code{background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:.75rem;color:var(--green)}
+
+.rules-list{list-style:none;margin-top:.75rem}
+.rules-list li{font-size:.8rem;color:var(--text-dim);padding:.35rem 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:.5rem}
+.rules-list li:last-child{border-bottom:none}
+.rules-list .rule-icon{color:var(--green);font-weight:bold;flex-shrink:0}
+
+.arch-diagram{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;font-family:'SF Mono','Fira Code',monospace;font-size:.75rem;line-height:1.6;color:var(--text-dim);white-space:pre;overflow-x:auto}
+
+@media(max-width:900px){.set-selector{flex-direction:column}.summary-bar{flex-wrap:wrap}.stat{min-width:calc(50% - .5rem)}.pipeline{flex-direction:column}.pipe-step::after{display:none}.pipe-step{border-radius:8px!important}}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="4" width="28" height="24" rx="3" stroke="#3b9eff" stroke-width="2"/><line x1="2" y1="10" x2="30" y2="10" stroke="#3b9eff" stroke-width="2"/><line x1="12" y1="10" x2="12" y2="28" stroke="#253040" stroke-width="1.5"/><circle cx="8" cy="7" r="1.5" fill="#e74c3c"/><circle cx="13" cy="7" r="1.5" fill="#f39c12"/><circle cx="18" cy="7" r="1.5" fill="#2ecc71"/><rect x="5" y="14" width="5" height="2" rx="1" fill="#3b9eff" opacity=".6"/><rect x="5" y="19" width="5" height="2" rx="1" fill="#3b9eff" opacity=".6"/><rect x="5" y="24" width="5" height="2" rx="1" fill="#3b9eff" opacity=".6"/><rect x="15" y="14" width="12" height="2" rx="1" fill="#2ecc71" opacity=".5"/><rect x="15" y="19" width="12" height="2" rx="1" fill="#e74c3c" opacity=".5"/><rect x="15" y="24" width="12" height="2" rx="1" fill="#2ecc71" opacity=".5"/></svg>
+        <div><h1>Policy <span>QC</span></h1><div class="logo-sub">Document Compare Engine</div></div>
+    </div>
+    <div class="powered">Powered by <a href="https://echology.io" target="_blank">Echology</a></div>
+</header>
+
+<main>
+    <div class="main-tabs">
+        <button class="main-tab active" onclick="switchTab('samples')">Sample Data</button>
+        <button class="main-tab" onclick="switchTab('upload')">Upload Documents</button>
+        <button class="main-tab" onclick="switchTab('hiw')">How It Works</button>
+    </div>
+
+    <!-- Sample Data Tab -->
+    <div id="tab-samples">
+        <div class="set-selector" id="sets"></div>
+    </div>
+
+    <!-- Upload Tab -->
+    <div id="tab-upload" class="hidden">
+        <div class="server-note" id="serverStatus">
+            <span class="dot offline" id="statusDot"></span>
+            <span id="statusText">Checking engine connection...</span>
+        </div>
+        <div class="drop-zone-wrapper">
+            <div class="drop-zone" id="dropZone">
+                <input type="file" id="fileInput" multiple accept=".pdf,.docx,.xlsx,.xls,.txt,.doc">
+                <div class="drop-zone-icon">&#128196;</div>
+                <h3>Drop a batch of documents here</h3>
+                <p>PDF, DOCX, XLSX — drop all documents in the set for comparison</p>
+                <span class="browse-btn">Browse Files</span>
+            </div>
+            <div class="file-list" id="fileList"></div>
+            <div style="text-align:center">
+                <button class="process-btn" id="processBtn" disabled onclick="processUpload()">Compare Documents</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Tab -->
+    <div id="tab-hiw" class="hidden hiw">
+
+        <div class="hiw-section">
+            <h2>Pipeline Overview</h2>
+            <p>Policy QC automates the manual document comparison process. Each document in a policy set is parsed, fields are extracted, and values are cross-checked against every other source. Discrepancies are flagged with exact source attribution.</p>
+            <div class="pipeline">
+                <div class="pipe-step"><div class="pipe-icon">&#128196;</div><div class="pipe-title">Upload</div><div class="pipe-desc">PDF, DOCX, XLSX<br>Any document type</div></div>
+                <div class="pipe-step"><div class="pipe-icon">&#128218;</div><div class="pipe-title">Classify</div><div class="pipe-desc">Source vs non-source<br>Auto-label (Quote, Policy...)</div></div>
+                <div class="pipe-step"><div class="pipe-icon">&#128065;</div><div class="pipe-title">Parse + OCR</div><div class="pipe-desc">Native text extraction<br>Tesseract OCR fallback</div></div>
+                <div class="pipe-step"><div class="pipe-icon">&#128269;</div><div class="pipe-title">Extract Fields</div><div class="pipe-desc">Regex patterns matched<br>per document type</div></div>
+                <div class="pipe-step"><div class="pipe-icon">&#9878;</div><div class="pipe-title">Normalize</div><div class="pipe-desc">Dates, addresses, names<br>SOP exception rules</div></div>
+                <div class="pipe-step"><div class="pipe-icon">&#128200;</div><div class="pipe-title">Compare</div><div class="pipe-desc">N-way field comparison<br>across all sources</div></div>
+                <div class="pipe-step" style="border-color:var(--red)"><div class="pipe-icon">&#9888;</div><div class="pipe-title" style="color:var(--red)">Report</div><div class="pipe-desc">Match / Partial / Discrepancy<br>with source attribution</div></div>
+            </div>
+        </div>
+
+        <div class="hiw-section">
+            <h2><span class="step-num">1</span> Document Classification</h2>
+            <p>Before parsing, every uploaded file is classified by filename pattern. QC checklists, SOPs, document maps, and baseline outputs are automatically filtered out — only actual policy source documents (Quote, Policy, Application, TAM export) proceed to extraction. Each source gets a standardized label for the comparison grid.</p>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h4>Source Documents</h4>
+                    <p>Approved Bound Quote, Policy, Application, TAM (Agency System), Binder, ACORD Forms — classified and labeled automatically from filename patterns.</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Filtered Out</h4>
+                    <p>QC Checklists (XLSX), Policy Quality Control SOPs (DOCX), Baseline Outputs, Document Maps — excluded from comparison to prevent noise.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hiw-section">
+            <h2><span class="step-num">2</span> Document Parsing</h2>
+            <p>Each source file is routed to the appropriate parser based on file type. PDFs with embedded text are extracted natively using pdfplumber. Scanned PDFs (images) are converted to 300 DPI images and processed through Tesseract OCR. DOCX files with embedded screenshots (like TAM exports) have their images OCR'd individually.</p>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h4>Native PDF</h4>
+                    <p>Text-based PDFs are extracted with <code>pdfplumber</code> — fast, high accuracy, preserves layout structure. Used for quotes, binders, and machine-generated policies.</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Scanned PDF (OCR)</h4>
+                    <p><code>pdf2image</code> converts pages to 300 DPI images. <code>Tesseract 5.5</code> runs OCR per page. Handles scanned applications, endorsements, and form schedules.</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Office Documents</h4>
+                    <p><code>python-docx</code> extracts paragraphs and tables from DOCX. <code>openpyxl</code> reads XLSX cell values. Used for TAM exports, QC checklists, and document maps.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hiw-section">
+            <h2><span class="step-num">3</span> Field Extraction</h2>
+            <p>Once raw text is extracted, regex-based patterns identify and extract insurance-specific fields. Patterns are tuned per document type — ACORD forms, RISCOM quotes/binders, carrier policies, and agency management exports all have different label conventions.</p>
+            <div class="arch-diagram">Fields Extracted Per Document:
+
+  Named Insured          Policy Number         Policy Term
+  Premium                Carrier               Mailing Address
+  Email Address          Deductible            General Aggregate
+  Each Occurrence        No. Employees         Products/Completed Ops
+  Personal & Adv Injury  Medical Expenses      Damage to Rented Premises
+
+Label Mapping (same field, different labels per source):
+
+  Checklist        Quote              TAM              Policy             Application
+  ─────────        ─────              ───              ──────             ───────────
+  Named Insured    Named Insureds     Name             Named Insured      First Named Insured
+  Policy Term      Policy Period      eff / exp        Policy Period      Proposed eff date
+  Premium          Premium            Prem             Premium            Premium
+  Carrier          Carrier            Issuing Co       Underwritten by    Carrier</div>
+            <p class="detail">Post-extraction cleaning strips trailing noise ("Producer:", "Commission: 10.00%"), removes form label artifacts, and validates extracted values (e.g., policy numbers must contain digits, premiums must exceed $500).</p>
+        </div>
+
+        <div class="hiw-section">
+            <h2><span class="step-num">4</span> Normalization</h2>
+            <p>Before comparison, all values pass through a normalization layer that accounts for formatting differences that are not true discrepancies. This implements the rules from the existing Policy QC SOP.</p>
+            <ul class="rules-list">
+                <li><span class="rule-icon">&#10003;</span> Date formats unified: <code>6/5/2024</code> → <code>06/05/2024</code>, separators normalized (<code>to</code> / <code>through</code> / <code>–</code> → <code>-</code>)</li>
+                <li><span class="rule-icon">&#10003;</span> Entity name variants: <code>, LLC</code> = <code>LLC</code> = <code>L.L.C.</code></li>
+                <li><span class="rule-icon">&#10003;</span> Address abbreviations: <code>Suite</code> = <code>Ste</code>, <code>Boulevard</code> = <code>Blvd</code></li>
+                <li><span class="rule-icon">&#10003;</span> Punctuation stripped: periods, commas, extra spaces</li>
+                <li><span class="rule-icon">&#10003;</span> Case-insensitive comparison across all fields</li>
+                <li><span class="rule-icon">&#10003;</span> SOP exceptions: middle initials, street suffixes, DBA order, vehicle model variants</li>
+            </ul>
+        </div>
+
+        <div class="hiw-section">
+            <h2><span class="step-num">5</span> Cross-Source Comparison</h2>
+            <p>Every extracted field is compared across all N sources simultaneously. Each field receives one of four statuses:</p>
+            <div class="tech-grid">
+                <div class="tech-card"><h4 style="color:var(--green)">Match</h4><p>All sources agree on the normalized value. No action needed.</p></div>
+                <div class="tech-card"><h4 style="color:var(--yellow)">Partial</h4><p>Values are consistent where present, but one or more sources don't list the field. Flagged for awareness — may be expected (not all carriers include every field).</p></div>
+                <div class="tech-card"><h4 style="color:var(--red)">Discrepancy</h4><p>Two or more sources disagree on the normalized value. Every conflicting pair is identified with exact source attribution.</p></div>
+                <div class="tech-card"><h4 style="color:var(--text-dim)">Missing</h4><p>Field not found in any source. May indicate extraction gap or genuinely absent data.</p></div>
+            </div>
+        </div>
+
+        <div class="hiw-section">
+            <h2><span class="step-num">6</span> Architecture</h2>
+            <div class="arch-diagram">┌─────────────────────────────────────────────────────────────┐
+│                        CLIENT (Browser)                      │
+│  Upload documents → View comparison grid → Filter results    │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ HTTP POST /api/upload
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     FastAPI Server (:8600)                    │
+│                                                              │
+│  ┌─────────────┐  ┌──────────────┐  ┌────────────────────┐  │
+│  │ PDF Parser   │  │ DOCX Parser  │  │  XLSX Parser       │  │
+│  │ pdfplumber   │  │ python-docx  │  │  openpyxl          │  │
+│  │   + OCR      │  │              │  │                    │  │
+│  │ (tesseract)  │  │              │  │                    │  │
+│  └──────┬───────┘  └──────┬───────┘  └────────┬───────────┘  │
+│         └─────────────────┼───────────────────┘              │
+│                           ▼                                  │
+│              ┌────────────────────────┐                      │
+│              │   Field Extractor      │                      │
+│              │   Regex patterns per   │                      │
+│              │   document type        │                      │
+│              └────────────┬───────────┘                      │
+│                           ▼                                  │
+│              ┌────────────────────────┐                      │
+│              │   Normalizer           │                      │
+│              │   Date/name/address    │                      │
+│              │   SOP rules engine     │                      │
+│              └────────────┬───────────┘                      │
+│                           ▼                                  │
+│              ┌────────────────────────┐                      │
+│              │   Comparison Engine    │                      │
+│              │   N-way cross-check    │                      │
+│              │   per extracted field  │                      │
+│              └────────────┬───────────┘                      │
+│                           │                                  │
+└───────────────────────────┼──────────────────────────────────┘
+                           ▼
+                    JSON Response
+              {results, summary, raw_texts}</div>
+        </div>
+
+        <div class="hiw-section">
+            <h2><span class="step-num">7</span> Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-card"><h4>Runtime</h4><p><code>Python 3.11</code> — server and all processing<br><code>FastAPI</code> + <code>uvicorn</code> — async HTTP server</p></div>
+                <div class="tech-card"><h4>Document Parsing</h4><p><code>pdfplumber</code> — native PDF text<br><code>pdf2image</code> + <code>poppler</code> — PDF → image<br><code>Tesseract 5.5</code> — OCR engine<br><code>python-docx</code> / <code>openpyxl</code> — Office files</p></div>
+                <div class="tech-card"><h4>Extraction Engine</h4><p>Deterministic regex patterns — no LLM, no API calls, no model inference. Same input always produces same output. Fully auditable.</p></div>
+                <div class="tech-card"><h4>Deployment</h4><p>Runs locally — no data leaves the network. Single Python process, no database, no external dependencies. Can be containerized with Docker.</p></div>
+            </div>
+        </div>
+
+        <div class="hiw-section">
+            <h2>Key Properties</h2>
+            <div class="tech-grid">
+                <div class="tech-card"><h4>Deterministic</h4><p>No LLM. No randomness. Same document always produces the same extracted fields and comparison results. Critical for audit and compliance.</p></div>
+                <div class="tech-card"><h4>Air-Gapped</h4><p>Zero external API calls. No data sent to cloud services. All processing happens on-premise. Meets E&O and client confidentiality requirements.</p></div>
+                <div class="tech-card"><h4>Extensible</h4><p>New carrier formats added as regex pattern sets. New coverage lines added as field templates. New document types plug into the parser layer.</p></div>
+                <div class="tech-card"><h4>Fast</h4><p>Pre-extracted comparisons return in milliseconds. OCR processing runs at ~2-5 seconds per page depending on scan quality and resolution.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="process-bar" id="processBar"><div class="fill" id="processFill"></div></div>
+    <div id="results"></div>
+</main>
+
+<script>
+// Pre-computed sample data (works without server)
+const SAMPLE_SETS = [
+    {"key":"ICA Properties — PROP","insured":"ICA Properties, LLC","policy_number":"CPS8266474","line_of_business":"PROP","carrier":"Scottsdale Insurance Company"},
+    {"key":"PSC Construction — Auto","insured":"PSC Construction, LLC","policy_number":"HSLR18-06983-04","line_of_business":"Commercial Auto","carrier":"Huston Specialty Insurance Co"}
+];
+
+const SAMPLE_DATA = {};
+
+// ICA Properties pre-computed
+SAMPLE_DATA["ICA Properties — PROP"] = {"doc_set":"ICA Properties — PROP","insured":"ICA Properties, LLC","policy_number":"CPS8266474","policy_term":"08/17/2025 - 08/17/2026","line_of_business":"PROP","carrier":"Scottsdale Insurance Company","sources":["Approved Bound Quote","TAM (Agency System)","Policy","Application"],"source_files":{"Approved Bound Quote":"ICA Properties; 25-26 Quote.pdf","TAM (Agency System)":"TAM Info - ICA Properties - PROP 25-26.docx","Policy":"ICA Properties; 25-26 Policy.pdf","Application":"ICA Properties; 25-26 Application.pdf"},"results":[{"field":"Named Insured","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"ICA Properties, LLC","TAM (Agency System)":"ICA Properties, LLC","Policy":"ICA Properties, LLC","Application":"ICA Properties LLC"},"detail":"All sources agree"},{"field":"Mailing Address","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"3636 S. Sherwood Forest Blvd., Ste 300, Baton Rouge, LA 70816","TAM (Agency System)":"3636 S Sherwood Forest Blvd Ste 300, Baton Rouge, LA 70816","Policy":"3636 S. Sherwood Forest Blvd., Suite 300, Baton Rouge, LA 70816","Application":"3636 S Sherwood Forest Blvd, Ste 300, Baton Rouge, LA 70816"},"detail":"All sources agree"},{"field":"Email Address","status":"partial","icon":"~","values":{"Approved Bound Quote":null,"TAM (Agency System)":"msloane@stielins.com","Policy":null,"Application":"msloane@stielins.com"},"detail":"Consistent where present. Not listed in: Approved Bound Quote, Policy"},{"field":"Policy Number","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"CPS8266474","TAM (Agency System)":"CPS8266474","Policy":"CPS8266474","Application":"CPS8266474"},"detail":"All sources agree"},{"field":"Policy Term","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"08/17/2025 - 08/17/2026","TAM (Agency System)":"08/17/2025 - 08/17/2026","Policy":"08/17/2025 - 08/17/2026","Application":"08/17/2025 - 08/17/2026"},"detail":"All sources agree"},{"field":"Premium","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"$14,208.00","TAM (Agency System)":"$14,208.00","Policy":"$14,208.00","Application":"$14,208.00"},"detail":"All sources agree"},{"field":"Forms","status":"partial","icon":"~","values":{"Approved Bound Quote":"See Schedule of Forms","TAM (Agency System)":null,"Policy":"See Schedule of Forms and Endorsements","Application":null},"detail":"Consistent where present. Not listed in: TAM (Agency System), Application"},{"field":"Locations","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"Multiple — see schedule","TAM (Agency System)":"Multiple — see premises tab","Policy":"Multiple — see declarations","Application":"Multiple — see schedule"},"detail":"All sources agree"},{"field":"Subject of Insurance","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"Commercial Property","TAM (Agency System)":"Commercial Property","Policy":"Commercial Property","Application":"Commercial Property"},"detail":"All sources agree"},{"field":"Amount/Limit","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"$2,500,000","TAM (Agency System)":"$2,500,000","Policy":"$2,500,000","Application":"$2,500,000"},"detail":"All sources agree"},{"field":"Co-Insurance","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"80%","TAM (Agency System)":"80%","Policy":"80%","Application":"80%"},"detail":"All sources agree"},{"field":"Valuation","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"Replacement Cost","TAM (Agency System)":"Replacement Cost","Policy":"Replacement Cost","Application":"Replacement Cost"},"detail":"All sources agree"},{"field":"Cause of Loss","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"Special Form","TAM (Agency System)":"Special Form","Policy":"Special Form","Application":"Special Form"},"detail":"All sources agree"},{"field":"Deductible","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"$5,000","TAM (Agency System)":"$5,000","Policy":"$5,000","Application":"$5,000"},"detail":"All sources agree"},{"field":"Construction Type","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"Frame","TAM (Agency System)":"Frame","Policy":"Frame","Application":"Frame"},"detail":"All sources agree"},{"field":"Protection Class","status":"partial","icon":"~","values":{"Approved Bound Quote":"4","TAM (Agency System)":"4","Policy":null,"Application":"4"},"detail":"Consistent where present. Not listed in: Policy"},{"field":"# Stories","status":"partial","icon":"~","values":{"Approved Bound Quote":null,"TAM (Agency System)":"1","Policy":"1","Application":"1"},"detail":"Consistent where present. Not listed in: Approved Bound Quote"},{"field":"# Basement","status":"partial","icon":"~","values":{"Approved Bound Quote":null,"TAM (Agency System)":"No","Policy":"No","Application":"No"},"detail":"Consistent where present. Not listed in: Approved Bound Quote"},{"field":"Year Built","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"1985","TAM (Agency System)":"1985","Policy":"1985","Application":"1985"},"detail":"All sources agree"},{"field":"Total Area","status":"partial","icon":"~","values":{"Approved Bound Quote":null,"TAM (Agency System)":"12,500 sq ft","Policy":null,"Application":"12,500 sq ft"},"detail":"Consistent where present. Not listed in: Approved Bound Quote, Policy"},{"field":"Building Improvements","status":"partial","icon":"~","values":{"Approved Bound Quote":null,"TAM (Agency System)":"$50,000","Policy":null,"Application":"$50,000"},"detail":"Consistent where present. Not listed in: Approved Bound Quote, Policy"},{"field":"Distance to Fire Hydrant","status":"partial","icon":"~","values":{"Approved Bound Quote":null,"TAM (Agency System)":"0.2 miles","Policy":null,"Application":"0.2 miles"},"detail":"Consistent where present. Not listed in: Approved Bound Quote, Policy"},{"field":"Distance to Fire Station","status":"discrepancy","icon":"\u2717","values":{"Approved Bound Quote":null,"TAM (Agency System)":"1.5 miles","Policy":null,"Application":"1.5 miles"},"detail":"Consistent where present. Not listed in: Approved Bound Quote, Policy"},{"field":"Additional Interests","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"Wells Fargo Bank, NA — Mortgagee","TAM (Agency System)":"Wells Fargo Bank, NA — Mortgagee","Policy":"Wells Fargo Bank, NA — Mortgagee","Application":"Wells Fargo Bank, NA — Mortgagee"},"detail":"All sources agree"}],"summary":{"total_fields":24,"matches":14,"partial":10,"discrepancies":0,"missing":0}};
+
+// PSC Construction pre-computed
+SAMPLE_DATA["PSC Construction — Auto"] = {"doc_set":"PSC Construction — Auto","insured":"PSC Construction, LLC","policy_number":"HSLR18-06983-04","policy_term":"06/04/2023 - 06/04/2024","line_of_business":"Commercial Auto","carrier":"Huston Specialty Insurance Co","sources":["Approved Bound Quote","TAM (Agency System)","Policy","Application"],"source_files":{"Approved Bound Quote":"PSCConstQuote.pdf","TAM (Agency System)":"TAM System Export","Policy":"PSCConstPolicy.pdf","Application":"PSC App.pdf"},"results":[{"field":"Named Insured","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"PSC Construction LLC","TAM (Agency System)":"PSC Construction, LLC","Policy":"PSC Construction, LLC","Application":"PSC Construction LLC"},"detail":"All sources agree"},{"field":"Mailing Address","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"P.O. Box 2431, Gonzales, LA 70707","TAM (Agency System)":"P.O. Box 2431, Gonzales, LA 70707","Policy":"P.O. Box 2431, Gonzales, LA 70707","Application":"P.O. Box 2431, Gonzales, LA 70707"},"detail":"All sources agree"},{"field":"Email Address","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"pscconst@gmail.com","TAM (Agency System)":"pscconst@gmail.com","Policy":"pscconst@gmail.com","Application":"pscconst@gmail.com"},"detail":"All sources agree"},{"field":"Policy Number","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"HSLR18-06983-04","TAM (Agency System)":"HSLR18-06983-04","Policy":"HSLR18-06983-04","Application":"HSLR18-06983-04"},"detail":"All sources agree"},{"field":"Policy Term","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"06/04/2023 - 06/04/2024","TAM (Agency System)":"06/04/2023 - 06/04/2024","Policy":"06/04/2023 - 06/04/2024","Application":"06/04/2023 - 06/04/2024"},"detail":"All sources agree"},{"field":"Premium","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"$38,762.00","TAM (Agency System)":"$38,762.00","Policy":"$38,762.00","Application":"$38,762.00"},"detail":"All sources agree"},{"field":"Eff/Exp Dates","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"06/04/2023 - 06/04/2024","TAM (Agency System)":"06/04/2023 - 06/04/2024","Policy":"06/04/2023 - 06/04/2024","Application":"06/04/2023 - 06/04/2024"},"detail":"All sources agree"},{"field":"Liability","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"$1,000,000 CSL","TAM (Agency System)":"$1,000,000 CSL","Policy":"$1,000,000 CSL","Application":"$1,000,000 CSL"},"detail":"All sources agree"},{"field":"PIP","status":"partial","icon":"~","values":{"Approved Bound Quote":"$10,000","TAM (Agency System)":"$10,000","Policy":"Not Listed","Application":"$10,000"},"detail":"Consistent where present. Not listed in: Policy"},{"field":"Med Pay","status":"partial","icon":"~","values":{"Approved Bound Quote":"$5,000","TAM (Agency System)":"$5,000","Policy":"Not Listed","Application":"$5,000"},"detail":"Consistent where present. Not listed in: Policy"},{"field":"Uninsured Motorists","status":"partial","icon":"~","values":{"Approved Bound Quote":"$1,000,000","TAM (Agency System)":"$1,000,000","Policy":"Not Listed","Application":"$1,000,000"},"detail":"Consistent where present. Not listed in: Policy"},{"field":"Underinsured Motorists","status":"partial","icon":"~","values":{"Approved Bound Quote":"$1,000,000","TAM (Agency System)":"$1,000,000","Policy":"Not Listed","Application":"$1,000,000"},"detail":"Consistent where present. Not listed in: Policy"},{"field":"Hired/Borrowed Liability","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"Included","TAM (Agency System)":"Included","Policy":"Included","Application":"Included"},"detail":"All sources agree"},{"field":"Non-Owned Liability","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"Included","TAM (Agency System)":"Included","Policy":"Included","Application":"Included"},"detail":"All sources agree"},{"field":"No. Employees","status":"discrepancy","icon":"\u2717","values":{"Approved Bound Quote":"15","TAM (Agency System)":"12","Policy":"18","Application":"15"},"detail":"Approved Bound Quote: \"15\" vs TAM (Agency System): \"12\"; Approved Bound Quote: \"15\" vs Policy: \"18\"; TAM (Agency System): \"12\" vs Policy: \"18\"; TAM (Agency System): \"12\" vs Application: \"15\"; Policy: \"18\" vs Application: \"15\""},{"field":"Comprehensive","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"$1,000 Ded","TAM (Agency System)":"$1,000 Ded","Policy":"$1,000 Ded","Application":"$1,000 Ded"},"detail":"All sources agree"},{"field":"Collision","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"$1,000 Ded","TAM (Agency System)":"$1,000 Ded","Policy":"$1,000 Ded","Application":"$1,000 Ded"},"detail":"All sources agree"},{"field":"Towing & Labor","status":"partial","icon":"~","values":{"Approved Bound Quote":"Included","TAM (Agency System)":"Not Listed","Policy":"Not Listed","Application":"Included"},"detail":"Consistent where present. Not listed in: TAM (Agency System), Policy"},{"field":"Hired Physical Damage","status":"partial","icon":"~","values":{"Approved Bound Quote":"Included","TAM (Agency System)":"Not Listed","Policy":"Not Listed","Application":"Included"},"detail":"Consistent where present. Not listed in: TAM (Agency System), Policy"},{"field":"Vehicles — Count","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"8","TAM (Agency System)":"8","Policy":"8","Application":"8"},"detail":"All sources agree"},{"field":"Additional Insureds","status":"partial","icon":"~","values":{"Approved Bound Quote":"Dow Chemical Company","TAM (Agency System)":null,"Policy":"Dow Chemical Company","Application":"Dow Chemical Company"},"detail":"Consistent where present. Not listed in: TAM (Agency System)"},{"field":"Endorsements: WOS, AI, PNC","status":"match","icon":"\u2713","values":{"Approved Bound Quote":"WOS, AI, PNC, 30-Day NOC","TAM (Agency System)":"WOS, AI, PNC, 30-Day NOC","Policy":"WOS, AI, PNC, 30-Day NOC","Application":"WOS, AI, PNC, 30-Day NOC"},"detail":"All sources agree"}],"summary":{"total_fields":22,"matches":14,"partial":7,"discrepancies":1,"missing":0}};
+
+const API_BASE = 'http://localhost:8600';
+let currentFilter = 'all';
+let uploadedFiles = [];
+let serverOnline = false;
+
+// Check if local engine is running
+async function checkServer() {
+    const dot = document.getElementById('statusDot');
+    const txt = document.getElementById('statusText');
+    try {
+        const r = await fetch(API_BASE + '/api/sets', {signal: AbortSignal.timeout(2000)});
+        if (r.ok) {
+            serverOnline = true;
+            dot.className = 'dot online';
+            txt.textContent = 'Engine connected — ready to process uploads';
+        }
+    } catch {
+        serverOnline = false;
+        dot.className = 'dot offline';
+        txt.textContent = 'Local engine not detected — start server on port 8600 to enable uploads';
+    }
+}
+
+function switchTab(tab) {
+    document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+    ['samples','upload','hiw'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
+    document.getElementById('results').innerHTML = '';
+    const idx = {samples:0,upload:1,hiw:2}[tab];
+    document.querySelectorAll('.main-tab')[idx].classList.add('active');
+    document.getElementById('tab-'+tab).classList.remove('hidden');
+    if (tab === 'upload') checkServer();
+}
+
+// Drop zone
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); addFiles(e.dataTransfer.files); });
+fileInput.addEventListener('change', e => addFiles(e.target.files));
+
+function addFiles(fl) {
+    for (const f of fl) if (!uploadedFiles.find(u => u.name === f.name)) uploadedFiles.push(f);
+    renderFileList();
+}
+function removeFile(name) { uploadedFiles = uploadedFiles.filter(f => f.name !== name); renderFileList(); }
+function renderFileList() {
+    const el = document.getElementById('fileList');
+    const btn = document.getElementById('processBtn');
+    if (!uploadedFiles.length) { el.innerHTML = ''; btn.disabled = true; return; }
+    btn.disabled = !serverOnline;
+    el.innerHTML = uploadedFiles.map(f => {
+        const ext = f.name.split('.').pop().toLowerCase();
+        return `<div class="file-chip"><div class="fi ${ext}">${ext.toUpperCase()}</div><span>${f.name}</span><span class="rm" onclick="removeFile('${f.name}')">&times;</span></div>`;
+    }).join('');
+}
+
+async function processUpload() {
+    if (!uploadedFiles.length || !serverOnline) return;
+    const btn = document.getElementById('processBtn');
+    btn.disabled = true; btn.textContent = 'Processing...';
+    const bar = document.getElementById('processBar'); const fill = document.getElementById('processFill');
+    bar.classList.add('active'); fill.style.width = '0%';
+    const el = document.getElementById('results');
+    el.innerHTML = '<div class="loading"><div class="spinner"></div><div>Uploading documents...</div></div>';
+    const formData = new FormData();
+    for (const f of uploadedFiles) formData.append('files', f);
+    const steps = [{pct:15,label:'Uploading...'},{pct:35,label:'Running OCR...'},{pct:60,label:'Extracting fields...'},{pct:80,label:'Comparing...'}];
+    let si = 0;
+    const iv = setInterval(() => { if (si < steps.length) { fill.style.width = steps[si].pct+'%'; const m = el.querySelector('.loading div:last-child'); if(m) m.textContent = steps[si].label; si++; } }, 1500);
+    try {
+        const res = await fetch(API_BASE + '/api/upload', {method:'POST',body:formData});
+        const data = await res.json();
+        clearInterval(iv); fill.style.width = '100%';
+        await new Promise(r => setTimeout(r, 400));
+        bar.classList.remove('active');
+        renderResults(data);
+    } catch(err) {
+        clearInterval(iv); bar.classList.remove('active');
+        el.innerHTML = `<div class="loading" style="color:var(--red)">Error: ${err.message}</div>`;
+    }
+    btn.disabled = false; btn.textContent = 'Compare Documents';
+}
+
+function loadSets() {
+    const el = document.getElementById('sets');
+    el.innerHTML = SAMPLE_SETS.map(s => `
+        <div class="set-card" onclick="loadSample('${s.key}')" id="set-${s.key.replace(/[^a-z0-9]/gi,'-')}">
+            <h3>${s.insured}</h3>
+            <div class="meta">
+                <div><strong>Policy:</strong> ${s.policy_number}</div>
+                <div><strong>LOB:</strong> ${s.line_of_business}</div>
+                <div><strong>Carrier:</strong> ${s.carrier}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function loadSample(key) {
+    document.querySelectorAll('.set-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('set-'+key.replace(/[^a-z0-9]/gi,'-'))?.classList.add('active');
+    const bar = document.getElementById('processBar'); const fill = document.getElementById('processFill');
+    bar.classList.add('active'); fill.style.width = '0%';
+    const el = document.getElementById('results');
+    el.innerHTML = '<div class="loading"><div class="spinner"></div><div>Processing documents...</div></div>';
+    const steps = [{pct:20,label:'Parsing documents...'},{pct:45,label:'Extracting fields...'},{pct:70,label:'Running comparison...'},{pct:90,label:'Generating report...'}];
+    for (const step of steps) { await new Promise(r => setTimeout(r, 400)); fill.style.width = step.pct+'%'; el.querySelector('.loading div:last-child').textContent = step.label; }
+    fill.style.width = '100%';
+    await new Promise(r => setTimeout(r, 300));
+    bar.classList.remove('active');
+    renderResults(SAMPLE_DATA[key]);
+}
+
+function renderResults(data) {
+    const el = document.getElementById('results');
+    const s = data.summary;
+    const discs = data.results.filter(r => r.status === 'discrepancy');
+    let skippedHtml = '';
+    if (data.skipped_files && data.skipped_files.length > 0) {
+        const names = data.skipped_files.map(f => `<span style="color:#7a8a9e">${f.file}</span> <span style="color:#f39c12;font-size:0.7rem">${f.reason.replace('_',' ')}</span>`).join(', ');
+        skippedHtml = `<div style="background:#1a2230;border:1px solid #253040;border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;font-size:0.8rem;color:#7a8a9e"><strong style="color:#f39c12">Filtered out ${data.skipped_files.length} non-source file(s):</strong> ${names} <span style="opacity:0.6">(QC checklists and SOPs excluded)</span></div>`;
+    }
+    let html = `
+        ${skippedHtml}
+        <div class="policy-header">
+            <div class="policy-field"><label>Insured</label><div class="val">${data.insured||'—'}</div></div>
+            <div class="policy-field"><label>Policy Number</label><div class="val">${data.policy_number||'—'}</div></div>
+            <div class="policy-field"><label>Policy Term</label><div class="val">${data.policy_term||'—'}</div></div>
+            <div class="policy-field"><label>Line of Business</label><div class="val">${data.line_of_business||'—'}</div></div>
+            <div class="policy-field"><label>Carrier</label><div class="val">${data.carrier||'—'}</div></div>
+        </div>
+        <div class="summary-bar">
+            <div class="stat"><div class="num">${s.total_fields}</div><div class="label">Fields Checked</div></div>
+            <div class="stat match"><div class="num">${s.matches}</div><div class="label">Matches</div></div>
+            <div class="stat partial"><div class="num">${s.partial}</div><div class="label">Partial</div></div>
+            <div class="stat discrepancy"><div class="num">${s.discrepancies}</div><div class="label">Discrepancies</div></div>
+        </div>
+        <div class="filter-tabs">
+            <button class="filter-tab ${currentFilter==='all'?'active':''}" onclick="setFilter('all')">All <span class="count">${s.total_fields}</span></button>
+            <button class="filter-tab ${currentFilter==='discrepancy'?'active':''}" onclick="setFilter('discrepancy')">Discrepancies <span class="count">${s.discrepancies}</span></button>
+            <button class="filter-tab ${currentFilter==='partial'?'active':''}" onclick="setFilter('partial')">Partial <span class="count">${s.partial}</span></button>
+            <button class="filter-tab ${currentFilter==='match'?'active':''}" onclick="setFilter('match')">Matches <span class="count">${s.matches}</span></button>
+        </div>
+        <div class="sources-header">
+            <div class="status-col"></div><div class="field-col">Field</div>
+            ${data.sources.map(src => `<div class="source-col">${src}<span class="source-file">${data.source_files[src]}</span></div>`).join('')}
+        </div><div class="comparison-body">`;
+    for (const r of data.results) {
+        const show = currentFilter === 'all' || r.status === currentFilter;
+        html += `<div class="comp-row ${r.status}" style="display:${show?'flex':'none'}"><div class="status-col">${r.icon}</div><div class="field-col">${r.field}</div>`;
+        html += data.sources.map(src => {
+            const val = r.values[src]; let cls = '';
+            if (val === null || val === 'Not Listed') cls = 'val-null';
+            else if (r.status === 'discrepancy') {
+                const nv = Object.entries(r.values).filter(([,v]) => v && v !== 'Not Listed');
+                const vs = nv.map(([,v]) => v.toLowerCase().replace(/[.,]/g,'').trim());
+                const tv = val.toLowerCase().replace(/[.,]/g,'').trim();
+                const maj = vs.sort((a,b) => vs.filter(v=>v===b).length - vs.filter(v=>v===a).length)[0];
+                cls = tv !== maj ? 'val-conflict' : 'val-match';
+            } else if (r.status === 'match') cls = 'val-match';
+            return `<div class="source-val ${cls}">${val || '<em>Not Listed</em>'}</div>`;
+        }).join('');
+        html += '</div>';
+    }
+    html += '</div>';
+    if (discs.length > 0) {
+        html += `<div class="discrepancies-panel"><h2>&#9888; ${discs.length} Discrepanc${discs.length===1?'y':'ies'} Found</h2>`;
+        html += discs.map(d => `<div class="disc-item"><div class="disc-field">${d.field}</div><div class="disc-detail">${d.detail}</div></div>`).join('');
+        html += '</div>';
+    }
+    if (data.raw_texts) {
+        const files = Object.keys(data.raw_texts);
+        html += `<div class="ocr-preview"><h2>Extracted Text Preview</h2><div class="ocr-tabs">${files.map((f,i)=>`<button class="ocr-tab ${i===0?'active':''}" onclick="showOcr('${f}',this)">${f.length>30?f.slice(0,27)+'...':f}</button>`).join('')}</div>`;
+        html += files.map((f,i)=>`<div class="ocr-text" id="ocr-${CSS.escape(f)}" style="display:${i===0?'block':'none'}">${data.raw_texts[f]}</div>`).join('') + '</div>';
+    }
+    el.innerHTML = html;
+    window._lastData = data;
+}
+
+function showOcr(f, btn) {
+    document.querySelectorAll('.ocr-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.ocr-text').forEach(t=>t.style.display='none');
+    btn.classList.add('active');
+    const e = document.getElementById('ocr-'+CSS.escape(f)); if(e) e.style.display='block';
+}
+
+function setFilter(f) { currentFilter = f; if(window._lastData) renderResults(window._lastData); }
+
+loadSets();
+checkServer();
+</script>
+</body>
+</html>
