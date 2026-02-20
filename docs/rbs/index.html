@@ -595,18 +595,25 @@ let serverOnline = false;
 async function checkServer() {
     const dot = document.getElementById('statusDot');
     const txt = document.getElementById('statusText');
-    try {
-        const r = await fetch(API_BASE + '/api/sets', {signal: AbortSignal.timeout(2000)});
-        if (r.ok) {
-            serverOnline = true;
-            dot.className = 'dot online';
-            txt.textContent = 'Engine connected — ready to process uploads';
-        }
-    } catch {
-        serverOnline = false;
-        dot.className = 'dot offline';
-        txt.textContent = 'Local engine not detected — start server on port 8600 to enable uploads';
+    dot.className = 'dot offline';
+    txt.textContent = 'Waking up engine...';
+    // Fly.io auto-stop means cold starts can take 15-30s
+    for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+            const r = await fetch(API_BASE + '/api/sets', {signal: AbortSignal.timeout(15000)});
+            if (r.ok) {
+                serverOnline = true;
+                dot.className = 'dot online';
+                txt.textContent = 'Engine connected — ready to process uploads';
+                document.getElementById('processBtn').disabled = !uploadedFiles.length;
+                return;
+            }
+        } catch {}
+        if (attempt < 2) await new Promise(r => setTimeout(r, 2000));
     }
+    serverOnline = false;
+    dot.className = 'dot offline';
+    txt.textContent = 'Engine unavailable — try refreshing in a moment';
 }
 
 function switchTab(tab) {
