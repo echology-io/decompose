@@ -226,15 +226,15 @@ main{padding:2rem;max-width:1400px;margin:0 auto}
 
         <div class="hiw-section">
             <h2><span class="step-num">1</span> Document Classification</h2>
-            <p>Before parsing, every uploaded file is classified by filename pattern. QC checklists, SOPs, document maps, and baseline outputs are automatically filtered out — only actual policy source documents (Quote, Policy, Application, TAM export) proceed to extraction. Each source gets a standardized label for the comparison grid.</p>
+            <p>Before parsing, every uploaded file is classified by filename pattern. Non-source documents are automatically filtered out — only actual policy source documents proceed to extraction. Each source gets a standardized label for the comparison grid. Skipped files are reported to the user so nothing is silently ignored.</p>
             <div class="tech-grid">
                 <div class="tech-card">
                     <h4>Source Documents</h4>
-                    <p>Approved Bound Quote, Policy, Application, TAM (Agency System), Binder, ACORD Forms — classified and labeled automatically from filename patterns.</p>
+                    <p>Approved Bound Quote, Policy, Application, TAM (Agency System), Binder, ACORD Forms — classified and labeled automatically from filename patterns. Unrecognized files are included with their filename as the label.</p>
                 </div>
                 <div class="tech-card">
                     <h4>Filtered Out</h4>
-                    <p>QC Checklists (XLSX), Policy Quality Control SOPs (DOCX), Baseline Outputs, Document Maps — excluded from comparison to prevent noise.</p>
+                    <p>QC Checklists (XLSX), SOPs (DOCX), Baseline Outputs, Document Maps, Output spreadsheets, system files (.DS_Store, Thumbs.db) — excluded from comparison to prevent noise.</p>
                 </div>
             </div>
         </div>
@@ -260,7 +260,7 @@ main{padding:2rem;max-width:1400px;margin:0 auto}
 
         <div class="hiw-section">
             <h2><span class="step-num">3</span> Field Extraction</h2>
-            <p>Once raw text is extracted, regex-based patterns identify and extract insurance-specific fields. Patterns are tuned per document type — ACORD forms, RISCOM quotes/binders, carrier policies, and agency management exports all have different label conventions.</p>
+            <p>Once raw text is extracted, regex-based patterns identify and extract insurance-specific fields. Patterns are tuned per document format — Burns &amp; Wilcox quotes, Scottsdale/Nationwide policies, ACORD 125/140 applications, RISCOM quotes, and TAM system screenshots all use format-specific extraction logic.</p>
             <div class="arch-diagram">Fields Extracted Per Document:
 
   Named Insured          Policy Number         Policy Term
@@ -277,16 +277,36 @@ Label Mapping (same field, different labels per source):
   Policy Term      Policy Period      eff / exp        Policy Period      Proposed eff date
   Premium          Premium            Prem             Premium            Premium
   Carrier          Carrier            Issuing Co       Underwritten by    Carrier</div>
-            <p class="detail">Post-extraction cleaning strips trailing noise ("Producer:", "Commission: 10.00%"), removes form label artifacts, and validates extracted values (e.g., policy numbers must contain digits, premiums must exceed $500).</p>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h4>Smart Policy Numbers</h4>
+                    <p>Collects all CPS/HSLR-pattern numbers in the text and selects the most frequent — handles 2-column OCR layouts where numbers appear multiple times across declarations pages.</p>
+                </div>
+                <div class="tech-card">
+                    <h4>OCR-Tolerant Carrier Matching</h4>
+                    <p>Known carrier names are matched with fuzzy regex patterns that account for common OCR errors (e.g., "jouston" → Houston Specialty, "Seottsdale" → Scottsdale).</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Address Disambiguation</h4>
+                    <p>Insurance documents contain multiple addresses (insured, broker, agent, mortgagee). Broker/agency indicators filter out non-insured addresses. Labeled sections ("MAILING ADDRESS:") take priority.</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Post-Extraction Cleaning</h4>
+                    <p>Strips trailing noise ("Producer:", "Commission: 10.00%"), removes form code artifacts, validates values (policy numbers must contain digits, premiums must exceed $1,000), and strips OCR leading zeros from numeric fields.</p>
+                </div>
+            </div>
         </div>
 
         <div class="hiw-section">
             <h2><span class="step-num">4</span> Normalization</h2>
-            <p>Before comparison, all values pass through a normalization layer that accounts for formatting differences that are not true discrepancies. This implements the rules from the existing Policy QC SOP.</p>
+            <p>Before comparison, all values pass through a normalization layer that accounts for formatting differences and OCR artifacts that are not true discrepancies. This implements the rules from the existing Policy QC SOP plus OCR-specific corrections.</p>
             <ul class="rules-list">
                 <li><span class="rule-icon">&#10003;</span> Date formats unified: <code>6/5/2024</code> → <code>06/05/2024</code>, separators normalized (<code>to</code> / <code>through</code> / <code>–</code> → <code>-</code>)</li>
+                <li><span class="rule-icon">&#10003;</span> OCR date correction: month values with 9x prefix corrected (e.g., <code>96/04/2023</code> → <code>06/04/2023</code>)</li>
                 <li><span class="rule-icon">&#10003;</span> Entity name variants: <code>, LLC</code> = <code>LLC</code> = <code>L.L.C.</code></li>
-                <li><span class="rule-icon">&#10003;</span> Address abbreviations: <code>Suite</code> = <code>Ste</code>, <code>Boulevard</code> = <code>Blvd</code></li>
+                <li><span class="rule-icon">&#10003;</span> Address abbreviations: <code>Suite</code> = <code>Ste</code>, <code>Boulevard</code> = <code>Blvd</code>, <code>Street</code> = <code>St</code>, etc.</li>
+                <li><span class="rule-icon">&#10003;</span> Premium normalization: <code>$3,035</code> = <code>$3,035.00</code>, OCR decimal correction for garbled amounts</li>
+                <li><span class="rule-icon">&#10003;</span> Address splitting: concatenated double-addresses separated (insured + broker on one line)</li>
                 <li><span class="rule-icon">&#10003;</span> Punctuation stripped: periods, commas, extra spaces</li>
                 <li><span class="rule-icon">&#10003;</span> Case-insensitive comparison across all fields</li>
                 <li><span class="rule-icon">&#10003;</span> SOP exceptions: middle initials, street suffixes, DBA order, vehicle model variants</li>
@@ -315,24 +335,30 @@ Label Mapping (same field, different labels per source):
 ┌─────────────────────────────────────────────────────────────┐
 │                     FastAPI Server (:8600)                    │
 │                                                              │
+│              ┌────────────────────────┐                      │
+│              │   Document Classifier  │                      │
+│              │   Filter QC/SOP/maps   │                      │
+│              │   Label source docs    │                      │
+│              └────────────┬───────────┘                      │
+│                           ▼                                  │
 │  ┌─────────────┐  ┌──────────────┐  ┌────────────────────┐  │
 │  │ PDF Parser   │  │ DOCX Parser  │  │  XLSX Parser       │  │
 │  │ pdfplumber   │  │ python-docx  │  │  openpyxl          │  │
-│  │   + OCR      │  │              │  │                    │  │
-│  │ (tesseract)  │  │              │  │                    │  │
+│  │   + OCR      │  │ + image OCR  │  │                    │  │
+│  │ (tesseract)  │  │ (tesseract)  │  │                    │  │
 │  └──────┬───────┘  └──────┬───────┘  └────────┬───────────┘  │
 │         └─────────────────┼───────────────────┘              │
 │                           ▼                                  │
 │              ┌────────────────────────┐                      │
 │              │   Field Extractor      │                      │
-│              │   Regex patterns per   │                      │
-│              │   document type        │                      │
+│              │   Multi-format regex   │                      │
+│              │   + OCR correction     │                      │
 │              └────────────┬───────────┘                      │
 │                           ▼                                  │
 │              ┌────────────────────────┐                      │
 │              │   Normalizer           │                      │
 │              │   Date/name/address    │                      │
-│              │   SOP rules engine     │                      │
+│              │   SOP + OCR rules      │                      │
 │              └────────────┬───────────┘                      │
 │                           ▼                                  │
 │              ┌────────────────────────┐                      │
@@ -344,7 +370,7 @@ Label Mapping (same field, different labels per source):
 └───────────────────────────┼──────────────────────────────────┘
                            ▼
                     JSON Response
-              {results, summary, raw_texts}</div>
+              {results, summary, skipped_files}</div>
         </div>
 
         <div class="hiw-section">
@@ -352,7 +378,7 @@ Label Mapping (same field, different labels per source):
             <div class="tech-grid">
                 <div class="tech-card"><h4>Runtime</h4><p><code>Python 3.11</code> — server and all processing<br><code>FastAPI</code> + <code>uvicorn</code> — async HTTP server</p></div>
                 <div class="tech-card"><h4>Document Parsing</h4><p><code>pdfplumber</code> — native PDF text<br><code>pdf2image</code> + <code>poppler</code> — PDF → image<br><code>Tesseract 5.5</code> — OCR engine<br><code>python-docx</code> / <code>openpyxl</code> — Office files</p></div>
-                <div class="tech-card"><h4>Extraction Engine</h4><p>Deterministic regex patterns — no LLM, no API calls, no model inference. Same input always produces same output. Fully auditable.</p></div>
+                <div class="tech-card"><h4>Extraction Engine</h4><p>Deterministic regex patterns with OCR error correction — no LLM, no API calls, no model inference. Format-specific extraction for Burns &amp; Wilcox, Scottsdale, ACORD, RISCOM, and TAM sources. Fully auditable.</p></div>
                 <div class="tech-card"><h4>Deployment</h4><p>Runs locally — no data leaves the network. Single Python process, no database, no external dependencies. Can be containerized with Docker.</p></div>
             </div>
         </div>
@@ -360,7 +386,7 @@ Label Mapping (same field, different labels per source):
         <div class="hiw-section">
             <h2>Key Properties</h2>
             <div class="tech-grid">
-                <div class="tech-card"><h4>Deterministic</h4><p>No LLM. No randomness. Same document always produces the same extracted fields and comparison results. Critical for audit and compliance.</p></div>
+                <div class="tech-card"><h4>Deterministic</h4><p>No LLM. No randomness. Same document always produces the same extracted fields and comparison results. OCR corrections are rule-based and repeatable. Critical for audit and compliance.</p></div>
                 <div class="tech-card"><h4>Air-Gapped</h4><p>Zero external API calls. No data sent to cloud services. All processing happens on-premise. Meets E&O and client confidentiality requirements.</p></div>
                 <div class="tech-card"><h4>Extensible</h4><p>New carrier formats added as regex pattern sets. New coverage lines added as field templates. New document types plug into the parser layer.</p></div>
                 <div class="tech-card"><h4>Fast</h4><p>Pre-extracted comparisons return in milliseconds. OCR processing runs at ~2-5 seconds per page depending on scan quality and resolution.</p></div>
