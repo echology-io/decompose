@@ -161,7 +161,41 @@ main{padding:2rem;max-width:1400px;margin:0 auto}
 
 .arch-diagram{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;font-family:'SF Mono','Fira Code',monospace;font-size:.75rem;line-height:1.6;color:var(--text-dim);white-space:pre;overflow-x:auto}
 
-@media(max-width:900px){.set-selector{flex-direction:column}.summary-bar{flex-wrap:wrap}.stat{min-width:calc(50% - .5rem)}.pipeline{flex-direction:column}.pipe-step::after{display:none}.pipe-step{border-radius:8px!important}}
+/* Full Process / HITL */
+.process-phases{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;margin:1.5rem 0;align-items:stretch}
+.phase-block{border-radius:12px;padding:1.25rem;position:relative}
+.phase-block.upstream{background:rgba(59,158,255,.06);border:2px solid rgba(59,158,255,.2)}
+.phase-block.ours{background:rgba(46,204,113,.08);border:2px solid var(--green)}
+.phase-block.downstream{background:rgba(243,156,18,.06);border:2px solid rgba(243,156,18,.3)}
+.phase-block h3{font-size:.9rem;margin-bottom:.25rem}
+.phase-block .phase-who{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;font-weight:600}
+.phase-block.upstream .phase-who{color:var(--accent)}
+.phase-block.ours .phase-who{color:var(--green)}
+.phase-block.downstream .phase-who{color:var(--yellow)}
+.phase-block .phase-time{font-size:.8rem;font-weight:700;margin-bottom:.5rem}
+.phase-arrow{display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--accent);padding:0 .5rem}
+.touchpoint{font-size:.78rem;color:var(--text-dim);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;gap:.4rem;align-items:flex-start}
+.touchpoint:last-child{border-bottom:none}
+.tp-num{color:var(--text-dim);font-weight:600;min-width:1.4rem;font-size:.7rem;opacity:.6}
+.phase-block.ours .touchpoint{color:var(--green)}
+.phase-block.ours .tp-num{color:var(--green);opacity:.8}
+.coverage-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:1rem 0;gap:2px}
+.coverage-bar .seg{border-radius:4px}
+.coverage-bar .seg.partner{background:var(--accent)}
+.coverage-bar .seg.echology{background:var(--green)}
+.coverage-bar .seg.partner2{background:var(--yellow)}
+.coverage-legend{display:flex;gap:1.5rem;justify-content:center;margin-bottom:1rem}
+.coverage-legend span{font-size:.75rem;color:var(--text-dim);display:flex;align-items:center;gap:.4rem}
+.coverage-legend .dot-leg{width:10px;height:10px;border-radius:3px}
+.partner-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem}
+.partner-card h4{font-size:.85rem;margin-bottom:.5rem;color:var(--accent)}
+.partner-card p{font-size:.8rem;color:var(--text-dim);line-height:1.5}
+.integration-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.8rem}
+.integration-table th{text-align:left;padding:.5rem .75rem;border-bottom:2px solid var(--border);color:var(--accent);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em}
+.integration-table td{padding:.5rem .75rem;border-bottom:1px solid var(--border);color:var(--text-dim)}
+.integration-table code{background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:.75rem;color:var(--green)}
+
+@media(max-width:900px){.set-selector{flex-direction:column}.summary-bar{flex-wrap:wrap}.stat{min-width:calc(50% - .5rem)}.pipeline{flex-direction:column}.pipe-step::after{display:none}.pipe-step{border-radius:8px!important}.process-phases{grid-template-columns:1fr;gap:1rem}.phase-arrow{transform:rotate(90deg);padding:.5rem 0}}
 </style>
 </head>
 <body>
@@ -209,6 +243,69 @@ main{padding:2rem;max-width:1400px;margin:0 auto}
 
     <!-- How It Works Tab -->
     <div id="tab-hiw" class="hidden hiw">
+
+        <div class="hiw-section">
+            <h2>Full Process — 23 Human-in-the-Loop Touchpoints</h2>
+            <p>The original Policy QC SOP contains <strong>23 manual steps</strong> spanning three phases. Echology RBS automates the core document intelligence — 6 steps that account for ~75 minutes of the ~2.25-hour manual process. The upstream data pulls and downstream routing are natural integration points for process automation partners with existing system access.</p>
+
+            <div class="coverage-bar">
+                <div class="seg partner" style="flex:10"></div>
+                <div class="seg echology" style="flex:6"></div>
+                <div class="seg partner2" style="flex:7"></div>
+            </div>
+            <div class="coverage-legend">
+                <span><span class="dot-leg" style="background:var(--accent)"></span>Upstream — Data Pull (10 steps, ~45 min)</span>
+                <span><span class="dot-leg" style="background:var(--green)"></span>Echology RBS (6 steps, ~75 min → seconds)</span>
+                <span><span class="dot-leg" style="background:var(--yellow)"></span>Downstream — Routing (7 steps, ~15 min)</span>
+            </div>
+
+            <div class="process-phases">
+                <div class="phase-block upstream">
+                    <h3>Data Pull &amp; Gathering</h3>
+                    <div class="phase-who">Upstream &middot; TAM System Access Required</div>
+                    <div class="phase-time">~45 min manual per policy</div>
+                    <div class="touchpoint"><span class="tp-num">1.</span> Receive POLR activity from TAM queue</div>
+                    <div class="touchpoint"><span class="tp-num">2.</span> Open POLR &amp; identify insured/LOB</div>
+                    <div class="touchpoint"><span class="tp-num">3.</span> Navigate to Attachments tab, filter</div>
+                    <div class="touchpoint"><span class="tp-num">4.</span> Locate Approved Bound Quote</div>
+                    <div class="touchpoint"><span class="tp-num">5.</span> Locate Policy document</div>
+                    <div class="touchpoint"><span class="tp-num">6.</span> Locate Application / ACORD forms</div>
+                    <div class="touchpoint"><span class="tp-num">7.</span> Export TAM data (8-12 tabs per LOB)</div>
+                    <div class="touchpoint"><span class="tp-num">8.</span> Check for missing documents</div>
+                    <div class="touchpoint"><span class="tp-num">9.</span> Email CSR for missing docs (escalation)</div>
+                    <div class="touchpoint"><span class="tp-num">10.</span> Handle wrong/corrupt documents</div>
+                </div>
+
+                <div class="phase-arrow">&#9654;</div>
+
+                <div class="phase-block ours">
+                    <h3>Document QC Engine</h3>
+                    <div class="phase-who">Echology RBS &middot; Automated</div>
+                    <div class="phase-time">~75 min manual → seconds</div>
+                    <div class="touchpoint"><span class="tp-num">11.</span> Classify documents (source vs. non-source)</div>
+                    <div class="touchpoint"><span class="tp-num">12.</span> Parse &amp; OCR all document types</div>
+                    <div class="touchpoint"><span class="tp-num">13.</span> Extract fields (40+ per LOB)</div>
+                    <div class="touchpoint"><span class="tp-num">14.</span> Normalize values (75-revision SOP rules)</div>
+                    <div class="touchpoint"><span class="tp-num">15.</span> Cross-source comparison (N-way)</div>
+                    <div class="touchpoint"><span class="tp-num">16.</span> Results assembly &amp; CSV export</div>
+                </div>
+
+                <div class="phase-arrow">&#9654;</div>
+
+                <div class="phase-block downstream">
+                    <h3>Routing &amp; Closure</h3>
+                    <div class="phase-who">Downstream &middot; TAM + Email Access Required</div>
+                    <div class="phase-time">~15 min manual per policy</div>
+                    <div class="touchpoint"><span class="tp-num">17.</span> Save checklist (naming convention)</div>
+                    <div class="touchpoint"><span class="tp-num">18.</span> CSR / Account POC lookup</div>
+                    <div class="touchpoint"><span class="tp-num">19.</span> Compose discrepancy email</div>
+                    <div class="touchpoint"><span class="tp-num">20.</span> Compose no-discrepancy email</div>
+                    <div class="touchpoint"><span class="tp-num">21.</span> Update RBS tracking sheet</div>
+                    <div class="touchpoint"><span class="tp-num">22.</span> Close POLR activity in TAM</div>
+                    <div class="touchpoint"><span class="tp-num">23.</span> Follow-up on discrepancy resolution</div>
+                </div>
+            </div>
+        </div>
 
         <div class="hiw-section">
             <h2>Pipeline Overview</h2>
@@ -402,6 +499,60 @@ Label Mapping (same field, different labels per source):
                 <div class="tech-card"><h4>Output Safety</h4><p>CSV export sanitized against formula injection (=, +, @, - prefixes escaped). Error messages sanitized — no server paths or stack traces exposed.</p></div>
                 <div class="tech-card"><h4>CORS &amp; Access</h4><p>Origin-restricted CORS (echology.io only). Method-restricted to GET/POST. Automatic temp file cleanup after 1 hour.</p></div>
                 <div class="tech-card"><h4>Data Handling</h4><p>No persistent storage of uploaded documents. Ephemeral processing only. Raw text previews truncated. No external API calls — all processing on-server.</p></div>
+            </div>
+        </div>
+
+        <div class="hiw-section">
+            <h2><span class="step-num">9</span> End-to-End Integration</h2>
+            <p>Echology RBS handles the document intelligence — the hardest part of Policy QC. The upstream (data pull) and downstream (routing &amp; closure) phases require TAM system access and process automation. This creates a clean integration architecture with no overlap.</p>
+
+            <div class="arch-diagram">  Full Automated Pipeline (Combined)
+
+  ┌─────────────────────────┐       ┌──────────────────────────┐       ┌─────────────────────────┐
+  │   UPSTREAM AUTOMATION   │       │     ECHOLOGY RBS         │       │  DOWNSTREAM AUTOMATION  │
+  │                         │       │                          │       │                         │
+  │  TAM Activity Queue     │       │  Document Classifier     │       │  CSR / POC Lookup       │
+  │  POLR Metadata Read     │       │  Multi-Format Parser     │       │  Email Generation       │
+  │  Attachment Retrieval   │──────▶│  Field Extraction        │──────▶│  Checklist Filing       │
+  │  Completeness Check     │ files │  SOP Normalization       │ JSON  │  POLR Activity Close    │
+  │  Missing Doc Workflow   │       │  N-Way Comparison        │  CSV  │  Follow-Up Tracking     │
+  │                         │       │  Results + Export         │       │                         │
+  └─────────────────────────┘       └──────────────────────────┘       └─────────────────────────┘
+    Requires: TAM API access          Requires: Documents only           Requires: TAM + Email API
+    ~45 min manual → automated        ~75 min manual → seconds           ~15 min manual → automated</div>
+
+            <p style="font-size:.85rem;color:var(--text-dim);margin-top:.5rem"><strong>Integration contract:</strong> Upstream sends documents via <code style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:.75rem;color:var(--green)">POST /api/upload</code>. Echology returns structured JSON with comparison results, summary stats, and source attribution. Downstream consumes the JSON to generate emails, file checklists, and close activities.</p>
+
+            <table class="integration-table">
+                <thead>
+                    <tr><th>Integration Point</th><th>Direction</th><th>Data</th><th>Method</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Document Submission</td><td>Upstream → Echology</td><td>PDF, DOCX files + metadata</td><td><code>POST /api/upload</code></td></tr>
+                    <tr><td>QC Results</td><td>Echology → Downstream</td><td>Comparison JSON + CSV</td><td><code>POST /api/export</code></td></tr>
+                    <tr><td>Configuration</td><td>Shared</td><td>CSR routing table, naming rules</td><td>Config file or API</td></tr>
+                </tbody>
+            </table>
+
+            <div class="tech-grid" style="margin-top:1.25rem">
+                <div class="partner-card">
+                    <h4>What Upstream Automation Builds</h4>
+                    <p><strong>TAM Connector</strong> — Poll POLR activity queue, read metadata, pull attachments.<br>
+                    <strong>Completeness Engine</strong> — Rules for required docs per LOB, auto-request missing docs.<br>
+                    <strong>Orchestrator</strong> — Poll → Pull → Submit to Echology → Receive results → Route.</p>
+                </div>
+                <div class="partner-card">
+                    <h4>What Downstream Automation Builds</h4>
+                    <p><strong>Routing Engine</strong> — CSR/POC lookup, template-based email generation for discrepancy and no-discrepancy cases.<br>
+                    <strong>POLR Closer</strong> — Activity reassignment, follow-up dates, notes, close workflow via TAM API.<br>
+                    <strong>Tracker</strong> — Automated follow-up on unresolved discrepancies.</p>
+                </div>
+                <div class="partner-card">
+                    <h4>What Echology Provides (Built)</h4>
+                    <p><strong>RBS Engine</strong> — Classification, parsing, OCR, extraction, SOP normalization, N-way comparison.<br>
+                    <strong>75-Revision SOP Intelligence</strong> — Every exception rule encoded.<br>
+                    <strong>API</strong> — Live at Fly.io, ready for programmatic integration. Also runs locally for air-gapped environments.</p>
+                </div>
             </div>
         </div>
 
