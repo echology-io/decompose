@@ -263,11 +263,22 @@ main{padding:2rem;max-width:1400px;margin:0 auto}
             <p>Once raw text is extracted, regex-based patterns identify and extract insurance-specific fields. Patterns are tuned per document format — Burns &amp; Wilcox quotes, Scottsdale/Nationwide policies, ACORD 125/140 applications, RISCOM quotes, and TAM system screenshots all use format-specific extraction logic.</p>
             <div class="arch-diagram">Fields Extracted Per Document:
 
-  Named Insured          Policy Number         Policy Term
-  Premium                Carrier               Mailing Address
-  Email Address          Deductible            General Aggregate
-  Each Occurrence        No. Employees         Products/Completed Ops
-  Personal & Adv Injury  Medical Expenses      Damage to Rented Premises
+  Policy Info:           Named Insured · Policy Number · Policy Term
+                         Premium · Carrier · Mailing Address · Email
+
+  GL Coverage:           General Aggregate · Each Occurrence · Products/Completed Ops
+                         Personal & Adv Injury · Medical Expenses · Damage to Rented Premises
+
+  Auto Coverage:         Liability (CSL) · PIP · Med Pay · UM/UIM
+                         Hired/Borrowed · Non-Owned · Comp · Collision
+                         Towing & Labor · Hired Physical Damage · Vehicle Count
+
+  Property:              Amount/Limit · Deductible · Co-Insurance · Cause of Loss
+                         Valuation · Construction Type · Year Built
+
+  Endorsements:          WOS · AI · PNC · XX-Day NOC (auto-detected)
+
+  Additional Interests:  Mortgagee · Loss Payee · Additional Insureds
 
 Label Mapping (same field, different labels per source):
 
@@ -303,13 +314,14 @@ Label Mapping (same field, different labels per source):
             <ul class="rules-list">
                 <li><span class="rule-icon">&#10003;</span> Date formats unified: <code>6/5/2024</code> → <code>06/05/2024</code>, separators normalized (<code>to</code> / <code>through</code> / <code>–</code> → <code>-</code>)</li>
                 <li><span class="rule-icon">&#10003;</span> OCR date correction: month values with 9x prefix corrected (e.g., <code>96/04/2023</code> → <code>06/04/2023</code>)</li>
-                <li><span class="rule-icon">&#10003;</span> Entity name variants: <code>, LLC</code> = <code>LLC</code> = <code>L.L.C.</code></li>
+                <li><span class="rule-icon">&#10003;</span> Entity name variants: <code>, LLC</code> = <code>LLC</code> = <code>L.L.C.</code> = <code>Corp</code> = <code>Corp.</code></li>
                 <li><span class="rule-icon">&#10003;</span> Address abbreviations: <code>Suite</code> = <code>Ste</code>, <code>Boulevard</code> = <code>Blvd</code>, <code>Street</code> = <code>St</code>, etc.</li>
                 <li><span class="rule-icon">&#10003;</span> Premium normalization: <code>$3,035</code> = <code>$3,035.00</code>, OCR decimal correction for garbled amounts</li>
                 <li><span class="rule-icon">&#10003;</span> Address splitting: concatenated double-addresses separated (insured + broker on one line)</li>
-                <li><span class="rule-icon">&#10003;</span> Punctuation stripped: periods, commas, extra spaces</li>
-                <li><span class="rule-icon">&#10003;</span> Case-insensitive comparison across all fields</li>
-                <li><span class="rule-icon">&#10003;</span> SOP exceptions: middle initials, street suffixes, DBA order, vehicle model variants</li>
+                <li><span class="rule-icon">&#10003;</span> Field name equivalences: <code>Fire Damage</code> = <code>Damage to Rented Premises</code>, <code>Medical Payments</code> = <code>Medical Expense (any one person)</code></li>
+                <li><span class="rule-icon">&#10003;</span> Deductible normalization: <code>$1,000 Ded</code> = <code>$1,000 Deductible</code></li>
+                <li><span class="rule-icon">&#10003;</span> Vehicle model variants: <code>Pickup</code> = <code>Truck</code>, <code>SUV</code> = <code>Tahoe</code> (per SOP)</li>
+                <li><span class="rule-icon">&#10003;</span> SOP exceptions: DBA name order, middle initials, street suffixes, punctuation, case</li>
             </ul>
         </div>
 
@@ -369,7 +381,7 @@ Label Mapping (same field, different labels per source):
 │                           │                                  │
 └───────────────────────────┼──────────────────────────────────┘
                            ▼
-                    JSON Response
+                    JSON / CSV Export
               {results, summary, skipped_files}</div>
         </div>
 
@@ -378,8 +390,18 @@ Label Mapping (same field, different labels per source):
             <div class="tech-grid">
                 <div class="tech-card"><h4>Runtime</h4><p><code>Python 3.11</code> — server and all processing<br><code>FastAPI</code> + <code>uvicorn</code> — async HTTP server</p></div>
                 <div class="tech-card"><h4>Document Parsing</h4><p><code>pdfplumber</code> — native PDF text<br><code>pdf2image</code> + <code>poppler</code> — PDF → image<br><code>Tesseract 5.5</code> — OCR engine<br><code>python-docx</code> / <code>openpyxl</code> — Office files</p></div>
-                <div class="tech-card"><h4>Extraction Engine</h4><p>Deterministic regex patterns with OCR error correction — no LLM, no API calls, no model inference. Format-specific extraction for Burns &amp; Wilcox, Scottsdale, ACORD, RISCOM, and TAM sources. Fully auditable.</p></div>
-                <div class="tech-card"><h4>Deployment</h4><p>Runs locally — no data leaves the network. Single Python process, no database, no external dependencies. Can be containerized with Docker.</p></div>
+                <div class="tech-card"><h4>Extraction Engine</h4><p>Deterministic regex patterns with SOP-encoded normalization — no LLM, no API calls, no model inference. Auto, GL, and Property coverage fields with endorsement detection. Fully auditable.</p></div>
+                <div class="tech-card"><h4>Deployment</h4><p>Deployed on <code>Fly.io</code> with HTTPS, auto-scaling, and zero-config SSL. Dockerized with Tesseract + Poppler. Also runs locally for air-gapped environments.</p></div>
+            </div>
+        </div>
+
+        <div class="hiw-section">
+            <h2><span class="step-num">8</span> Security</h2>
+            <div class="tech-grid">
+                <div class="tech-card"><h4>Input Validation</h4><p>Path traversal prevention on filenames. File type whitelist (PDF, DOCX, XLSX, TXT only). 50MB per-file and 10-file-per-upload limits.</p></div>
+                <div class="tech-card"><h4>Output Safety</h4><p>CSV export sanitized against formula injection (=, +, @, - prefixes escaped). Error messages sanitized — no server paths or stack traces exposed.</p></div>
+                <div class="tech-card"><h4>CORS &amp; Access</h4><p>Origin-restricted CORS (echology.io only). Method-restricted to GET/POST. Automatic temp file cleanup after 1 hour.</p></div>
+                <div class="tech-card"><h4>Data Handling</h4><p>No persistent storage of uploaded documents. Ephemeral processing only. Raw text previews truncated. No external API calls — all processing on-server.</p></div>
             </div>
         </div>
 
