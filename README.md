@@ -8,7 +8,7 @@
 
 **Stop prompting. Start decomposing.**
 
-The missing cognitive primitive for AI agents. Decompose turns any text into classified, structured semantic units — instantly. No LLM. No setup. One function call.
+Deterministic text classification for AI agents. Decompose turns any text into classified, structured semantic units — instantly. No LLM. No setup. One function call.
 
 ---
 
@@ -221,9 +221,9 @@ The LLM is what *your agent* uses. Decompose makes whatever model you're running
 
 ## Built by Echology
 
-Decompose is extracted from [AECai](https://aecai.io), a document intelligence platform for Architecture, Engineering, and Construction firms. The classification patterns, entity extraction, and irreducibility detection are battle-tested against thousands of real AEC documents — specs, contracts, RFIs, inspection reports, pay applications.
+Decompose is built by [Echology](https://echology.io) and extracted from [AECai](https://aecai.io), a document intelligence platform for Architecture, Engineering, and Construction firms. The classification patterns, entity extraction, and irreducibility detection are battle-tested against thousands of real AEC documents — specs, contracts, RFIs, inspection reports, pay applications.
 
-Free, MIT-licensed, and designed as the on-ramp to understanding document intelligence architecture.
+Decompose earned its independence — it started as AECai's text classification module, proved general enough to work across domains (insurance, trading, regulatory), and was released standalone. Free, MIT-licensed.
 
 ### Blog
 
@@ -232,5 +232,3 @@ Free, MIT-licensed, and designed as the on-ramp to understanding document intell
 - [What "Simulation-Aware" Actually Means](https://echology.io/blog/simulation-aware) — the architecture behind AECai
 
 **License:** MIT — Copyright (c) 2025-2026 Echology, Inc.
-
-**Philosophy:** All intelligence begins with decomposition.
