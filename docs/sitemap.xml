@@ -71,6 +71,24 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://echology.io/blog/simulation-aware" />
     <xhtml:link rel="alternate" hreflang="pt" href="https://echology.io/pt/blog/consciente-de-simulacao" />
   </url>
+  <url>
+    <loc>https://echology.io/blog/security-classification-lands-in-decompose-v011</loc>
+    <lastmod>2026-02-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://echology.io/blog/when-your-ai-cant-explain-why-it-flagged-a-document</loc>
+    <lastmod>2026-02-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://echology.io/blog/where-decompose-fits</loc>
+    <lastmod>2026-02-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
   <!-- Portuguese pages -->
   <url>
