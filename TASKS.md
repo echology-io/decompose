@@ -1,6 +1,6 @@
 # Tasks: Workflow — Local Tracking
 
-**Last synced from Notion:** 2026-02-21 (14 backlog + 5 research + 6 sub-items → complete synced; full .01-.25 audit)
+**Last synced from Notion:** 2026-02-21
 **Notion DB:** https://www.notion.so/2682973f06dc8115b832efbe10cf82ef
 **Data Source ID:** 2682973f-06dc-8190-aa33-000bef5503cd
 
@@ -16,42 +16,7 @@ Update this file locally, then batch-sync to Notion. Status values: `Completed`,
 
 ---
 
-## ACTIONABLE GAPS (from 2026-02-21 audit)
-
-These need action. Create Notion tasks or fix directly.
-
-### Critical — Before Launch
-
-| # | Gap | Repo | Action | Status |
-|---|-----|------|--------|--------|
-| G1 | Sitemap missing 4 blog posts | echology | Added 3 posts to `docs/sitemap.xml` | DONE |
-| G2 | Blog index duplicate entry | echology | Removed duplicate from `docs/blog.html` | DONE |
-| G3 | Version mismatch pyproject vs ClawHub | echology | PyPI is 0.1.1 (correct). Fixed LAUNCH.md typo (said 0.1.2) | DONE |
-
-### Medium — Fix Soon
-
-| # | Gap | Repo | Action | Status |
-|---|-----|------|--------|--------|
-| G4 | Qdrant storage path mismatch | aecai | Made configurable via `QDRANT_STORAGE` env var in docker-compose + start_temporal.sh | DONE |
-| G5 | Git remote URL typo (double dot) | kylevines | FALSE POSITIVE — repo is actually named `kylevines.` on GitHub, URL was correct | N/A |
-| G6 | Decompose import fragile (.pth link) | aecai | Added `decompose-mcp>=0.1.1` to requirements.txt + pyproject.toml | DONE |
-| G7 | hello-fly/ untracked, not gitignored | aecai | Added to .gitignore | DONE |
-| G8 | .gitignore uncommitted | kylevines | Committed and pushed | DONE |
-
-### Low — Cleanup
-
-| # | Gap | Repo | Action | Status |
-|---|-----|------|--------|--------|
-| G9 | docs/sops/ missing | aecai | Removed stale path, added `AECAI_INGEST_DIRS` env var | DONE |
-| G10 | data/aecai_training/ gitignore stale | aecai | Consolidated to single `data/aecai_training/` entry | DONE |
-| G11 | Server docstring says "Cloudflare Tunnel" | aecai | Updated to "Fly.io or local network" | DONE |
-| G12 | echology-unified-theory.md tracked publicly | kylevines | Gitignored + untracked (kept on disk) | DONE |
-| G13 | No CHANGELOG | echology | Created CHANGELOG.md with v0.1.0 + v0.1.1 | DONE |
-| G14 | Personal blog has only 1 post | kylevines | Replaced placeholder with real "Why I Build" post | DONE |
-
----
-
-## COMPLETED
+## COMPLETED (57 tasks)
 
 | Task | Bucket | Notion ID | Completed |
 |------|--------|-----------|-----------|
