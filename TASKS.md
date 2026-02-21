@@ -12,11 +12,11 @@ Update this file locally, then batch-sync to Notion. Status values: `Completed`,
 
 | Task | Bucket | Notion ID | Notes |
 |------|--------|-----------|-------|
-| Prepare Decompose launch plan (HN, Reddit, LinkedIn) | .14 Launch | `30e2973f-06dc-8131-a71f-e74bfd34767d` | Posts drafted, schedule ready. HN window Sun/Mon 7-9 AM ET |
+| Activate AECai consulting launch — outbound sales Day 1 | .14 Launch | `30e2973f-06dc-8131-a71f-e74bfd34767d` | Warm intros first, then LinkedIn engagement, then email sequences. $800 assessment offer. Decompose supports as credibility artifact, not lead. |
 
 ---
 
-## COMPLETED (57 tasks)
+## COMPLETED (58 tasks)
 
 | Task | Bucket | Notion ID | Completed |
 |------|--------|-----------|-----------|
@@ -77,6 +77,7 @@ Update this file locally, then batch-sync to Notion. Status values: `Completed`,
 | Package Vanta for pip (PyPI) — pyproject.toml v3.1.0 | .24 Complete | `a9ce97b5-949f-4608-a421-775beed30888` | 2026-02 |
 | Industry-specific agent bundles (5 plugins: Standards, PII, Timeline, Financial, Contract) | .24 Complete | `3c6e2813-df0c-4dbd-a72a-74fc2c61d2c2` | 2026-02 |
 | Security whitepaper (local-first air-gap in vanta_security.py) | .24 Complete | `5460e708-46f4-4a9a-bb3c-09f549077c54` | 2026-02 |
+| Obtain EIN | .24 Complete | `b4b0a8c3-adc5-4c38-b002-4baadc584c95` | 2026-02 |
 
 ---
 
@@ -86,8 +87,7 @@ Update this file locally, then batch-sync to Notion. Status values: `Completed`,
 |------|-----------|----------|
 | open s-corp (c?) | `2682973f-06dc-810b-824e-e9a11f9355a4` | Legal/Entity |
 | Entity Formation | `ad51c514-6df2-4245-a44e-52381b05b25e` | Legal/Entity |
-| Obtain EIN | `b4b0a8c3-adc5-4c38-b002-4baadc584c95` | Legal/Entity |
-| NC foreign qualification | `795ed8b4-88e0-494e-b846-76a34a818397` | Legal/Entity |
+| SC foreign qualification (operating state update) | `795ed8b4-88e0-494e-b846-76a34a818397` | Legal/Entity |
 | 409A valuation preparation | `c114b368-8d81-4fdb-8357-cfecae9d101e` | Legal/Entity |
 | Business insurance (liability, cyber, E&O) | `95204402-b0d6-4aec-8c3a-cbb4613d9362` | Legal/Entity |
 | Legal Documentation (parent) | `c08d9a94-1bb7-4f9a-8c42-3ff0869bbd70` | Legal/Entity |
