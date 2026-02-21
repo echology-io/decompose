@@ -1,6 +1,6 @@
 # Tasks: Workflow — Local Tracking
 
-**Last synced from Notion:** 2026-02-21 (14 backlog + 5 research → complete synced)
+**Last synced from Notion:** 2026-02-21 (14 backlog + 5 research + 6 sub-items → complete synced; full .01-.25 audit)
 **Notion DB:** https://www.notion.so/2682973f06dc8115b832efbe10cf82ef
 **Data Source ID:** 2682973f-06dc-8190-aa33-000bef5503cd
 
@@ -106,6 +106,12 @@ These need action. Create Notion tasks or fix directly.
 | Build Hierarchical Reality Virtual Machine (HRVM) — vanta_simulation.py:237 | .24 Complete | `04d2e980-12b7-4e01-910d-07da3d3c8482` | 2026-02 |
 | Implement Causal Consistency Networks (CCN) — aletheia_simulation.py:43 | .24 Complete | `c30a6eae-081d-4e1c-a9b6-b45f8ec27fcc` | 2026-02 |
 | Build Memetic Algorithm Resource Evolution (MARE) — vanta_simulation.py:401 | .24 Complete | `b834d686-3b32-485f-a44d-ed867b9e252f` | 2026-02 |
+| CAD/BIM vector extraction (vanta_geometry.py, daedalus_revit.py, daedalus_civil3d.py) | .24 Complete | `0b741187-8456-48ba-b6e2-eb5ca08f43c6` | 2026-02 |
+| DWT/DXF CLI pipeline utilities (vanta_geometry.py) | .24 Complete | `7ed5dffb-fede-4887-a23d-3eac2da57098` | 2026-02 |
+| Provide Docker images for enterprise deployment (Dockerfile + docker-compose.yml) | .24 Complete | `717e7ac8-d895-4b70-9736-84b44f95462a` | 2026-02 |
+| Package Vanta for pip (PyPI) — pyproject.toml v3.1.0 | .24 Complete | `a9ce97b5-949f-4608-a421-775beed30888` | 2026-02 |
+| Industry-specific agent bundles (5 plugins: Standards, PII, Timeline, Financial, Contract) | .24 Complete | `3c6e2813-df0c-4dbd-a72a-74fc2c61d2c2` | 2026-02 |
+| Security whitepaper (local-first air-gap in vanta_security.py) | .24 Complete | `5460e708-46f4-4a9a-bb3c-09f549077c54` | 2026-02 |
 
 ---
 
@@ -129,12 +135,57 @@ These need action. Create Notion tasks or fix directly.
 | Business Strategy (parent) | `7073dcdf-d695-4751-93ae-b74355e0d9e4` | Business |
 | Create ECSIT Systemization Offer sheet | `5a5f7a38-0910-417a-b6cb-aee5e4b874fb` | ECSIT |
 | Uptime status page setup | `90c8af36-d779-456b-a520-a6f52782f6b0` | Ops |
+| Implement `vanta export` (JSON → CSV/XLSX/Markdown) | `14571093-5b75-42fe-94dd-153736688f64` | Product |
+| Implement `vanta diff` (compare doc revisions) | `2b28c63b-6d68-49b5-a37c-744e10bdd971` | Product |
+| Cross-OS install smoke tests (Mac, Windows, Linux) | `0db3f7ba-4cc3-470b-8b31-a0daaa542736` | Product |
+| Create install docs for Windows, Mac, Linux | `874138a5-cf4f-4837-9d28-42ab0d037af7` | Product |
+| Apple Developer enrollment & code-signing certificates | `0c5f7607-c05e-4f3d-a2b6-419194e1e286` | Distribution |
+| Code signing and release trust implementation | `457a5133-aa4c-493b-91ee-e6dee949ffdd` | Distribution |
+| Package for Homebrew or other CLI channels | `fb1653a1-0e5b-4fe2-90f8-5d785d1e066c` | Distribution |
+| Professional proposal document generation (EchoDeck) | `7cf01a96-3223-4c69-9af0-a6754a9dc6f5` | Product |
+| Generate SOPs and slide decks from pipeline outputs (EchoDeck) | `dcc8b604-ecc2-447c-af8c-c8e61a10aa23` | Product |
+| Auto-attach certification reports in decks (EchoDeck) | `356edcd2-11de-4f43-8833-5c88259c7079` | Product |
+| Redaction policy documentation (EchoLog) | `24c53ea5-2b5d-4a4d-a9e6-568480b32852` | Product |
+| Telemetry guardrails (opt-in vs opt-out) (EchoLog) | `b07a20e2-9bf1-4fa6-a3b6-b687ad9fffbf` | Product |
+| Conduct buyer interviews (5-10 per target market) | `09a374cf-14c0-43f8-a55e-23c007daae06` | Business |
+| Start list-building with waitlist signup | `0b190b91-d4fd-4176-83ae-e5bd23a4a402` | Business |
+| Define success criteria for beta users | `1c595237-ab06-4f64-ac8b-80e7dccc4f9a` | Business |
+| Define funding ask ($1M-$2.5M Seed) | `16c2e363-86b3-47cf-839f-9433877bc480` | Business |
+| Design email sequences (cold, follow-up, nurture) | `1ba8c36c-1afe-404b-ab47-f17afe8ce644` | Business |
 
 ---
 
 ## ON HOLD — Research (.05)
 
 *All 5 SimArch prototypes moved to COMPLETED — fully implemented in AECai engine.*
+
+### Blockchain / Aletheia Anchoring (future work)
+
+| Task | Notion ID | Category |
+|------|-----------|----------|
+| Define blockchain integration rationale | `cb545390-636a-4fe0-8cc3-d118dbd46c7c` | Web3 |
+| Write "local-first + chain-anchored" principle | `82e966ce-f135-4348-a688-044bf2089531` | Web3 |
+| Draft cross-industry compliance reviews (MiCA, SEC, OFAC) | `15360132-00c4-4c72-b89f-e5219690f465` | Web3 |
+| Create enterprise DAO governance templates | `42a8db8d-c7a6-41fb-9139-2559b60166fb` | Web3 |
+| Pick success metrics (verifiability, latency, fees, ops burden) | `0173c3c4-0ffe-4c5e-97fe-e7c6a33b4280` | Web3 |
+| Compare L2s for anchoring/payments (rollups vs alt-L1) | `07536d1f-e91d-49e7-8666-5271d71baafc` | Web3 |
+| Decide primary L2 for anchors/payments; backup chain | `68fc38ea-f98e-4740-a4d6-39ee6f627ed7` | Web3 |
+| Define testnet strategy (one per environment) | `3554519f-3248-4792-ab44-10ca2dca9915` | Web3 |
+| Implement cross-chain temporal consensus prototype | `d408c7dc-0635-4f57-9f88-a5002a82dbe6` | Web3 |
+| Choose DID method compatible with local use (DID:key / DID:web) | `1a3b4cee-368a-42f3-ada5-d2819e4b5087` | Web3 |
+| Issue/verify VCs locally; optionally anchor VC hashes on-chain | `f3336135-7539-4da0-8d23-ea34524fa2ba` | Web3 |
+
+### Aletheia CLI — Blockchain Anchoring (Inbox)
+
+| Task | Notion ID | Category |
+|------|-----------|----------|
+| Design anchor contract: store (hash, timestamp, metadata) | `558938f6-dade-4f6f-a0e3-30a43fb73936` | Web3 |
+| Add CLI: `aletheia certify --anchor` | `0d1dedf4-2613-4668-87e7-a2b918a1f122` | Web3 |
+| Implement cross-chain anchors (Aletheia) | `1a3d2e9a-1258-40a1-ad89-2c6278fc7232` | Web3 |
+| Specify state-root hashing for Aletheia ledger snapshots | `e225d71d-26ca-433e-a409-b8094089a117` | Web3 |
+| Write verifier CLI: `aletheia verify --proof <bundle>` | `b604356c-b9ef-4723-93bc-c24d57011424` | Web3 |
+| Define VCs for: dataset cert, reviewer identity, organization role | `8bbb7dd7-35a9-469d-9e15-a0e234fedb03` | Web3 |
+| Build DID integration for reviewer identity in Aletheia | `972a0aec-0f3d-4387-8b99-a30003a29147` | Web3 |
 
 ---
 
