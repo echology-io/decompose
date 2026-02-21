@@ -1,6 +1,6 @@
 """Decompose — Structured intelligence from any text.
 
-The missing cognitive primitive for AI agents.
+Deterministic text classification for AI agents. No LLM required.
 """
 
 __version__ = "0.1.1"
