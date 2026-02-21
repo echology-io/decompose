@@ -89,6 +89,21 @@ Fetch a URL and decompose its content. Handles HTML, Markdown, and plain text.
 - Route high-attention content to specialized analysis chains
 - Build structured training data from raw documents
 
+## Library: `filter_for_llm()`
+
+When using Decompose as a Python library (not MCP), `filter_for_llm()` pre-filters decompose output for LLM context windows:
+
+```python
+from decompose import decompose_text, filter_for_llm
+
+result = decompose_text(document_text)
+filtered = filter_for_llm(result, max_tokens=4000)
+# filtered["text"] = high-value units only (mandatory, safety-critical, financial, compliance)
+# filtered["meta"]["reduction_pct"] = typically 60-80% token reduction
+```
+
+Keeps mandatory, prohibitive, directive, conditional authority + safety-critical, compliance, financial, contractual risk + requirement, constraint, data, definition types. Configurable via keyword arguments.
+
 ## Performance
 
 - ~14ms average per document on Apple Silicon

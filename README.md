@@ -108,12 +108,17 @@ cat document.md | decompose --compact
 ## Use as Library
 
 ```python
-from decompose import decompose_text
+from decompose import decompose_text, filter_for_llm
 
 result = decompose_text("The contractor shall provide all materials per ASTM C150-20.")
 
 for unit in result["units"]:
     print(f"[{unit['authority']}] [{unit['risk']}] {unit['text'][:60]}...")
+
+# Pre-filter for LLM context — keep only high-value units
+filtered = filter_for_llm(result, max_tokens=4000)
+print(f"{filtered['meta']['reduction_pct']}% token reduction")
+llm_input = filtered["text"]  # Ready for your LLM
 ```
 
 ---
@@ -141,24 +146,26 @@ Without:  document → chunk → embed → retrieve → LLM → answer  (100% of
 With:     document → decompose → filter/route → LLM → answer  (20-40% of tokens)
 ```
 
-### Filter: attention-weighted RAG
+### Filter: built-in LLM pre-filter
 
-Only embed what matters. Drop the boilerplate before it reaches your vector store.
+`filter_for_llm()` keeps mandatory, safety-critical, financial, and compliance units — drops boilerplate before it reaches your LLM or vector store.
 
 ```python
-from decompose import decompose_text
+from decompose import decompose_text, filter_for_llm
 
 result = decompose_text(open("contract.md").read())
+filtered = filter_for_llm(result, max_tokens=4000)
 
-for unit in result["units"]:
-    if unit["attention"] >= 2.0:
-        embed_and_store(unit["text"], metadata={
-            "authority": unit["authority"],
-            "risk": unit["risk"],
-            "attention": unit["attention"],
-        })
-    # Low-attention units never enter the vector store.
-    # Your retrieval gets more relevant. Your LLM sees less noise.
+# filtered["text"] = high-value units only, ready for LLM
+# filtered["meta"]["reduction_pct"] = how much was dropped (typically 60-80%)
+
+# Or use the units directly for embedding
+for unit in filtered["units"]:
+    embed_and_store(unit["text"], metadata={
+        "authority": unit["authority"],
+        "risk": unit["risk"],
+        "attention": unit["attention"],
+    })
 ```
 
 ### Route: risk-based processing
