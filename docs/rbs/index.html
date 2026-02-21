@@ -313,8 +313,8 @@ main{padding:2rem;max-width:1400px;margin:0 auto}
             <div class="pipeline">
                 <div class="pipe-step"><div class="pipe-icon">&#128196;</div><div class="pipe-title">Upload</div><div class="pipe-desc">PDF, DOCX, XLSX<br>Any document type</div></div>
                 <div class="pipe-step"><div class="pipe-icon">&#128218;</div><div class="pipe-title">Classify</div><div class="pipe-desc">Source vs non-source<br>Auto-label (Quote, Policy...)</div></div>
-                <div class="pipe-step"><div class="pipe-icon">&#128065;</div><div class="pipe-title">Parse + OCR</div><div class="pipe-desc">Native text extraction<br>Tesseract OCR fallback</div></div>
-                <div class="pipe-step"><div class="pipe-icon">&#128269;</div><div class="pipe-title">Extract Fields</div><div class="pipe-desc">Regex patterns matched<br>per document type</div></div>
+                <div class="pipe-step"><div class="pipe-icon">&#128065;</div><div class="pipe-title">Parse + OCR</div><div class="pipe-desc">Native text or Tesseract<br>Scanned detection</div></div>
+                <div class="pipe-step"><div class="pipe-icon">&#128269;</div><div class="pipe-title">Extract Fields</div><div class="pipe-desc">Regex → Text AI → Vision<br>Three-tier pipeline</div></div>
                 <div class="pipe-step"><div class="pipe-icon">&#9878;</div><div class="pipe-title">Normalize</div><div class="pipe-desc">Dates, addresses, names<br>SOP exception rules</div></div>
                 <div class="pipe-step"><div class="pipe-icon">&#128200;</div><div class="pipe-title">Compare</div><div class="pipe-desc">N-way field comparison<br>across all sources</div></div>
                 <div class="pipe-step" style="border-color:var(--red)"><div class="pipe-icon">&#9888;</div><div class="pipe-title" style="color:var(--red)">Report</div><div class="pipe-desc">Match / Partial / Discrepancy<br>with source attribution</div></div>
@@ -338,27 +338,56 @@ main{padding:2rem;max-width:1400px;margin:0 auto}
 
         <div class="hiw-section">
             <h2><span class="step-num">2</span> Document Parsing</h2>
-            <p>Each source file is routed to the appropriate parser based on file type. PDFs with embedded text are extracted natively using pdfplumber. Scanned PDFs (images) are converted to 300 DPI images and processed through Tesseract OCR. DOCX files with embedded screenshots (like TAM exports) have their images OCR'd individually.</p>
+            <p>Each source file is routed to the appropriate parser based on file type. PDFs with embedded text are extracted natively using pdfplumber. Scanned PDFs (images) are detected automatically — if pdfplumber returns fewer than 100 characters, the document is flagged as scanned and processed through Tesseract OCR. This scanned-vs-native detection determines which extraction tiers are available downstream.</p>
             <div class="tech-grid">
                 <div class="tech-card">
                     <h4>Native PDF</h4>
-                    <p>Text-based PDFs are extracted with <code>pdfplumber</code> — fast, high accuracy, preserves layout structure. Used for quotes, binders, and machine-generated policies.</p>
+                    <p>Text-based PDFs are extracted with <code>pdfplumber</code> — fast, high accuracy, preserves layout structure. Table extraction pulls structured data from PDF tables. Used for quotes, binders, and machine-generated policies. Regex extraction alone typically yields 14+ fields.</p>
                 </div>
                 <div class="tech-card">
                     <h4>Scanned PDF (OCR)</h4>
-                    <p><code>pdf2image</code> converts pages to 300 DPI images. <code>Tesseract 5.5</code> runs OCR per page. Handles scanned applications, endorsements, and form schedules.</p>
+                    <p><code>pdf2image</code> converts pages to images. <code>Tesseract 5.5</code> runs OCR per page. Auto-detected when pdfplumber returns &lt;100 chars of text. Flagged as scanned to enable AI and vision tiers for field extraction.</p>
                 </div>
                 <div class="tech-card">
                     <h4>Office Documents</h4>
-                    <p><code>python-docx</code> extracts paragraphs and tables from DOCX. <code>openpyxl</code> reads XLSX cell values. Used for TAM exports, QC checklists, and document maps.</p>
+                    <p><code>python-docx</code> extracts paragraphs and tables from DOCX. Embedded screenshots (common in TAM exports) are extracted for vision processing. <code>openpyxl</code> reads XLSX cell values. DOCX flagged as scanned if text &lt;500 chars.</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Scanned Detection</h4>
+                    <p>Each document returns a <code>is_scanned</code> flag. Native-text documents proceed to regex-only extraction. Scanned documents unlock the full three-tier pipeline: regex → text AI → vision model. This prevents AI hallucination on documents where regex alone is sufficient.</p>
                 </div>
             </div>
         </div>
 
         <div class="hiw-section">
-            <h2><span class="step-num">3</span> Field Extraction</h2>
-            <p>Once raw text is extracted, regex-based patterns identify and extract insurance-specific fields. Patterns are tuned per document format — Burns &amp; Wilcox quotes, Scottsdale/Nationwide policies, ACORD 125/140 applications, RISCOM quotes, and TAM system screenshots all use format-specific extraction logic.</p>
-            <div class="arch-diagram">Fields Extracted Per Document:
+            <h2><span class="step-num">3</span> Field Extraction — Three-Tier Pipeline</h2>
+            <p>Extraction uses a progressive three-tier pipeline. Native-text documents use Tier 1 only (regex). Scanned documents escalate through all three tiers, with each tier filling gaps left by the previous one. 40+ fields are extracted across property, GL, and auto coverage lines.</p>
+            <div class="arch-diagram">Three-Tier Extraction Pipeline:
+
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ TIER 1 — Regex (all documents)                                          │
+  │ Deterministic pattern matching: 15+ coverage patterns, 8 premium        │
+  │ patterns, table extraction, multi-format support per carrier/form.      │
+  │ Native-text docs: yields 14-24 fields. No AI needed.                    │
+  └────────────────────────────────┬─────────────────────────────────────────┘
+                                   │ If scanned AND &lt;10 fields extracted
+                                   ▼
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ TIER 2 — Decompose + Ollama Text AI (scanned docs only)                 │
+  │ Decompose filters OCR text to financial/data/compliance units.          │
+  │ Ollama (llama3) extracts 31 expected fields from filtered text.         │
+  │ Structural validators reject invalid values (email format, keywords).   │
+  └────────────────────────────────┬─────────────────────────────────────────┘
+                                   │ If ≥5 fields still missing AND is_scanned
+                                   ▼
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ TIER 3 — LLaVA Vision Model (scanned docs only)                        │
+  │ Page images (PDF→JPEG 150dpi, DOCX→embedded images) sent to LLaVA.     │
+  │ Targets 12 property-detail fields only (Co-Insurance, Total Area,       │
+  │ Protection Class, etc). Field hints + validators prevent hallucination.  │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+Fields Extracted (40+):
 
   Policy Info:           Named Insured · Policy Number · Policy Term
                          Premium · Carrier · Mailing Address · Email
@@ -371,36 +400,30 @@ main{padding:2rem;max-width:1400px;margin:0 auto}
                          Towing & Labor · Hired Physical Damage · Vehicle Count
 
   Property:              Amount/Limit · Deductible · Co-Insurance · Cause of Loss
-                         Valuation · Construction Type · Year Built
+                         Valuation · Construction Type · Year Built · Protection Class
+                         # Stories · # Basement · Total Area · Building Improvements
+                         Distance to Fire Hydrant · Distance to Fire Station
 
   Endorsements:          WOS · AI · PNC · XX-Day NOC (auto-detected)
 
-  Additional Interests:  Mortgagee · Loss Payee · Additional Insureds
-
-Label Mapping (same field, different labels per source):
-
-  Checklist        Quote              TAM              Policy             Application
-  ─────────        ─────              ───              ──────             ───────────
-  Named Insured    Named Insureds     Name             Named Insured      First Named Insured
-  Policy Term      Policy Period      eff / exp        Policy Period      Proposed eff date
-  Premium          Premium            Prem             Premium            Premium
-  Carrier          Carrier            Issuing Co       Underwritten by    Carrier</div>
+  Additional:            Mortgagee · Loss Payee · Additional Insureds
+                         Forms · Locations · Subject of Insurance</div>
             <div class="tech-grid">
                 <div class="tech-card">
-                    <h4>Smart Policy Numbers</h4>
-                    <p>Collects all CPS/HSLR-pattern numbers in the text and selects the most frequent — handles 2-column OCR layouts where numbers appear multiple times across declarations pages.</p>
+                    <h4>Tier 1: Smart Regex</h4>
+                    <p>Multi-format patterns tuned for Burns &amp; Wilcox, Scottsdale/Nationwide, ACORD 125/140, RISCOM quotes, and TAM screenshots. Smart policy number selection (most frequent match). OCR-tolerant carrier matching ("jouston" → Houston Specialty). Address disambiguation filters broker/agency addresses.</p>
                 </div>
                 <div class="tech-card">
-                    <h4>OCR-Tolerant Carrier Matching</h4>
-                    <p>Known carrier names are matched with fuzzy regex patterns that account for common OCR errors (e.g., "jouston" → Houston Specialty, "Seottsdale" → Scottsdale).</p>
+                    <h4>Tier 2: AI Text Enhancement</h4>
+                    <p>Triggered when regex yields &lt;10 fields on scanned docs. <code>Decompose</code> filters OCR text to relevant semantic units (financial, data, compliance). <code>Ollama llama3</code> extracts remaining fields from filtered text. Field aliases normalize name variants. Structural validators reject invalid extractions.</p>
                 </div>
                 <div class="tech-card">
-                    <h4>Address Disambiguation</h4>
-                    <p>Insurance documents contain multiple addresses (insured, broker, agent, mortgagee). Broker/agency indicators filter out non-insured addresses. Labeled sections ("MAILING ADDRESS:") take priority.</p>
+                    <h4>Tier 3: Vision Model</h4>
+                    <p>Triggered when ≥5 property-detail fields remain missing. <code>LLaVA</code> vision model reads page images directly — sees layout, labels, and values that OCR text can't reliably provide. Targets only 12 property fields (Co-Insurance, Total Area, Protection Class, etc.) with field-specific hints and validators to prevent hallucination.</p>
                 </div>
                 <div class="tech-card">
-                    <h4>Post-Extraction Cleaning</h4>
-                    <p>Strips trailing noise ("Producer:", "Commission: 10.00%"), removes form code artifacts, validates values (policy numbers must contain digits, premiums must exceed $1,000), and strips OCR leading zeros from numeric fields.</p>
+                    <h4>Hallucination Prevention</h4>
+                    <p>Vision fields are strictly scoped — only 12 property-detail fields accepted. Each field has a structural validator (e.g., Protection Class must be 1-10, Total Area must contain "sq ft"). Field hints describe what the value looks like on the page. Vision never runs on native-text documents.</p>
                 </div>
             </div>
         </div>
@@ -456,13 +479,26 @@ Label Mapping (same field, different labels per source):
 │  │   + OCR      │  │ + image OCR  │  │                    │  │
 │  │ (tesseract)  │  │ (tesseract)  │  │                    │  │
 │  └──────┬───────┘  └──────┬───────┘  └────────┬───────────┘  │
-│         └─────────────────┼───────────────────┘              │
-│                           ▼                                  │
-│              ┌────────────────────────┐                      │
-│              │   Field Extractor      │                      │
-│              │   Multi-format regex   │                      │
-│              │   + OCR correction     │                      │
-│              └────────────┬───────────┘                      │
+│         └──────┬──────────┼───────────────────┘              │
+│                │  returns (text, tables, is_scanned)         │
+│                ▼                                             │
+│  ┌────────────────────────────────────────────────────────┐  │
+│  │          THREE-TIER FIELD EXTRACTION                    │  │
+│  │                                                        │  │
+│  │  Tier 1: Regex Patterns (all docs)                     │  │
+│  │    Coverage patterns · Premium patterns · Table extract │  │
+│  │                    │                                    │  │
+│  │                    │ if scanned AND &lt;10 fields          │  │
+│  │                    ▼                                    │  │
+│  │  Tier 2: Decompose + Ollama Text AI (scanned only)     │  │
+│  │    OCR text → semantic filter → llama3 extraction       │  │
+│  │                    │                                    │  │
+│  │                    │ if ≥5 property fields missing      │  │
+│  │                    ▼                                    │  │
+│  │  Tier 3: LLaVA Vision Model (scanned only)             │  │
+│  │    Page images → LLaVA → 12 property-detail fields     │  │
+│  │    Field hints + validators prevent hallucination       │  │
+│  └────────────────────────┬───────────────────────────────┘  │
 │                           ▼                                  │
 │              ┌────────────────────────┐                      │
 │              │   Normalizer           │                      │
@@ -479,16 +515,23 @@ Label Mapping (same field, different labels per source):
 └───────────────────────────┼──────────────────────────────────┘
                            ▼
                     JSON / CSV Export
-              {results, summary, skipped_files}</div>
+              {results, summary, skipped_files}
+
+AI/Vision Availability:
+  Ollama running  → Full pipeline (regex + text AI + vision)
+  Ollama stopped  → Graceful degradation to regex-only
+  Native-text doc → Regex only (AI/vision never triggered)</div>
         </div>
 
         <div class="hiw-section">
             <h2><span class="step-num">7</span> Technology Stack</h2>
             <div class="tech-grid">
-                <div class="tech-card"><h4>Runtime</h4><p><code>Python 3.11</code> — server and all processing<br><code>FastAPI</code> + <code>uvicorn</code> — async HTTP server</p></div>
-                <div class="tech-card"><h4>Document Parsing</h4><p><code>pdfplumber</code> — native PDF text<br><code>pdf2image</code> + <code>poppler</code> — PDF → image<br><code>Tesseract 5.5</code> — OCR engine<br><code>python-docx</code> / <code>openpyxl</code> — Office files</p></div>
-                <div class="tech-card"><h4>Extraction Engine</h4><p>Deterministic regex patterns with SOP-encoded normalization — no LLM, no API calls, no model inference. Auto, GL, and Property coverage fields with endorsement detection. Fully auditable.</p></div>
-                <div class="tech-card"><h4>Deployment</h4><p>Deployed on <code>Fly.io</code> with HTTPS, auto-scaling, and zero-config SSL. Dockerized with Tesseract + Poppler. Also runs locally for air-gapped environments.</p></div>
+                <div class="tech-card"><h4>Runtime</h4><p><code>Python 3.11</code> — server and all processing<br><code>FastAPI</code> + <code>uvicorn</code> — async HTTP server<br>Single-file architecture (~1700 lines)</p></div>
+                <div class="tech-card"><h4>Document Parsing</h4><p><code>pdfplumber</code> — native PDF text + tables<br><code>pdf2image</code> + <code>poppler</code> — PDF → page images<br><code>Tesseract 5.5</code> — OCR engine<br><code>python-docx</code> / <code>openpyxl</code> — Office files</p></div>
+                <div class="tech-card"><h4>Tier 1: Regex Engine</h4><p>Deterministic regex patterns with SOP-encoded normalization. Multi-format support (Burns &amp; Wilcox, Scottsdale, ACORD, RISCOM). Auto, GL, and Property coverage fields with endorsement detection. Fully auditable — same input always produces same output.</p></div>
+                <div class="tech-card"><h4>Tier 2: Text AI</h4><p><code>Decompose</code> (Echology) — semantic text decomposition, filters OCR noise to relevant units<br><code>Ollama</code> + <code>llama3</code> (8B) — local LLM for field extraction from filtered text<br>Zero-dep curl client, MD5 response caching</p></div>
+                <div class="tech-card"><h4>Tier 3: Vision AI</h4><p><code>LLaVA</code> (7B) via Ollama — reads page images directly<br>PDF pages → JPEG (150dpi, quality 85) → base64<br>DOCX embedded images extracted from zip<br>12 property-detail fields with per-field validators</p></div>
+                <div class="tech-card"><h4>Deployment</h4><p>Deployed on <code>Fly.io</code> with HTTPS, auto-scaling, and zero-config SSL. Dockerized with Tesseract + Poppler. Also runs locally with optional Ollama for AI/vision enhancement. Graceful degradation — regex-only when Ollama unavailable.</p></div>
             </div>
         </div>
 
@@ -549,9 +592,9 @@ Label Mapping (same field, different labels per source):
                 </div>
                 <div class="partner-card">
                     <h4>What Echology Provides (Built)</h4>
-                    <p><strong>RBS Engine</strong> — Classification, parsing, OCR, extraction, SOP normalization, N-way comparison.<br>
-                    <strong>75-Revision SOP Intelligence</strong> — Every exception rule encoded.<br>
-                    <strong>API</strong> — Live at Fly.io, ready for programmatic integration. Also runs locally for air-gapped environments.</p>
+                    <p><strong>RBS Engine</strong> — Classification, parsing, OCR, three-tier extraction (regex → text AI → vision), SOP normalization, N-way comparison.<br>
+                    <strong>AI/Vision Pipeline</strong> — Local Ollama (llama3 + LLaVA) for scanned document enhancement. Decompose semantic filtering. 40+ field extraction.<br>
+                    <strong>API</strong> — Live at Fly.io, ready for programmatic integration. Runs locally with optional AI for air-gapped environments.</p>
                 </div>
             </div>
         </div>
@@ -559,10 +602,10 @@ Label Mapping (same field, different labels per source):
         <div class="hiw-section">
             <h2>Key Properties</h2>
             <div class="tech-grid">
-                <div class="tech-card"><h4>Deterministic</h4><p>No LLM. No randomness. Same document always produces the same extracted fields and comparison results. OCR corrections are rule-based and repeatable. Critical for audit and compliance.</p></div>
-                <div class="tech-card"><h4>Air-Gapped</h4><p>Zero external API calls. No data sent to cloud services. All processing happens on-premise. Meets E&O and client confidentiality requirements.</p></div>
-                <div class="tech-card"><h4>Extensible</h4><p>New carrier formats added as regex pattern sets. New coverage lines added as field templates. New document types plug into the parser layer.</p></div>
-                <div class="tech-card"><h4>Fast</h4><p>Pre-extracted comparisons return in milliseconds. OCR processing runs at ~2-5 seconds per page depending on scan quality and resolution.</p></div>
+                <div class="tech-card"><h4>Deterministic Core</h4><p>Tier 1 (regex) is fully deterministic — same document always produces the same fields. AI tiers (2 and 3) use low temperature (0.1) and structural validators to ensure consistency. All tiers are auditable with source attribution.</p></div>
+                <div class="tech-card"><h4>Air-Gapped</h4><p>Zero external API calls. Ollama runs locally — no data leaves the machine. No cloud LLM services. All processing on-premise. Meets E&amp;O and client confidentiality requirements.</p></div>
+                <div class="tech-card"><h4>Graceful Degradation</h4><p>If Ollama is unavailable, engine falls back to regex-only extraction. If vision model isn't installed, text AI still runs. Native-text documents never invoke AI — only scanned docs escalate. Each tier operates independently.</p></div>
+                <div class="tech-card"><h4>Fast</h4><p>Native-text documents: &lt;5 seconds (regex only). Scanned documents with AI: ~20-40 seconds. Vision model adds ~15-20s per page when invoked. Pre-extracted sample comparisons return instantly.</p></div>
             </div>
         </div>
     </div>
