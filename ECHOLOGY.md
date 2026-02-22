@@ -778,6 +778,8 @@ rbs-demo/
 | This document | `echology/ECHOLOGY.md` | Current |
 | AECai Cheat Sheet | `echology/ops/sops/AECai_Cheat_Sheet.md` | Current (v3.2.0) |
 | Outbound Sales SOP | `echology/ops/sops/AECai_Outbound_Sales_SOP.docx` | Current (v1.0) |
+| Email Sequences | `echology/ops/sops/AECai_Email_Sequences.md` | Current (v1.0) |
+| Assessment Template | `echology/ops/assessment_deliverable_template.md` | Current (v1.0) |
 | Utility Outreach Strategy | `echology/ops/sops/AECai_Utility_Outreach_Strategy.docx` | Refresh market data |
 | Utility Tracker | `echology/ops/sops/AECai_Utility_Outreach_Tracker.xlsx` | Working spreadsheet |
 | Product Suite SOP | `echology/ops/sops/Echology_Product_Suite_SOP.md` | Current (v4.0) |
@@ -832,8 +834,9 @@ rbs-demo/
 
 - [ ] Send remaining warm intros (target: 20 total by end of week)
 - [ ] Send first LinkedIn DMs to engaged prospects
-- [ ] Draft email Sequence A (connection -> opening -> follow-ups)
-- [ ] Draft email Sequence B (buying signal trigger)
+- [x] Draft email Sequence A (connection -> opening -> follow-ups)
+- [x] Draft email Sequence B (buying signal trigger)
+- [x] Draft email Sequence C (retirement/knowledge loss trigger)
 - [ ] Publish second LinkedIn post
 - [ ] Schedule first discovery calls (target: 2-3 conversations)
 
