@@ -825,7 +825,7 @@ rbs-demo/
 - [ ] Begin LinkedIn engagement ritual (like/comment on 10 target prospects)
 - [x] Draft first 3 LinkedIn posts (4 drafted in proposals/linkedin-posts.md)
 - [ ] Publish first LinkedIn post
-- [ ] Set up lead tracking in Notion CRM
+- [x] Set up lead tracking in Notion CRM (Clients DB: Source, Stage, First Contact, Notes fields + 3 leads imported)
 - [ ] Review and update warm intro list — prioritize by relationship strength
 
 ### Week 2: Build Pipeline
