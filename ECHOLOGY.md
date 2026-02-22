@@ -561,12 +561,12 @@ Automated content generation system. Detects shipping events (GitHub releases/ta
 | Temporal activities | 18 |
 | Activity modules | 8 |
 | Qdrant collections | 3 |
-| Test files | 36 |
+| Test files | 35 |
 | Coverage minimum | 70% |
 | Engine files (Vanta) | 13 |
 | Engine files (Aletheia) | 6 |
 | Engine files (Daedalus) | 6 |
-| Config parameters | 31 |
+| Config parameters | 30 |
 | Lines of code (total engine) | ~19,900 |
 | Core dependencies | 13 |
 | Python version | 3.11 |
@@ -577,7 +577,7 @@ Automated content generation system. Detects shipping events (GitHub releases/ta
 
 ## 22. Configuration
 
-**`config.py`** — 31 params, all env-overridable (`AECAI_` prefix).
+**`config.py`** — 30 params, all env-overridable (`AECAI_` prefix).
 
 | Category | Key Defaults |
 |----------|-------------|
@@ -782,12 +782,12 @@ rbs-demo/
 | Utility Tracker | `echology/ops/sops/AECai_Utility_Outreach_Tracker.xlsx` | Working spreadsheet |
 | Product Suite SOP | `echology/ops/sops/Echology_Product_Suite_SOP.md` | Current (v4.0) |
 | Deployment Guide | `echology/ops/sops/Echology_Deployment_Guide.md` | Current (v4.0) |
-| Architecture Doc | `aecai/docs/architecture/ECHO_ARCH_001_Product_Suite_Architecture.md` | Current (v4.0) |
+| Architecture Doc | `echology/ops/ECHO_ARCH_001_Product_Suite_Architecture.md` | Current (v4.0) |
 | Architecture Reference | `aecai/docs/architecture/aecai_architecture.txt` | Current (Gen 1.5) |
 | Complete Reference | `aecai/docs/aecai_complete_reference.txt` | Current (Gen 1.5) |
-| Gen 2.0 Roadmap | `aecai/docs/gen2_roadmap.md` | Current (v1.0) |
-| Technical Overview | `aecai/docs/yc/AECai_Technical_Overview.md` | Current (v3.2.0) |
-| YC Application | `aecai/docs/yc/AECai_YC_Application_Spring2026_FINAL.docx` | Submitted Feb 9 |
+| Gen 2.0 Roadmap | `echology/ops/gen2_roadmap.md` | Current (v1.0) |
+| Technical Overview | `echology/ops/yc/AECai_Technical_Overview.md` | Current (v3.2.0) |
+| YC Application | `echology/ops/yc/AECai_YC_Application_Spring2026_FINAL.docx` | Submitted Feb 9 |
 | Task Tracker | `echology/TASKS.md` -> Notion | Current |
 | Changelog | `echology/CHANGELOG.md` | Current |
 | Blog: Why I Build | `kylevines/blog/why-i-build.html` | Current |

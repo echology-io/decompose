@@ -45,17 +45,17 @@
         <div class="container">
             <p class="section-label">O Pipeline</p>
             <h2 class="section-title">Cinco etapas. Qualquer documento.</h2>
-            <p class="section-desc">Todo documento passa pelo mesmo pipeline. PDF, DOCX, CAD, imagens — mais de 15 formatos suportados.</p>
+            <p class="section-desc">Todo documento passa pelo mesmo pipeline. PDF, DOCX, CAD, imagens — mais de 16 formatos suportados.</p>
             <div class="card-grid">
                 <div class="card">
                     <div class="tag">Etapa 1</div>
                     <h3>Parsing</h3>
-                    <p>TextExtractor le mais de 15 formatos — PDF, DOCX, DXF, Markdown, CSV, HTML, RTF, imagens via OCR. Gera texto bruto, texto limpo, divisoes por pagina, metadata.</p>
+                    <p>TextExtractor le mais de 16 formatos — PDF, DOCX, DXF, Markdown, CSV, HTML, RTF, imagens via OCR. Gera texto bruto, texto limpo, divisoes por pagina, metadata.</p>
                 </div>
                 <div class="card">
                     <div class="tag">Etapa 2</div>
                     <h3>Classificacao</h3>
-                    <p>Classificacao AI-first via LLM local. Detecta tipo de documento, dominios, entidades, indicadores de risco, nivel de autoridade. Fallback por regex quando AI nao esta disponivel.</p>
+                    <p>Classificacao deterministic-first. Sinais de nome de arquivo, regex e estrutura avaliados primeiro — IA somente quando confianca e baixa. Detecta tipo de documento, dominios, entidades, indicadores de risco, nivel de autoridade. Validado por checagens estruturais de entidades.</p>
                 </div>
                 <div class="card">
                     <div class="tag">Etapa 3</div>
@@ -140,7 +140,7 @@
                     <div class="stat-label">Sistemas de simulacao</div>
                 </div>
                 <div>
-                    <div class="stat-value">15+</div>
+                    <div class="stat-value">16+</div>
                     <div class="stat-label">Formatos de arquivo</div>
                 </div>
                 <div>
@@ -148,7 +148,7 @@
                     <div class="stat-label">Workflows Temporal</div>
                 </div>
                 <div>
-                    <div class="stat-value">554</div>
+                    <div class="stat-value">640</div>
                     <div class="stat-label">Testes passando</div>
                 </div>
                 <div>
