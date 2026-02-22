@@ -815,15 +815,15 @@ rbs-demo/
 - [x] Notion task tracker synced (58 completed, 35 backlog, 18 research)
 - [ ] SC foreign qualification filed
 - [ ] Business insurance obtained (liability, cyber, E&O)
-- [ ] Discovery assessment deliverable template finalized
-- [ ] LinkedIn profile updated with consulting positioning
-- [ ] echology.io updated with consulting offer (not just Decompose)
+- [x] Discovery assessment deliverable template finalized
+- [x] LinkedIn profile updated with consulting positioning
+- [x] echology.io updated with consulting offer ($800 AECai assessment on contact + aecai pages)
 
 ### Week 1: Day 1 — Activate Outbound
 
 - [ ] Send first 5 warm intros (personal messages, not templates)
 - [ ] Begin LinkedIn engagement ritual (like/comment on 10 target prospects)
-- [ ] Draft first 3 LinkedIn posts (practitioner stories, not product)
+- [x] Draft first 3 LinkedIn posts (4 drafted in proposals/linkedin-posts.md)
 - [ ] Publish first LinkedIn post
 - [ ] Set up lead tracking in Notion CRM
 - [ ] Review and update warm intro list — prioritize by relationship strength
