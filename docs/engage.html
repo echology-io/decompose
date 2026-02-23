@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AECai Engagement — From Assessment to Deployment</title>
+    <meta name="description" content="How Echology works with your firm. Start with an $800 Discovery Assessment, scale to full deployment. No data leaves your building.">
+    <meta property="og:title" content="AECai Engagement — From Assessment to Deployment">
+    <meta property="og:description" content="Start with a Discovery Assessment. See what's in your documents. Scale when you're ready.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://echology.io/engage">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Engagement-specific styles ─────────────── */
+
+        .step-grid {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            gap: 0 24px;
+            position: relative;
+        }
+        .step-grid::before {
+            content: '';
+            position: absolute;
+            left: 29px;
+            top: 40px;
+            bottom: 40px;
+            width: 2px;
+            background: var(--border);
+        }
+        .step-num {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--accent);
+            position: relative;
+            z-index: 1;
+        }
+        .step-content {
+            padding: 12px 0 48px;
+        }
+        .step-content h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .step-content p {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+        .step-content:last-child { padding-bottom: 0; }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .report-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            transition: border-color 0.2s;
+        }
+        .report-item:hover { border-color: var(--accent-dim); }
+        .report-item h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .report-item p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        .phase-badge {
+            display: inline-block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--bg);
+            background: var(--accent);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .phase-title {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .price-card {
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .price-card .price {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -2px;
+        }
+        .price-card .price-sub {
+            font-size: 15px;
+            color: var(--muted);
+            margin: 8px 0 24px;
+        }
+        .price-card ul {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 28px;
+        }
+        .price-card ul li {
+            font-size: 14px;
+            color: var(--fg);
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .price-card ul li:last-child { border-bottom: none; }
+        .price-card ul li::before {
+            content: '\2713';
+            color: var(--accent);
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        .guarantee {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+        .guarantee-icon {
+            font-size: 28px;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+        .guarantee p {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+        .guarantee strong { color: var(--fg); }
+
+        .deploy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        .deploy-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 28px;
+            text-align: center;
+            transition: border-color 0.2s;
+        }
+        .deploy-card:hover { border-color: var(--accent-dim); }
+        .deploy-card .deploy-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        .deploy-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .deploy-card p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 640px) {
+            .phase-header { flex-direction: column; gap: 8px; }
+            .phase-title { font-size: 24px; }
+            .price-card .price { font-size: 36px; }
+            .step-grid { grid-template-columns: 48px 1fr; gap: 0 16px; }
+            .step-grid::before { left: 23px; }
+            .step-num { width: 48px; height: 48px; font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">echology<span>.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/about">About</a>
+                <a href="/aecai">AECai</a>
+                <a href="/decompose">Decompose</a>
+                <a href="/blog">Blog</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Slide 1: Hero ────────────────────────────── -->
+    <section class="hero">
+        <div class="container">
+            <h1>From first document<br>to <span>full deployment.</span></h1>
+            <p class="sub">Start with a Discovery Assessment. See exactly what's in your documents. Scale across your entire archive when you're ready. Your data never leaves your building.</p>
+            <div class="btn-group">
+                <a href="#assessment" class="btn btn-primary">Start with Discovery Assessment</a>
+                <a href="#full-engagement" class="btn btn-outline">See Full Engagement</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Slide 2: Phase 1 — Discovery Assessment ──── -->
+    <section id="assessment">
+        <div class="container">
+            <div class="phase-header">
+                <span class="phase-badge">Phase 1</span>
+                <h2 class="phase-title">Discovery Assessment</h2>
+            </div>
+            <p class="section-desc" style="text-align:left; margin:0 0 48px; max-width:100%;">You give us a sample of your documents. We process them through the AECai pipeline and deliver a full report showing every standard referenced, every obligation flagged, every risk area identified. Two-week turnaround.</p>
+
+            <div class="step-grid">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>You send documents</h3>
+                    <p>5-20 representative files from your active projects. Specs, contracts, submittals, reports — any format. PDF, DOCX, CAD, images. We'll tell you what we need.</p>
+                </div>
+
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>We process on-site</h3>
+                    <p>We bring the system to your documents, not your documents to us. Processing runs on local hardware. No data uploaded to any cloud. No third-party APIs. Air-gapped.</p>
+                </div>
+
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>AECai runs the full pipeline</h3>
+                    <p>Every document is parsed, classified, enriched, decomposed into semantic units, and indexed. Standards are cross-referenced against your jurisdiction. Obligations are flagged. Entities are mapped.</p>
+                </div>
+
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h3>You receive the report</h3>
+                    <p>A structured deliverable showing exactly what AECai found — with time recovery projections, risk reduction analysis, and a clear picture of your institutional knowledge.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Slide 3: What the Report Contains ────────── -->
+    <section>
+        <div class="container">
+            <p class="section-label">The Deliverable</p>
+            <h2 class="section-title">What you get in the report</h2>
+            <p class="section-desc">Every section is populated from your actual documents. No placeholders, no generic findings.</p>
+
+            <div class="report-grid">
+                <div class="report-item">
+                    <h4>Document Inventory</h4>
+                    <p>Every file classified by type, domain, and authority level with confidence scores.</p>
+                </div>
+                <div class="report-item">
+                    <h4>Standards Cross-Reference</h4>
+                    <p>Every standard detected, checked against your jurisdiction's current adoptions. Superseded editions flagged.</p>
+                </div>
+                <div class="report-item">
+                    <h4>Obligations &amp; Risk Flags</h4>
+                    <p>Every "shall" clause, liability clause, deadline, and contractual obligation — with exact source attribution.</p>
+                </div>
+                <div class="report-item">
+                    <h4>Financial Terms</h4>
+                    <p>Contract value, retainage, liquidated damages, payment terms — extracted and verified.</p>
+                </div>
+                <div class="report-item">
+                    <h4>Entity Map</h4>
+                    <p>People, organizations, and roles identified across your documents. Sensitive data flagged and excluded from AI.</p>
+                </div>
+                <div class="report-item">
+                    <h4>Timeline &amp; Milestones</h4>
+                    <p>Key dates and deadlines extracted: NTP, submittals, substantial completion, close-out.</p>
+                </div>
+                <div class="report-item">
+                    <h4>Decomposition Summary</h4>
+                    <p>How many semantic units were created, what percentage are mandatory vs. informational, and what's searchable.</p>
+                </div>
+                <div class="report-item">
+                    <h4>Time &amp; Risk Analysis</h4>
+                    <p>Manual review hours estimated vs. AECai processing time. Risk areas quantified across your documents.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Slide 4: Pricing ─────────────────────────── -->
+    <section>
+        <div class="container">
+            <div class="price-card">
+                <div class="price">$800</div>
+                <div class="price-sub">Discovery Assessment — credits 100% toward full engagement</div>
+                <ul>
+                    <li>Process 5-20 of your documents through the full pipeline</li>
+                    <li>Structured report with every finding sourced</li>
+                    <li>Standards cross-referenced against your jurisdiction</li>
+                    <li>Time recovery and risk reduction projections</li>
+                    <li>Two-week turnaround from document receipt</li>
+                    <li>On-premise processing — no data leaves your building</li>
+                </ul>
+                <a href="/contact" class="btn btn-primary" style="width:100%;">Request Assessment</a>
+            </div>
+
+            <div class="guarantee">
+                <div class="guarantee-icon">&#8634;</div>
+                <div>
+                    <p><strong>100% credit toward full engagement.</strong> The assessment fee applies in full to any subsequent engagement. If the report doesn't show you anything useful, you owe nothing more. If it does, you're $800 ahead on the full deployment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Slide 5: Phase 2 — Full Engagement ───────── -->
+    <section id="full-engagement">
+        <div class="container">
+            <div class="phase-header">
+                <span class="phase-badge">Phase 2</span>
+                <h2 class="phase-title">Full Engagement</h2>
+            </div>
+            <p class="section-desc" style="text-align:left; margin:0 0 48px; max-width:100%;">After the assessment, you've seen what AECai finds. Phase 2 scales that across your entire document archive — every active project, every historical file, every new document as it arrives.</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="tag">Archive</div>
+                    <h3>Complete Document Processing</h3>
+                    <p>Every document in your active and historical archive processed through the full pipeline. Not a sample — the whole library.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Jurisdiction</div>
+                    <h3>Code Registry Configuration</h3>
+                    <p>Your AHJs configured with current code editions, amendments, and adoption dates. Standards cross-referencing tuned to your geographic footprint.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Search</div>
+                    <h3>Vector Index Across Everything</h3>
+                    <p>Search your entire document library by meaning. "How did we handle ASTM C150 on the last DOT project?" — the answer is there.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Ongoing</div>
+                    <h3>Continuous Processing</h3>
+                    <p>New documents processed automatically as they arrive. Your index stays current. Your knowledge base grows with every project.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Deploy</div>
+                    <h3>On-Premise Installation</h3>
+                    <p>Runs on your hardware. Air-gapped. No cloud dependency. No data leaving the building. Full control, full ownership.</p>
+                </div>
+                <div class="card">
+                    <div class="tag">Support</div>
+                    <h3>Training &amp; Configuration</h3>
+                    <p>Your team trained on the system. Custom plugins configured for your workflows. Direct access to the engineering team.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Slide 6: Security & Deployment ───────────── -->
+    <section>
+        <div class="container">
+            <p class="section-label">Deployment</p>
+            <h2 class="section-title">Your data stays in your building.</h2>
+            <p class="section-desc">AECai is designed for firms where documents carry legal weight and client confidentiality is non-negotiable.</p>
+
+            <div class="deploy-grid">
+                <div class="deploy-card">
+                    <div class="deploy-icon">&#9881;</div>
+                    <h3>On-Premise</h3>
+                    <p>Runs on your server or workstation. No cloud instances, no external hosting, no SaaS dependency.</p>
+                </div>
+                <div class="deploy-card">
+                    <div class="deploy-icon">&#128274;</div>
+                    <h3>Air-Gapped</h3>
+                    <p>Zero external API calls during operation. Works without internet. No data transmitted anywhere.</p>
+                </div>
+                <div class="deploy-card">
+                    <div class="deploy-icon">&#9745;</div>
+                    <h3>Deterministic</h3>
+                    <p>Same documents in, same results out. Every time. Repeatable, auditable, defensible.</p>
+                </div>
+                <div class="deploy-card">
+                    <div class="deploy-icon">&#128736;</div>
+                    <h3>You Own It</h3>
+                    <p>No subscription lockout. No data held hostage. The system runs on your hardware under your control.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Slide 7: CTA ─────────────────────────────── -->
+    <section>
+        <div class="container container--narrow" style="text-align:center;">
+            <h2 class="section-title">Ready to see what's in your documents?</h2>
+            <p class="section-desc">The Discovery Assessment is the fastest way to understand what AECai can do for your firm. $800, two weeks, zero risk.</p>
+            <div class="btn-group">
+                <a href="/contact" class="btn btn-primary">Request Assessment — $800</a>
+                <a href="/aecai" class="btn btn-outline">Learn About AECai</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+            <div class="footer-links">
+                <a href="https://github.com/echology-io">GitHub</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
