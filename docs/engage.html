@@ -1,442 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AECai Engagement — From Assessment to Deployment</title>
-    <meta name="description" content="How Echology works with your firm. Start with an $800 Discovery Assessment, scale to full deployment. No data leaves your building.">
-    <meta property="og:title" content="AECai Engagement — From Assessment to Deployment">
-    <meta property="og:description" content="Start with a Discovery Assessment. See what's in your documents. Scale when you're ready.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://echology.io/engage">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* ── Engagement-specific styles ─────────────── */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echology — Discovery Engagement</title>
+<meta name="description" content="A structured discovery process for companies exploring AI and automation. We identify your highest-value workflows, score them, and deliver a ranked roadmap your leadership can act on.">
+<meta property="og:title" content="Echology — Discovery Engagement">
+<meta property="og:description" content="We find the workflows where automation creates the most value for your company. $1,000. Two weeks.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://echology.io/engage">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── Slide-deck overrides on top of style.css ─── */
 
-        .step-grid {
-            display: grid;
-            grid-template-columns: 60px 1fr;
-            gap: 0 24px;
-            position: relative;
-        }
-        .step-grid::before {
-            content: '';
-            position: absolute;
-            left: 29px;
-            top: 40px;
-            bottom: 40px;
-            width: 2px;
-            background: var(--border);
-        }
-        .step-num {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--bg-card);
-            border: 2px solid var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--accent);
-            position: relative;
-            z-index: 1;
-        }
-        .step-content {
-            padding: 12px 0 48px;
-        }
-        .step-content h3 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .step-content p {
-            font-size: 15px;
-            color: var(--muted);
-            line-height: 1.65;
-        }
-        .step-content:last-child { padding-bottom: 0; }
+/* SLIDES */
+.slide{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 24px 80px;position:relative;scroll-snap-align:start}
+.slide-inner{max-width:960px;width:100%;margin:0 auto}
+html{scroll-behavior:smooth;scroll-snap-type:y proximity}
 
-        .report-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-        .report-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            transition: border-color 0.2s;
-        }
-        .report-item:hover { border-color: var(--accent-dim); }
-        .report-item h4 {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-        .report-item p {
-            font-size: 13px;
-            color: var(--muted);
-            line-height: 1.5;
-        }
+/* SLIDE COUNTER */
+.slide-num{font-family:'SF Mono','Fira Code','Consolas',monospace;font-size:.6875rem;font-weight:500;color:var(--muted);letter-spacing:.06em;margin-bottom:24px}
 
-        .phase-header {
-            display: flex;
-            align-items: baseline;
-            gap: 16px;
-            margin-bottom: 12px;
-        }
-        .phase-badge {
-            display: inline-block;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--bg);
-            background: var(--accent);
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-        .phase-title {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
+/* Typography */
+.slide h1{font-size:clamp(2.75rem,6vw,4.5rem);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:28px}
+.slide h1 em{font-style:normal;color:var(--accent)}
+.slide h2{font-size:clamp(2rem,4.5vw,3.25rem);font-weight:700;line-height:1.1;letter-spacing:-.5px;margin-bottom:24px}
+.slide .lead{font-size:clamp(1.0625rem,1.8vw,1.25rem);color:var(--muted);line-height:1.7;max-width:580px}
 
-        .price-card {
-            background: var(--bg-card);
-            border: 2px solid var(--accent);
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            max-width: 480px;
-            margin: 0 auto;
-        }
-        .price-card .price {
-            font-size: 48px;
-            font-weight: 800;
-            color: var(--accent);
-            letter-spacing: -2px;
-        }
-        .price-card .price-sub {
-            font-size: 15px;
-            color: var(--muted);
-            margin: 8px 0 24px;
-        }
-        .price-card ul {
-            list-style: none;
-            text-align: left;
-            margin-bottom: 28px;
-        }
-        .price-card ul li {
-            font-size: 14px;
-            color: var(--fg);
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .price-card ul li:last-child { border-bottom: none; }
-        .price-card ul li::before {
-            content: '\2713';
-            color: var(--accent);
-            font-weight: 700;
-            margin-right: 10px;
-        }
+/* Buttons — extend base .btn from style.css */
+.btn-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:36px}
 
-        .guarantee {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 24px;
-            margin-top: 32px;
-        }
-        .guarantee-icon {
-            font-size: 28px;
-            line-height: 1;
-            flex-shrink: 0;
-        }
-        .guarantee p {
-            font-size: 14px;
-            color: var(--muted);
-            line-height: 1.6;
-        }
-        .guarantee strong { color: var(--fg); }
+/* DIVIDERS */
+.slide+.slide{border-top:1px solid var(--border)}
 
-        .deploy-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-        }
-        .deploy-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 28px;
-            text-align: center;
-            transition: border-color 0.2s;
-        }
-        .deploy-card:hover { border-color: var(--accent-dim); }
-        .deploy-card .deploy-icon {
-            font-size: 32px;
-            margin-bottom: 12px;
-        }
-        .deploy-card h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .deploy-card p {
-            font-size: 13px;
-            color: var(--muted);
-            line-height: 1.5;
-        }
+/* LIGHT SLIDES (inverted for contrast) */
+.slide.light{background:var(--fg);color:var(--bg);border-top:none}
+.slide.light+.slide{border-top:none}
+.slide.light h2{color:var(--bg)}
+.slide.light .lead{color:#555}
+.slide.light .slide-num{color:#999}
 
-        @media (max-width: 640px) {
-            .phase-header { flex-direction: column; gap: 8px; }
-            .phase-title { font-size: 24px; }
-            .price-card .price { font-size: 36px; }
-            .step-grid { grid-template-columns: 48px 1fr; gap: 0 16px; }
-            .step-grid::before { left: 23px; }
-            .step-num { width: 48px; height: 48px; font-size: 16px; }
-        }
-    </style>
+/* ── Hero ─────────────────────────────── */
+.hero-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hero-bg img{width:100%;height:100%;object-fit:cover;opacity:.06;filter:grayscale(1)}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,rgba(10,10,10,.85) 40%,var(--bg) 100%)}
+.slide.hero{border-top:none}
+.hero .slide-inner{position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center}
+.hero .lead{max-width:540px;margin:0 auto}
+
+/* ── Photo break ─────────────────────────────── */
+.photo-break{display:grid;grid-template-columns:1fr 1fr 1fr;height:280px;overflow:hidden;border-top:1px solid var(--border)}
+.photo-break img{width:100%;height:100%;object-fit:cover;filter:grayscale(.3);transition:all .6s ease}
+.photo-break img:hover{filter:grayscale(0);transform:scale(1.03)}
+@media(max-width:640px){.photo-break{height:180px;grid-template-columns:1fr 1fr}.photo-break img:last-child{display:none}}
+
+/* ── Split slide ──────────────── */
+.slide-split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.slide-split-img{border-radius:12px;overflow:hidden;aspect-ratio:4/3;position:relative}
+.slide-split-img img{width:100%;height:100%;object-fit:cover}
+.slide-split-img::after{content:'';position:absolute;inset:0;border-radius:12px;border:1px solid var(--border)}
+@media(max-width:768px){.slide-split{grid-template-columns:1fr;gap:40px}.slide-split-img{max-height:300px}}
+
+/* ── Four Questions (on light slide) ───────── */
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
+@media(max-width:700px){.q-grid{grid-template-columns:1fr}}
+.q-card{padding:36px 32px;border-radius:12px;background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.08);transition:all .4s ease}
+.q-card:hover{background:rgba(0,0,0,.07);transform:translateY(-3px)}
+.q-card .q-num{font-family:'SF Mono','Fira Code',monospace;font-size:.6875rem;color:var(--accent);letter-spacing:.06em;margin-bottom:12px}
+.q-card h3{font-size:1.25rem;font-weight:700;color:var(--bg);margin-bottom:10px;line-height:1.2}
+.q-card p{font-size:.8125rem;color:#555;line-height:1.7}
+.q-card .q-labels{display:flex;justify-content:space-between;margin-top:12px}
+.q-card .q-labels span{font-size:.5625rem;color:#999;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+
+/* ── Sample scorecard ─────────────────── */
+.sc-table{width:100%;border-collapse:collapse;margin-top:48px;font-size:.8125rem}
+.sc-table th{font-size:.625rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:12px 16px;text-align:left;border-bottom:2px solid var(--border)}
+.sc-table th.sc-score{text-align:center}
+.sc-table td{padding:16px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:middle}
+.sc-table tr:last-child td{border-bottom:none}
+.sc-workflow{font-weight:600;color:var(--fg);font-size:.875rem}
+.sc-num{text-align:center;font-family:'SF Mono',monospace;font-size:.8125rem;color:var(--muted)}
+.sc-total{text-align:center;font-size:1.125rem;font-weight:700}
+.sc-total.high{color:var(--accent)}
+.sc-total.mid{color:var(--muted)}
+.sc-total.low{color:#444}
+.sc-phase{font-size:.6875rem;font-weight:600;letter-spacing:.04em;padding:4px 10px;border-radius:100px;white-space:nowrap}
+.sc-phase.p1{background:rgba(200,168,78,.12);color:var(--accent)}
+.sc-phase.p2{background:rgba(255,255,255,.06);color:var(--muted)}
+.sc-phase.bl{background:rgba(255,255,255,.04);color:#444}
+.sc-note{font-size:.75rem;color:var(--muted);margin-top:20px;font-style:italic}
+@media(max-width:700px){.sc-table th:nth-child(n+3):nth-child(-n+5),.sc-table td:nth-child(n+3):nth-child(-n+5){display:none}}
+
+/* ── Process steps ────────────────────── */
+.step-list{display:flex;flex-direction:column;gap:0;margin-top:48px;max-width:640px}
+.step-item{display:grid;grid-template-columns:48px 1fr;gap:20px;padding:28px 0;border-bottom:1px solid var(--border)}
+.step-item:last-child{border-bottom:none}
+.step-n{font-size:1.5rem;font-weight:800;color:var(--accent);line-height:1}
+.step-item h3{font-size:1rem;font-weight:600;margin-bottom:4px}
+.step-item p{font-size:.875rem;color:var(--muted);line-height:1.65}
+
+/* ── Deliverable cards ──────────────────────── */
+.del-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+@media(max-width:800px){.del-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.del-grid{grid-template-columns:1fr}}
+.del-card{padding:28px 24px;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);transition:all .3s ease}
+.del-card:hover{transform:translateY(-3px);border-color:var(--accent-dim)}
+.del-card h3{font-size:.9375rem;font-weight:600;margin-bottom:6px}
+.del-card p{font-size:.8125rem;color:var(--muted);line-height:1.65}
+
+/* ── Who section ──────────────────────────────── */
+.who-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.who-bg img{width:100%;height:100%;object-fit:cover;opacity:.06;filter:grayscale(1)}
+.creds{display:flex;gap:32px;margin-top:36px;flex-wrap:wrap;position:relative;z-index:1}
+.cred{text-align:center}
+.cred-num{font-size:2rem;font-weight:800;color:var(--accent);line-height:1}
+.cred-label{font-size:.6875rem;color:var(--muted);margin-top:4px;font-weight:500}
+
+/* ── Terms card (light card on dark bg) ──────── */
+.terms-card{max-width:480px;margin:48px auto 0;background:var(--bg-card);border-radius:12px;overflow:hidden;border:2px solid var(--accent);position:relative}
+.terms-header{padding:44px 36px 0;text-align:center}
+.terms-price{font-size:3rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-2px}
+.terms-sub{font-size:.9375rem;color:var(--muted);margin-top:6px}
+.terms-body{padding:28px 36px 36px}
+.terms-list{list-style:none;margin-bottom:24px}
+.terms-list li{padding:9px 0;border-bottom:1px solid var(--border);font-size:.8125rem;color:var(--muted);display:flex;align-items:baseline;gap:10px;line-height:1.5}
+.terms-list li::before{content:'\2713';color:var(--accent);font-weight:700;flex-shrink:0}
+.terms-list li:last-child{border:none}
+.terms-credit{padding:14px 18px;background:rgba(200,168,78,.08);border:1px solid rgba(200,168,78,.18);border-radius:8px;margin-bottom:20px;font-size:.8125rem;color:var(--muted);line-height:1.6}
+.terms-credit strong{color:var(--fg)}
+.terms-body .btn{width:100%;text-align:center;display:block}
+
+/* ── CTA slide ──────────────────────────────── */
+.slide.cta-slide{text-align:center}
+.slide.cta-slide .slide-inner{display:flex;flex-direction:column;align-items:center}
+.slide.cta-slide .lead{max-width:480px;margin:0 auto}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.08s}.rd2{transition-delay:.16s}.rd3{transition-delay:.24s}.rd4{transition-delay:.32s}
+</style>
 </head>
 <body>
-    <nav>
-        <div class="container">
-            <a href="/" class="logo">echology<span>.</span></a>
-            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
-            <div class="nav-links">
-                <a href="/about">About</a>
-                <a href="/aecai">AECai</a>
-                <a href="/decompose">Decompose</a>
-                <a href="/blog">Blog</a>
-                <a href="/contact">Contact</a>
-            </div>
+
+<nav>
+  <div class="container">
+    <a href="/" class="logo">echology<span>.</span></a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+    <div class="nav-links">
+      <a href="/about">About</a>
+      <a href="/aecai">AECai</a>
+      <a href="/decompose">Decompose</a>
+      <a href="/blog">Blog</a>
+      <a href="/contact">Contact</a>
+      <a href="/pt/" class="lang-toggle" title="Portugues">&#127463;&#127479;</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ━━━━━━ SLIDE 1: Hero ━━━━━━ -->
+<section class="slide hero">
+  <div class="hero-bg"><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=75" alt="" loading="eager"></div>
+  <div class="slide-inner">
+    <h1>Before you automate anything,<br>know <em>where to start.</em></h1>
+    <p class="lead">We identify the workflows where AI and automation create the most value for your company, score them, and deliver a ranked roadmap your leadership can act on.</p>
+    <div class="btn-row" style="justify-content:center">
+      <a href="#how" class="btn btn-primary">How It Works</a>
+      <a href="#terms" class="btn btn-outline">See Terms</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ━━━━━━ SLIDE 2: The Problem ━━━━━━ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="slide-split">
+      <div>
+        <div class="slide-num reveal">01</div>
+        <h2 class="reveal">Most companies automate<br>the wrong things first.</h2>
+        <p class="lead reveal rd1">Vendors sell products. Your company needs strategy. Without knowing which workflows benefit from AI — in what order, at what risk — you get wasted budget, skeptical teams, and no measurable improvement.</p>
+        <p class="lead reveal rd2" style="margin-top:20px">Our discovery process answers one question:<br><strong style="color:var(--fg)">Where does automation actually help your business?</strong></p>
+      </div>
+      <div class="slide-split-img reveal rd3">
+        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=75" alt="Team reviewing business processes" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ━━━━━━ SLIDE 3: What We Evaluate ━━━━━━ -->
+<section class="slide light" id="how">
+  <div class="slide-inner">
+    <div class="slide-num reveal">02</div>
+    <h2 class="reveal">Every workflow gets scored<br>on four questions.</h2>
+    <p class="lead reveal">We ask each question about every workflow your team identifies. Score 1&ndash;5 on each. Add them up. Highest totals go first.</p>
+
+    <div class="q-grid">
+      <div class="q-card reveal rd1">
+        <div class="q-num">01 &mdash; Clarity</div>
+        <h3>Is this workflow well-defined?</h3>
+        <p>Clear start and end points? Consistent inputs and outputs? Documented rules? The more structured the workflow, the higher it scores.</p>
+        <div class="q-labels"><span>1 = Ad-hoc, subjective</span><span>5 = Standardized, repeatable</span></div>
+      </div>
+
+      <div class="q-card reveal rd2">
+        <div class="q-num">02 &mdash; Reach</div>
+        <h3>How many people does it touch?</h3>
+        <p>A workflow that affects every department and every project scores higher than one used occasionally by a single team.</p>
+        <div class="q-labels"><span>1 = One person, rarely</span><span>5 = Company-wide, daily</span></div>
+      </div>
+
+      <div class="q-card reveal rd3">
+        <div class="q-num">03 &mdash; Value</div>
+        <h3>What happens if we improve it?</h3>
+        <p>Time saved. Errors caught. Revenue protected. Deadlines held. We're looking for material outcomes, not marginal convenience.</p>
+        <div class="q-labels"><span>1 = Nice to have</span><span>5 = Protects revenue or compliance</span></div>
+      </div>
+
+      <div class="q-card reveal rd4">
+        <div class="q-num">04 &mdash; Feasibility</div>
+        <h3>How realistic is automation?</h3>
+        <p>Good data available? Rules are clear? Edge cases are manageable? Not every workflow is ready — we score this honestly.</p>
+        <div class="q-labels"><span>1 = High complexity, high risk</span><span>5 = Straightforward</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Photo break -->
+<div class="photo-break">
+  <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=75" alt="Data dashboard" loading="lazy">
+  <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=75" alt="Team collaboration" loading="lazy">
+  <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=75" alt="Modern office" loading="lazy">
+</div>
+
+<!-- ━━━━━━ SLIDE 3b: Sample Scorecard ━━━━━━ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="slide-num reveal">03</div>
+    <h2 class="reveal">Here's what it looks like.</h2>
+    <p class="lead reveal">Real workflows from a mid-size professional services firm. Scored in a single working session.</p>
+
+    <table class="sc-table reveal">
+      <thead>
+        <tr>
+          <th>Workflow</th>
+          <th class="sc-score">Clarity</th>
+          <th class="sc-score">Reach</th>
+          <th class="sc-score">Value</th>
+          <th class="sc-score">Feasibility</th>
+          <th class="sc-score">Total</th>
+          <th>Phase</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="sc-workflow">Invoice processing &amp; approval</td>
+          <td class="sc-num">5</td>
+          <td class="sc-num">5</td>
+          <td class="sc-num">5</td>
+          <td class="sc-num">4</td>
+          <td class="sc-total high">19</td>
+          <td><span class="sc-phase p1">Phase 1</span></td>
+        </tr>
+        <tr>
+          <td class="sc-workflow">Customer onboarding docs</td>
+          <td class="sc-num">4</td>
+          <td class="sc-num">4</td>
+          <td class="sc-num">4</td>
+          <td class="sc-num">5</td>
+          <td class="sc-total high">17</td>
+          <td><span class="sc-phase p1">Phase 1</span></td>
+        </tr>
+        <tr>
+          <td class="sc-workflow">Monthly report generation</td>
+          <td class="sc-num">3</td>
+          <td class="sc-num">4</td>
+          <td class="sc-num">3</td>
+          <td class="sc-num">3</td>
+          <td class="sc-total mid">13</td>
+          <td><span class="sc-phase p2">Phase 2</span></td>
+        </tr>
+        <tr>
+          <td class="sc-workflow">Contract clause comparison</td>
+          <td class="sc-num">2</td>
+          <td class="sc-num">3</td>
+          <td class="sc-num">3</td>
+          <td class="sc-num">2</td>
+          <td class="sc-total low">10</td>
+          <td><span class="sc-phase bl">Backlog</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="sc-note reveal">Illustrative example. Your workflows and scores will be different.</p>
+  </div>
+</section>
+
+
+<!-- ━━━━━━ SLIDE 4: The Process ━━━━━━ -->
+<section class="slide" id="process">
+  <div class="slide-inner">
+    <div class="slide-split">
+      <div>
+        <div class="slide-num reveal">04</div>
+        <h2 class="reveal">Five steps.<br>Two weeks.</h2>
+        <p class="lead reveal">This is a working session, not a presentation. We build the roadmap together.</p>
+
+    <div class="step-list">
+      <div class="step-item reveal rd1">
+        <div class="step-n">1</div>
+        <div>
+          <h3>You talk, we listen.</h3>
+          <p>You describe what slows your company down — manual data entry, compliance checks, report generation, knowledge silos. We capture every candidate workflow.</p>
         </div>
-    </nav>
-
-    <!-- ── Slide 1: Hero ────────────────────────────── -->
-    <section class="hero">
-        <div class="container">
-            <h1>From first document<br>to <span>full deployment.</span></h1>
-            <p class="sub">Start with a Discovery Assessment. See exactly what's in your documents. Scale across your entire archive when you're ready. Your data never leaves your building.</p>
-            <div class="btn-group">
-                <a href="#assessment" class="btn btn-primary">Start with Discovery Assessment</a>
-                <a href="#full-engagement" class="btn btn-outline">See Full Engagement</a>
-            </div>
+      </div>
+      <div class="step-item reveal rd2">
+        <div class="step-n">2</div>
+        <div>
+          <h3>We score together.</h3>
+          <p>Each workflow gets scored on all four questions. You provide the domain context. We provide automation feasibility. Every score is transparent.</p>
         </div>
-    </section>
-
-    <!-- ── Slide 2: Phase 1 — Discovery Assessment ──── -->
-    <section id="assessment">
-        <div class="container">
-            <div class="phase-header">
-                <span class="phase-badge">Phase 1</span>
-                <h2 class="phase-title">Discovery Assessment</h2>
-            </div>
-            <p class="section-desc" style="text-align:left; margin:0 0 48px; max-width:100%;">You give us a sample of your documents. We process them through the AECai pipeline and deliver a full report showing every standard referenced, every obligation flagged, every risk area identified. Two-week turnaround.</p>
-
-            <div class="step-grid">
-                <div class="step-num">1</div>
-                <div class="step-content">
-                    <h3>You send documents</h3>
-                    <p>5-20 representative files from your active projects. Specs, contracts, submittals, reports — any format. PDF, DOCX, CAD, images. We'll tell you what we need.</p>
-                </div>
-
-                <div class="step-num">2</div>
-                <div class="step-content">
-                    <h3>We process on-site</h3>
-                    <p>We bring the system to your documents, not your documents to us. Processing runs on local hardware. No data uploaded to any cloud. No third-party APIs. Air-gapped.</p>
-                </div>
-
-                <div class="step-num">3</div>
-                <div class="step-content">
-                    <h3>AECai runs the full pipeline</h3>
-                    <p>Every document is parsed, classified, enriched, decomposed into semantic units, and indexed. Standards are cross-referenced against your jurisdiction. Obligations are flagged. Entities are mapped.</p>
-                </div>
-
-                <div class="step-num">4</div>
-                <div class="step-content">
-                    <h3>You receive the report</h3>
-                    <p>A structured deliverable showing exactly what AECai found — with time recovery projections, risk reduction analysis, and a clear picture of your institutional knowledge.</p>
-                </div>
-            </div>
+      </div>
+      <div class="step-item reveal rd3">
+        <div class="step-n">3</div>
+        <div>
+          <h3>Priorities emerge.</h3>
+          <p>Scores sort. Workflows cluster into phases. You see which ones share infrastructure, which are prerequisites, and where the quick wins sit.</p>
         </div>
-    </section>
-
-    <!-- ── Slide 3: What the Report Contains ────────── -->
-    <section>
-        <div class="container">
-            <p class="section-label">The Deliverable</p>
-            <h2 class="section-title">What you get in the report</h2>
-            <p class="section-desc">Every section is populated from your actual documents. No placeholders, no generic findings.</p>
-
-            <div class="report-grid">
-                <div class="report-item">
-                    <h4>Document Inventory</h4>
-                    <p>Every file classified by type, domain, and authority level with confidence scores.</p>
-                </div>
-                <div class="report-item">
-                    <h4>Standards Cross-Reference</h4>
-                    <p>Every standard detected, checked against your jurisdiction's current adoptions. Superseded editions flagged.</p>
-                </div>
-                <div class="report-item">
-                    <h4>Obligations &amp; Risk Flags</h4>
-                    <p>Every "shall" clause, liability clause, deadline, and contractual obligation — with exact source attribution.</p>
-                </div>
-                <div class="report-item">
-                    <h4>Financial Terms</h4>
-                    <p>Contract value, retainage, liquidated damages, payment terms — extracted and verified.</p>
-                </div>
-                <div class="report-item">
-                    <h4>Entity Map</h4>
-                    <p>People, organizations, and roles identified across your documents. Sensitive data flagged and excluded from AI.</p>
-                </div>
-                <div class="report-item">
-                    <h4>Timeline &amp; Milestones</h4>
-                    <p>Key dates and deadlines extracted: NTP, submittals, substantial completion, close-out.</p>
-                </div>
-                <div class="report-item">
-                    <h4>Decomposition Summary</h4>
-                    <p>How many semantic units were created, what percentage are mandatory vs. informational, and what's searchable.</p>
-                </div>
-                <div class="report-item">
-                    <h4>Time &amp; Risk Analysis</h4>
-                    <p>Manual review hours estimated vs. AECai processing time. Risk areas quantified across your documents.</p>
-                </div>
-            </div>
+      </div>
+      <div class="step-item reveal rd4">
+        <div class="step-n">4</div>
+        <div>
+          <h3>We validate with your real work.</h3>
+          <p>We review live documents and processes from your active operations to ground-truth every workflow score against how your team actually works today.</p>
         </div>
-    </section>
-
-    <!-- ── Slide 4: Pricing ─────────────────────────── -->
-    <section>
-        <div class="container">
-            <div class="price-card">
-                <div class="price">$800</div>
-                <div class="price-sub">Discovery Assessment — credits 100% toward full engagement</div>
-                <ul>
-                    <li>Process 5-20 of your documents through the full pipeline</li>
-                    <li>Structured report with every finding sourced</li>
-                    <li>Standards cross-referenced against your jurisdiction</li>
-                    <li>Time recovery and risk reduction projections</li>
-                    <li>Two-week turnaround from document receipt</li>
-                    <li>On-premise processing — no data leaves your building</li>
-                </ul>
-                <a href="/contact" class="btn btn-primary" style="width:100%;">Request Assessment</a>
-            </div>
-
-            <div class="guarantee">
-                <div class="guarantee-icon">&#8634;</div>
-                <div>
-                    <p><strong>100% credit toward full engagement.</strong> The assessment fee applies in full to any subsequent engagement. If the report doesn't show you anything useful, you owe nothing more. If it does, you're $800 ahead on the full deployment.</p>
-                </div>
-            </div>
+      </div>
+      <div class="step-item reveal">
+        <div class="step-n">5</div>
+        <div>
+          <h3>You get the roadmap.</h3>
+          <p>A structured document with every workflow scored, ranked, and phased. Your leadership can evaluate it without us in the room.</p>
         </div>
-    </section>
+      </div>
+    </div>
+      </div>
+      <div class="slide-split-img reveal rd2">
+        <img src="https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=800&q=75" alt="Strategy session at whiteboard" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- ── Slide 5: Phase 2 — Full Engagement ───────── -->
-    <section id="full-engagement">
-        <div class="container">
-            <div class="phase-header">
-                <span class="phase-badge">Phase 2</span>
-                <h2 class="phase-title">Full Engagement</h2>
-            </div>
-            <p class="section-desc" style="text-align:left; margin:0 0 48px; max-width:100%;">After the assessment, you've seen what AECai finds. Phase 2 scales that across your entire document archive — every active project, every historical file, every new document as it arrives.</p>
 
-            <div class="card-grid">
-                <div class="card">
-                    <div class="tag">Archive</div>
-                    <h3>Complete Document Processing</h3>
-                    <p>Every document in your active and historical archive processed through the full pipeline. Not a sample — the whole library.</p>
-                </div>
-                <div class="card">
-                    <div class="tag">Jurisdiction</div>
-                    <h3>Code Registry Configuration</h3>
-                    <p>Your AHJs configured with current code editions, amendments, and adoption dates. Standards cross-referencing tuned to your geographic footprint.</p>
-                </div>
-                <div class="card">
-                    <div class="tag">Search</div>
-                    <h3>Vector Index Across Everything</h3>
-                    <p>Search your entire document library by meaning. "How did we handle ASTM C150 on the last DOT project?" — the answer is there.</p>
-                </div>
-                <div class="card">
-                    <div class="tag">Ongoing</div>
-                    <h3>Continuous Processing</h3>
-                    <p>New documents processed automatically as they arrive. Your index stays current. Your knowledge base grows with every project.</p>
-                </div>
-                <div class="card">
-                    <div class="tag">Deploy</div>
-                    <h3>On-Premise Installation</h3>
-                    <p>Runs on your hardware. Air-gapped. No cloud dependency. No data leaving the building. Full control, full ownership.</p>
-                </div>
-                <div class="card">
-                    <div class="tag">Support</div>
-                    <h3>Training &amp; Configuration</h3>
-                    <p>Your team trained on the system. Custom plugins configured for your workflows. Direct access to the engineering team.</p>
-                </div>
-            </div>
+<!-- ━━━━━━ SLIDE 5: What You Get ━━━━━━ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="slide-num reveal">05</div>
+    <h2 class="reveal">What happens after discovery.</h2>
+    <p class="lead reveal">The discovery call defines scope. The full engagement delivers the roadmap.</p>
+
+    <div class="del-grid">
+      <div class="del-card reveal rd1" style="border-color:var(--accent)">
+        <h3 style="color:var(--accent)">Discovery Call &mdash; $1,000</h3>
+        <p>Workflow mapping, pain point identification, AI readiness assessment, and a clear scope for the full engagement. You walk away knowing where automation fits.</p>
+      </div>
+      <div class="del-card reveal rd2">
+        <h3>Full Engagement</h3>
+        <p>Scored workflow inventory, ranked priority roadmap, live process validation, implementation sequencing, and ROI projections. Scope and fee defined in discovery.</p>
+      </div>
+      <div class="del-card reveal rd3">
+        <h3>Implementation</h3>
+        <p>Hands-on deployment of the solutions identified in the roadmap. Technology selection, configuration, training, and ongoing support.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ━━━━━━ SLIDE 6: Who ━━━━━━ -->
+<section class="slide" style="overflow:hidden;background:var(--bg-card)">
+  <div class="who-bg"><img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1400&q=75" alt="" loading="lazy"></div>
+  <div class="slide-inner" style="position:relative;z-index:1">
+    <div class="slide-num reveal">06</div>
+    <h2 class="reveal">Led by a builder,<br>not a sales team.</h2>
+    <p class="lead reveal">Kyle Vines. Engineer, CEO, and founder of Echology. 13 years running operations before building the tools he wished existed. Discovery is led by someone who's lived operational problems — not someone who read about them.</p>
+    <div class="creds reveal">
+      <div class="cred"><div class="cred-num">13</div><div class="cred-label">Years in Operations</div></div>
+      <div class="cred"><div class="cred-num">CEO</div><div class="cred-label">Echology, Inc.</div></div>
+      <div class="cred"><div class="cred-num">17</div><div class="cred-label">Systems Built</div></div>
+      <div class="cred"><div class="cred-num">0</div><div class="cred-label">Cloud Dependencies</div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ━━━━━━ SLIDE 7: Terms ━━━━━━ -->
+<section class="slide" id="terms">
+  <div class="slide-inner" style="display:flex;flex-direction:column;align-items:center;text-align:center">
+    <div class="slide-num reveal">07</div>
+    <h2 class="reveal">Simple terms.</h2>
+    <p class="lead reveal" style="margin:0 auto">No procurement hassle. No long-term commitment. One engagement, one deliverable.</p>
+
+    <div class="terms-card reveal">
+      <div class="terms-header">
+        <div class="terms-price">$1,000</div>
+        <div class="terms-sub">Discovery Call</div>
+      </div>
+      <div class="terms-body">
+        <ul class="terms-list">
+          <li>90-minute working session with your team</li>
+          <li>Map your current workflows and pain points</li>
+          <li>Identify which processes are candidates for AI</li>
+          <li>Honest assessment of what's ready and what isn't</li>
+          <li>Defined scope and proposal for the full engagement</li>
+          <li>Remote or on-site — flexible to your team</li>
+        </ul>
+        <div class="terms-credit">
+          <strong>Credits 100% toward the full engagement.</strong> If you move forward, this fee applies in full. If you don't, you still walk away knowing exactly where automation fits in your company.
         </div>
-    </section>
+        <a href="/contact" class="btn btn-primary">Request Discovery Call</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- ── Slide 6: Security & Deployment ───────────── -->
-    <section>
-        <div class="container">
-            <p class="section-label">Deployment</p>
-            <h2 class="section-title">Your data stays in your building.</h2>
-            <p class="section-desc">AECai is designed for firms where documents carry legal weight and client confidentiality is non-negotiable.</p>
 
-            <div class="deploy-grid">
-                <div class="deploy-card">
-                    <div class="deploy-icon">&#9881;</div>
-                    <h3>On-Premise</h3>
-                    <p>Runs on your server or workstation. No cloud instances, no external hosting, no SaaS dependency.</p>
-                </div>
-                <div class="deploy-card">
-                    <div class="deploy-icon">&#128274;</div>
-                    <h3>Air-Gapped</h3>
-                    <p>Zero external API calls during operation. Works without internet. No data transmitted anywhere.</p>
-                </div>
-                <div class="deploy-card">
-                    <div class="deploy-icon">&#9745;</div>
-                    <h3>Deterministic</h3>
-                    <p>Same documents in, same results out. Every time. Repeatable, auditable, defensible.</p>
-                </div>
-                <div class="deploy-card">
-                    <div class="deploy-icon">&#128736;</div>
-                    <h3>You Own It</h3>
-                    <p>No subscription lockout. No data held hostage. The system runs on your hardware under your control.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ━━━━━━ SLIDE 8: CTA ━━━━━━ -->
+<section class="slide cta-slide" style="background:var(--bg-card)">
+  <div class="slide-inner">
+    <h2 class="reveal">The right first step isn't<br>buying software.<br>It's <em>understanding your workflows.</em></h2>
+    <div class="btn-row reveal" style="justify-content:center;margin-top:36px">
+      <a href="/contact" class="btn btn-primary">Request Discovery</a>
+      <a href="/" class="btn btn-outline">See Our Work</a>
+    </div>
+  </div>
+</section>
 
-    <!-- ── Slide 7: CTA ─────────────────────────────── -->
-    <section>
-        <div class="container container--narrow" style="text-align:center;">
-            <h2 class="section-title">Ready to see what's in your documents?</h2>
-            <p class="section-desc">The Discovery Assessment is the fastest way to understand what AECai can do for your firm. $800, two weeks, zero risk.</p>
-            <div class="btn-group">
-                <a href="/contact" class="btn btn-primary">Request Assessment — $800</a>
-                <a href="/aecai" class="btn btn-outline">Learn About AECai</a>
-            </div>
-        </div>
-    </section>
 
-    <footer>
-        <div class="container">
-            <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
-            <div class="footer-links">
-                <a href="https://github.com/echology-io">GitHub</a>
-                <a href="/about">About</a>
-                <a href="/contact">Contact</a>
-            </div>
-        </div>
-    </footer>
+<footer>
+  <div class="container">
+    <div class="copy">&copy; 2025-2026 Echology, Inc.</div>
+    <div class="footer-links">
+      <a href="https://github.com/echology-io">GitHub</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Smooth scroll for hash links
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();window.scrollTo({top:t.offsetTop-60,behavior:'smooth'})}}));
+
+// Reveal on scroll
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.1,rootMargin:'0px 0px -60px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+</script>
+
 </body>
 </html>
