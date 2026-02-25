@@ -13,24 +13,21 @@ Echology, Inc. (parent company)
 
 This repo serves dual purpose:
 1. **Decompose library** (`src/decompose/`) — published to PyPI as `decompose-mcp`
-2. **Company operations** (`ops/`, `marketing/`) — SOPs, deployment, training, outreach
+2. **Company operations** (`marketing/`) — marketing automation, voice corpus, content
 
 The GitHub remote is `echology-io/decompose`. The local clone is named `echology/`.
 
 ## Key Paths
 
 - `src/decompose/` — Decompose library source (the published package)
-- `ops/sops/` — Standard operating procedures (markdown tracked, docx gitignored)
-- `ops/training/` — MLX model training scripts (also copied to aecai/training/)
-- `ops/site/` — Static HTML pages (aecai/site/ is the canonical copy with images)
 - `marketing/` — Marketing automation, voice corpus, reddit content
+- `ECHOLOGY.md` — Company operating document (identity, strategy, roadmap)
 
 ## Cross-Repo Dependencies
 
 - **AECai depends on Decompose**: `decompose-mcp>=0.2.0` in aecai/pyproject.toml
 - **AECai imports**: `decompose_text()`, `filter_for_llm()`, `chunk_text()` from this library
-- **Shared data**: `~/.echology/aletheia/` (jurisdictions registry, audit ledger)
-- **Training scripts**: `ops/training/` is the original; `aecai/training/` has copies with local paths
+- **AECai data**: `~/.aecai/aletheia/` (jurisdictions registry, audit ledger)
 
 ## Versioning
 
