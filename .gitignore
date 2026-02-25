@@ -36,4 +36,5 @@ ops/yc/
 marketing/.env
 marketing/__pycache__/
 marketing/.DS_Store
+marketing/marketing.db
 docs/career/
