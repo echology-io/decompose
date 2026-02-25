@@ -20,7 +20,19 @@ _BUILDING_CODE = re.compile(
     r"\s*(\d{4})?\b"
 )
 _OSHA = re.compile(r"\bOSHA\s*(?:29\s*CFR\s*)?(\d{4}\.\d+)\b")
+
+# State DOT and military standards
+_DOT = re.compile(r"\b([A-Z]{2})\s*DOT\s*(?:Section\s*)?(\d+(?:\.\d+)?)\b")
+_MILITARY = re.compile(r"\b(NAVFAC|USACE|MIL-STD|UFC)\s*[-/]?\s*(\d+(?:[.-]\d+)*)\b")
+
+# Additional standards bodies
+_ADDITIONAL = re.compile(
+    r"\b(AAMA|SMACNA|NRCA|APA|PCI|PTI|CRSI|SDI|SJI|TMS)"
+    r"\s*[-/]?\s*(\d{1,5}(?:[.-]\d+)?)\s*(?:[-/]\s*(\d{2,4}))?\b"
+)
+
 _CFR = re.compile(r"\b(\d+)\s+C\.?F\.?R\.?\s*(?:(?:Part|§)\s*)?(\d+(?:\.\d+)?)\b")
+_USC = re.compile(r"\b(\d+)\s+U\.?S\.?C\.?\s*§?\s*(\d+)\b")
 
 # ── Dates ─────────────────────────────────────────────────────────
 
@@ -53,13 +65,14 @@ def extract_entities(text: str) -> Entities:
     references: list[str] = []
 
     # Standards
-    for rx in (_STANDARD_US, _STANDARD_INTL, _BUILDING_CODE, _OSHA):
+    for rx in (_STANDARD_US, _STANDARD_INTL, _BUILDING_CODE, _OSHA, _DOT, _MILITARY, _ADDITIONAL):
         for m in rx.finditer(text):
             standards.append(m.group(0).strip())
 
-    # CFR references
-    for m in _CFR.finditer(text):
-        references.append(m.group(0).strip())
+    # Legal/regulatory references
+    for rx in (_CFR, _USC):
+        for m in rx.finditer(text):
+            references.append(m.group(0).strip())
 
     # Dates
     for m in _DATE_MDY.finditer(text):

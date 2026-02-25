@@ -23,6 +23,26 @@ class TestStandards:
         assert any("OSHA" in s for s in e.standards)
 
 
+    # ── v0.2.0: Backported patterns from AECai ──
+
+    def test_detects_military_standards(self):
+        e = extract_entities("Design per UFC 3-600-01 and USACE 1110-2-1902.")
+        assert any("UFC" in s for s in e.standards)
+        assert any("USACE" in s for s in e.standards)
+
+    def test_detects_additional_bodies(self):
+        e = extract_entities("Roofing per SMACNA 1006 and NRCA guidelines.")
+        assert any("SMACNA" in s for s in e.standards)
+
+    def test_detects_state_dot(self):
+        e = extract_entities("Per CA DOT Section 51.1 requirements.")
+        assert any("DOT" in s for s in e.standards)
+
+    def test_detects_usc_references(self):
+        e = extract_entities("Pursuant to 42 U.S.C. 7401 (Clean Air Act).")
+        assert any("U.S.C" in r for r in e.references)
+
+
 class TestDates:
     def test_detects_mdy_dates(self):
         e = extract_entities("Submitted on 01/15/2026.")

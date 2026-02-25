@@ -24,6 +24,16 @@ htmlcov/
 docs/tests/
 lab/results.json
 LAUNCH.md
-marketing/
-ops/
+# Ops — track markdown/code, ignore binaries and secrets
+ops/**/*.docx
+ops/**/*.xlsx
+ops/**/*.rtf
+ops/.DS_Store
+ops/.env
+ops/yc/
+
+# Marketing — track code and content, ignore secrets
+marketing/.env
+marketing/__pycache__/
+marketing/.DS_Store
 docs/career/
