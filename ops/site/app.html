@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AECai — Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+/* ═══════════════════════════════════════════════════════
+   ROOT — φ-based color system from Intelligence Brief
+   ═══════════════════════════════════════════════════════ */
+:root{
+  --phi-dark:#071C2D;
+  --phi-base:#0B2F4A;
+  --phi-light:#2A5C84;
+  --phi-highlight:#3A78A1;
+
+  --signal:#C9A24D;
+  --signal-dim:rgba(201,162,77,0.12);
+  --signal-border:rgba(201,162,77,0.18);
+
+  --graphite:#0E1114;
+  --calc-white:#F2F4F6;
+
+  --surface:var(--phi-base);
+  --surface-2:rgba(255,255,255,.03);
+  --surface-3:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.06);
+  --border-light:rgba(255,255,255,.1);
+  --border-mid:rgba(255,255,255,.15);
+
+  --text:var(--calc-white);
+  --text-mid:rgba(255,255,255,.55);
+  --text-dim:rgba(255,255,255,.35);
+
+  --sev-high:#E57373;
+  --sev-high-bg:rgba(229,115,115,.1);
+  --sev-med:#FFB74D;
+  --sev-med-bg:rgba(255,183,77,.1);
+  --green:#8CC790;
+  --green-bg:rgba(46,125,50,.2);
+  --green-bright:#3FB950;
+  --red:#F85149;
+  --red-bg:rgba(248,81,73,.12);
+  --amber:#f59e0b;
+  --amber-bg:rgba(245,158,11,.12);
+  --blue:#58A6FF;
+  --blue-bg:rgba(88,166,255,.12);
+
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',-apple-system,sans-serif;
+  --mono:'JetBrains Mono','Fira Code',monospace;
+
+  --radius:10px;
+  --radius-lg:14px;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+}
+
+html,body{height:100%;font-family:var(--sans);background:var(--phi-dark);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+::selection{background:var(--signal);color:var(--calc-white)}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2)}
+
+/* ═══════════════════════════════════════════════════════
+   TOPBAR
+   ═══════════════════════════════════════════════════════ */
+.topbar{
+  height:56px;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px;
+  position:sticky;top:0;z-index:100;
+}
+.topbar-brand{display:flex;align-items:center;gap:14px}
+.topbar-logo{font-family:var(--serif);font-size:1.25rem;color:var(--signal);letter-spacing:-.02em}
+.topbar-sep{width:1px;height:22px;background:var(--border-mid)}
+.topbar-tabs{display:flex;gap:4px;background:rgba(0,0,0,.2);border-radius:8px;padding:3px}
+.tool-tab{
+  padding:6px 18px;border-radius:6px;border:1px solid transparent;
+  background:none;color:var(--text-dim);font-family:var(--sans);font-size:.8125rem;
+  font-weight:500;cursor:pointer;transition:all .2s var(--ease);white-space:nowrap;
+}
+.tool-tab:hover{color:var(--text-mid)}
+.tool-tab.active{background:var(--signal-dim);border-color:var(--signal-border);color:var(--signal);font-weight:600}
+.topbar-status{display:flex;align-items:center;gap:16px}
+.status-label{font-size:.75rem;color:var(--text-dim);font-family:var(--mono);display:flex;align-items:center;gap:6px}
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+.status-dot.on{background:var(--green-bright);box-shadow:0 0 6px var(--green-bright)}
+.status-dot.off{background:var(--red);box-shadow:0 0 4px var(--red)}
+
+/* ═══════════════════════════════════════════════════════
+   TOOL VIEW CONTAINERS
+   ═══════════════════════════════════════════════════════ */
+.tool-view{display:none;height:calc(100vh - 56px);overflow:hidden}
+.tool-view.active{display:flex}
+
+/* ═══════════════════════════════════════════════════════
+   SHARED BUTTON STYLES
+   ═══════════════════════════════════════════════════════ */
+.btn{
+  padding:8px 16px;border:1px solid var(--border-mid);background:rgba(255,255,255,.04);
+  color:var(--text);border-radius:6px;font-family:var(--sans);font-size:.8125rem;
+  font-weight:500;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;
+}
+.btn:hover{border-color:var(--signal-border);color:var(--signal);background:var(--signal-dim)}
+.btn-primary{background:var(--signal);border-color:var(--signal);color:var(--graphite);font-weight:600}
+.btn-primary:hover{background:#D4AF5A;box-shadow:0 2px 12px rgba(201,162,77,.3)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btn-danger{border-color:var(--red-bg);color:var(--red)}
+.btn-danger:hover{background:var(--red-bg)}
+
+/* ═══════════════════════════════════════════════════════
+   PROCESS VIEW — LEFT PANEL
+   ═══════════════════════════════════════════════════════ */
+.process-layout{display:grid;grid-template-columns:380px 1fr;width:100%}
+.left-panel{border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface);overflow:hidden}
+
+.drop-zone{
+  margin:16px;padding:40px 24px;border:2px dashed var(--border-mid);border-radius:var(--radius);
+  text-align:center;cursor:pointer;transition:all .2s;
+}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--signal);background:var(--signal-dim)}
+.drop-zone.dragover{transform:scale(1.01)}
+.drop-icon{font-size:32px;margin-bottom:12px;opacity:.4}
+.drop-title{font-weight:600;font-size:14px;color:var(--text);margin-bottom:4px}
+.drop-sub{font-size:12px;color:var(--text-dim)}
+.drop-zone input{display:none}
+
+.controls{padding:0 16px 12px;display:flex;gap:8px}
+.controls .btn-export{margin-left:auto}
+
+.file-list{flex:1;overflow-y:auto;padding:0 16px 16px}
+.file-list-header{
+  font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--text-dim);padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:8px;
+}
+.file-item{
+  padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;
+  cursor:pointer;transition:all .15s;position:relative;
+}
+.file-item:hover{border-color:var(--border-light)}
+.file-item.selected{border-color:var(--signal);background:var(--signal-dim)}
+.file-item.processing{border-color:var(--amber)}
+.file-item.complete{border-left:3px solid var(--green-bright)}
+.file-item.failed{border-left:3px solid var(--red)}
+.file-name{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.file-meta{font-size:11px;color:var(--text-dim);margin-top:3px;display:flex;gap:10px;align-items:center}
+.file-badge{font-family:var(--mono);font-size:9px;font-weight:600;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em}
+.badge-queued{background:rgba(255,255,255,.05);color:var(--text-dim)}
+.badge-processing{background:var(--amber-bg);color:var(--amber)}
+.badge-complete{background:var(--green-bg);color:var(--green)}
+.badge-failed{background:var(--red-bg);color:var(--red)}
+.file-progress{height:2px;background:var(--border);border-radius:1px;margin-top:6px;overflow:hidden}
+.file-progress-bar{height:100%;background:var(--signal);border-radius:1px;transition:width .3s;animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.file-remove{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;opacity:0;transition:opacity .15s}
+.file-item:hover .file-remove{opacity:1}
+.file-remove:hover{color:var(--red)}
+
+.batch-bar{
+  padding:12px 16px;background:rgba(0,0,0,.2);border-top:1px solid var(--border);
+  font-family:var(--mono);font-size:11px;display:none;align-items:center;gap:12px;
+}
+.batch-bar.active{display:flex}
+.batch-progress-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.batch-progress-fill{height:100%;background:var(--signal);border-radius:2px;transition:width .3s}
+.batch-text{color:var(--text-dim);white-space:nowrap}
+.batch-count{color:var(--signal);font-weight:600}
+
+/* ═══════════════════════════════════════════════════════
+   PROCESS VIEW — RIGHT PANEL (RESULTS)
+   ═══════════════════════════════════════════════════════ */
+.right-panel{display:flex;flex-direction:column;background:var(--phi-dark);overflow:hidden}
+.results-header{
+  padding:16px 24px;border-bottom:1px solid var(--border);display:flex;
+  justify-content:space-between;align-items:center;background:var(--surface);min-height:53px;
+}
+.results-title{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text)}
+.results-actions{display:flex;gap:8px}
+.results-body{flex:1;overflow-y:auto;padding:24px}
+
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-dim);text-align:center}
+.empty-icon{font-size:48px;opacity:.2;margin-bottom:16px}
+.empty-title{font-family:var(--serif);font-size:1.125rem;font-weight:400;margin-bottom:4px;color:var(--text-mid)}
+.empty-sub{font-size:.8125rem}
+
+/* ═══════════════════════════════════════════════════════
+   INTELLIGENCE BRIEF CARD (from index.html)
+   ═══════════════════════════════════════════════════════ */
+.brief-card{max-width:940px;margin:0 auto;background:var(--phi-base);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.06);box-shadow:0 24px 80px rgba(0,0,0,.4)}
+.brief-header{padding:20px 28px;background:rgba(0,0,0,.2);display:flex;align-items:center;justify-content:space-between}
+.brief-dots{display:flex;gap:6px}
+.brief-dots span{width:10px;height:10px;border-radius:50%}
+.brief-dots .r{background:#FF5F57}.brief-dots .y{background:#FFBD2E}.brief-dots .g{background:#28C840}
+.brief-file{font-family:var(--mono);font-size:.75rem;color:rgba(255,255,255,.4)}
+.brief-badge{padding:4px 12px;border-radius:100px;background:rgba(46,125,50,.2);color:#8CC790;font-size:.6875rem;font-weight:600;letter-spacing:.03em}
+
+.brief-classify{padding:24px 28px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.brief-classify-type{font-family:var(--serif);font-size:1.25rem;color:var(--calc-white)}
+.brief-classify-conf{padding:4px 14px;border-radius:100px;background:rgba(201,162,77,.15);color:var(--signal);font-size:.75rem;font-weight:600}
+.brief-classify-meta{font-size:.75rem;color:rgba(255,255,255,.35);margin-left:auto}
+
+.brief-stats{display:grid;grid-template-columns:repeat(6,1fr);padding:20px 28px;border-bottom:1px solid rgba(255,255,255,.06);gap:4px}
+.brief-stat{text-align:center;padding:16px 8px;border-radius:10px;transition:background .2s}
+.brief-stat:hover{background:rgba(255,255,255,.03)}
+.brief-stat-num{font-family:var(--serif);font-size:1.75rem;color:var(--signal);line-height:1}
+.brief-stat-label{font-size:.6rem;color:rgba(255,255,255,.4);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
+@media(max-width:600px){.brief-stats{grid-template-columns:repeat(3,1fr)}}
+
+.brief-summary{padding:20px 28px;border-bottom:1px solid rgba(255,255,255,.06)}
+.brief-summary-label{font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--signal);margin-bottom:8px}
+.brief-summary-text{font-size:.875rem;line-height:1.75;color:rgba(255,255,255,.6)}
+
+.brief-findings{padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.brief-findings{grid-template-columns:1fr}}
+.finding{padding:20px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:all .3s var(--ease)}
+.finding:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1)}
+.finding-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.finding-icon{font-size:1.25rem}
+.finding-title{font-weight:600;font-size:.875rem;color:var(--calc-white)}
+.finding-count{margin-left:auto;font-family:var(--mono);font-size:.75rem;color:var(--signal)}
+.finding-items{list-style:none}
+.finding-items li{padding:6px 0;font-size:.8rem;color:rgba(255,255,255,.6);display:flex;align-items:baseline;gap:8px;border-bottom:1px solid rgba(255,255,255,.04)}
+.finding-items li:last-child{border:none}
+.finding-items .none{font-style:italic;color:rgba(255,255,255,.25)}
+.sev-high{color:#E57373;font-size:.6rem;font-weight:700;letter-spacing:.05em;padding:2px 8px;border-radius:4px;background:rgba(229,115,115,.1);flex-shrink:0}
+.sev-med{color:#FFB74D;font-size:.6rem;font-weight:700;letter-spacing:.05em;padding:2px 8px;border-radius:4px;background:rgba(255,183,77,.1);flex-shrink:0}
+
+.brief-financials{padding:20px 28px;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:16px;flex-wrap:wrap}
+.fin-item{flex:1;min-width:120px;padding:16px;background:rgba(201,162,77,.06);border-radius:10px;border:1px solid rgba(201,162,77,.1);text-align:center}
+.fin-amount{font-family:var(--serif);font-size:1.25rem;color:var(--signal);line-height:1}
+.fin-label{font-size:.6875rem;color:rgba(255,255,255,.4);margin-top:4px}
+
+.json-expand{padding:0 28px 8px}
+.json-toggle{background:none;border:none;color:rgba(255,255,255,.3);font-family:var(--mono);font-size:.75rem;cursor:pointer;padding:12px 0;display:flex;align-items:center;gap:8px;transition:color .2s;width:100%;text-align:left}
+.json-toggle:hover{color:rgba(255,255,255,.5)}
+.json-toggle .arrow{transition:transform .3s var(--ease);display:inline-block}
+.json-toggle.open .arrow{transform:rotate(90deg)}
+.json-body{max-height:0;overflow:hidden;transition:max-height .5s var(--ease)}
+.json-body.open{max-height:600px}
+.json-view{padding:0 0 20px;max-height:500px;overflow-y:auto;font-family:var(--mono);font-size:.75rem;line-height:1.65;color:rgba(255,255,255,.7)}
+.json-view::-webkit-scrollbar{width:4px}.json-view::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.j-key{color:var(--signal)}.j-str{color:#8CC790}.j-num{color:#D4A76A}.j-bool{color:#7AB0D6}.j-null{color:rgba(255,255,255,.3)}
+
+.brief-footer{padding:16px 28px;background:rgba(0,0,0,.15);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.brief-note{font-size:.75rem;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:6px}
+
+/* ═══════════════════════════════════════════════════════
+   OUTREACH VIEW
+   ═══════════════════════════════════════════════════════ */
+.outreach-layout{display:grid;grid-template-columns:340px 1fr;width:100%;height:100%}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between}
+.sidebar-header h3{font-size:.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--text-dim)}
+.lead-count{font-size:.6875rem;color:var(--signal);font-family:var(--mono)}
+.sidebar-search{padding:0 16px 12px}
+.sidebar-search input{
+  width:100%;padding:8px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);font-family:var(--sans);font-size:.8125rem;outline:none;transition:border-color .2s;
+}
+.sidebar-search input:focus{border-color:var(--signal)}
+.sidebar-search input::placeholder{color:var(--text-dim)}
+.lead-list{flex:1;overflow-y:auto;padding:0 8px 8px}
+.lead-list::-webkit-scrollbar{width:4px}.lead-list::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:2px}
+
+.lead-card{padding:12px 14px;border-radius:var(--radius);cursor:pointer;transition:all .15s;margin-bottom:2px;border:1px solid transparent}
+.lead-card:hover{background:rgba(255,255,255,.03)}
+.lead-card.active{background:var(--signal-dim);border-color:var(--signal-border)}
+.lead-card.active .lead-name{color:var(--signal)}
+.lead-name{font-weight:600;font-size:.875rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lead-firm{font-size:.75rem;color:var(--text-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lead-meta{display:flex;gap:8px;margin-top:6px}
+.lead-tag{font-size:.625rem;padding:2px 7px;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.lead-tag.source{background:var(--blue-bg);color:var(--blue)}
+.lead-tag.has-email{background:var(--green-bg);color:var(--green)}
+.lead-tag.no-email{background:var(--red-bg);color:var(--red)}
+
+.add-lead-btn{margin:8px 16px 16px;padding:10px;border:1px dashed var(--border-mid);border-radius:var(--radius);background:none;color:var(--text-dim);font-family:var(--sans);font-size:.8125rem;cursor:pointer;transition:all .2s}
+.add-lead-btn:hover{border-color:var(--signal);color:var(--signal);background:var(--signal-dim)}
+
+.outreach-main{display:flex;flex-direction:column;overflow:hidden}
+.main-empty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-dim);font-size:1rem;text-align:center;padding:40px}
+.main-empty p{max-width:320px;line-height:1.7}
+
+.lead-detail{padding:28px 32px 20px;border-bottom:1px solid var(--border);background:var(--surface)}
+.lead-detail-name{font-family:var(--serif);font-size:1.5rem;margin-bottom:4px}
+.lead-detail-firm{font-size:1rem;color:var(--text-mid);margin-bottom:12px}
+.lead-detail-row{display:flex;gap:24px;flex-wrap:wrap}
+.lead-detail-item{font-size:.8125rem}
+.lead-detail-item label{color:var(--text-dim);font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:2px}
+.lead-detail-item span{color:var(--text)}
+.lead-detail-item a{color:var(--signal);text-decoration:none}
+.lead-detail-item a:hover{text-decoration:underline}
+
+.draft-controls{padding:16px 32px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.draft-btn{
+  padding:8px 16px;border:1px solid var(--border-mid);border-radius:6px;
+  background:rgba(255,255,255,.04);color:var(--text);font-family:var(--sans);font-size:.8125rem;
+  font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;
+}
+.draft-btn:hover{border-color:var(--signal-border);color:var(--signal);background:var(--signal-dim)}
+.draft-btn.active{border-color:var(--signal);background:var(--signal-dim);color:var(--signal)}
+
+.draft-area{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:24px 32px}
+.draft-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:16px}
+.draft-spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--signal);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.draft-loading-text{font-size:.875rem;color:var(--text-mid)}
+
+.draft-output{flex:1;overflow-y:auto;padding-right:8px}
+.draft-output::-webkit-scrollbar{width:4px}.draft-output::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:2px}
+
+.draft-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;position:relative;transition:border-color .2s}
+.draft-card:hover{border-color:rgba(255,255,255,.1)}
+.draft-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.draft-card-type{font-size:.625rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--signal);padding:3px 8px;background:var(--signal-dim);border-radius:4px}
+.draft-card-time{font-size:.6875rem;color:var(--text-dim);font-family:var(--mono)}
+.draft-card-subject{font-weight:600;margin-bottom:12px;color:var(--text);font-size:.9375rem}
+.draft-card-body{font-size:.875rem;line-height:1.75;color:var(--text-mid);white-space:pre-wrap;font-family:var(--sans)}
+.draft-card-actions{display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06)}
+.action-btn{padding:7px 14px;border-radius:6px;border:1px solid var(--border-mid);background:none;color:var(--text);font-family:var(--sans);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px}
+.action-btn:hover{border-color:var(--signal);color:var(--signal)}
+.action-btn.primary{background:var(--signal);color:var(--graphite);border-color:var(--signal)}
+.action-btn.primary:hover{background:#D4AF5A;box-shadow:0 2px 12px rgba(201,162,77,.3)}
+.action-btn.copied{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+
+.draft-edit{width:100%;min-height:200px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--radius);padding:16px;color:var(--text);font-family:var(--sans);font-size:.875rem;line-height:1.75;resize:vertical;outline:none;transition:border-color .2s}
+.draft-edit:focus{border-color:var(--signal)}
+
+/* ═══════════════════════════════════════════════════════
+   MODAL + TOAST
+   ═══════════════════════════════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.active{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;width:480px;max-width:90vw}
+.modal h3{font-family:var(--serif);font-size:1.25rem;margin-bottom:20px}
+.modal-field{margin-bottom:14px}
+.modal-field label{display:block;font-size:.75rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.modal-field input,.modal-field textarea{
+  width:100%;padding:10px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);font-family:var(--sans);font-size:.875rem;outline:none;transition:border-color .2s;
+}
+.modal-field input:focus,.modal-field textarea:focus{border-color:var(--signal)}
+.modal-field textarea{min-height:60px;resize:vertical}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.modal-btn{padding:10px 20px;border-radius:6px;border:none;font-family:var(--sans);font-size:.875rem;font-weight:600;cursor:pointer;transition:all .15s}
+.modal-btn.cancel{background:rgba(255,255,255,.06);color:var(--text-mid);border:1px solid var(--border)}
+.modal-btn.cancel:hover{color:var(--text);border-color:var(--border-light)}
+.modal-btn.save{background:var(--signal);color:var(--graphite)}
+.modal-btn.save:hover{background:#D4AF5A}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--green-bright);color:var(--green);padding:12px 20px;border-radius:8px;font-size:.8125rem;font-weight:600;transform:translateY(100px);opacity:0;transition:all .3s;z-index:300;font-family:var(--sans)}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════ */
+@media(max-width:800px){
+  .process-layout{grid-template-columns:1fr}
+  .left-panel{border-right:none;border-bottom:1px solid var(--border);max-height:50vh}
+  .outreach-layout{grid-template-columns:1fr}
+  .sidebar{border-right:none;border-bottom:1px solid var(--border);max-height:40vh}
+  .topbar-tabs{gap:2px}
+  .tool-tab{padding:6px 12px;font-size:.75rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     TOPBAR
+     ═══════════════════════════════════════════════════════ -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">AECai</div>
+    <div class="topbar-sep"></div>
+    <div class="topbar-tabs">
+      <button class="tool-tab active" data-view="process" onclick="switchView('process')">Document Processor</button>
+      <button class="tool-tab" data-view="outreach" onclick="switchView('outreach')">Outreach Center <span style="background:#666;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle;">Internal</span></button>
+    </div>
+  </div>
+  <div class="topbar-status">
+    <span class="status-label"><span class="status-dot off" id="engineDot"></span><span id="engineLabel">Engine</span></span>
+    <span class="status-label"><span class="status-dot off" id="ollamaDot"></span>Ollama</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PROCESS VIEW
+     ═══════════════════════════════════════════════════════ -->
+<div id="processView" class="tool-view active">
+  <div class="process-layout">
+    <div class="left-panel">
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-icon">&#11015;</div>
+        <div class="drop-title">Drop files here</div>
+        <div class="drop-sub">PDF, DOCX, TXT, CSV, DXF, images &mdash; multiple files ok</div>
+        <input type="file" id="fileInput" multiple accept=".pdf,.docx,.doc,.txt,.md,.csv,.xml,.html,.json,.dxf,.rtf,.png,.jpg,.jpeg,.tiff,.tif,.bmp,.gif">
+      </div>
+      <div class="controls">
+        <button class="btn btn-primary" id="processBtn" disabled>Process All</button>
+        <button class="btn" id="clearBtn">Clear</button>
+        <button class="btn btn-export" id="exportBtn">Export JSONL</button>
+        <button class="btn btn-export" id="batchTrainingBtn">Batch Training</button>
+      </div>
+      <div class="file-list" id="fileList">
+        <div class="file-list-header">Documents (<span id="fileCount">0</span>)</div>
+      </div>
+      <div class="batch-bar" id="batchBar">
+        <span class="batch-text"><span class="batch-count" id="batchCurrent">0</span> / <span id="batchTotal">0</span></span>
+        <div class="batch-progress-track"><div class="batch-progress-fill" id="batchFill"></div></div>
+        <span class="batch-text" id="batchLabel">Processing...</span>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="results-header">
+        <div class="results-title" id="resultsTitle">Select a document</div>
+        <div class="results-actions" id="resultsActions"></div>
+      </div>
+      <div class="results-body" id="resultsBody">
+        <div class="empty-state">
+          <div class="empty-icon">&#9671;</div>
+          <div class="empty-title">No results yet</div>
+          <div class="empty-sub">Drop documents and click Process All</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     OUTREACH VIEW
+     ═══════════════════════════════════════════════════════ -->
+<div id="outreachView" class="tool-view">
+  <div class="outreach-layout">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h3>Leads</h3>
+        <span class="lead-count" id="leadCount">&mdash;</span>
+      </div>
+      <div class="sidebar-search">
+        <input type="text" id="searchInput" placeholder="Search leads...">
+      </div>
+      <div class="lead-list" id="leadList"></div>
+      <button class="add-lead-btn" id="addLeadBtn">+ Add Contact</button>
+    </div>
+    <div class="outreach-main" id="mainContent">
+      <div class="main-empty" id="emptyState">
+        <p>Select a lead from the sidebar or add a new contact to start drafting outreach.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ADD LEAD MODAL
+     ═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="addLeadModal">
+  <div class="modal">
+    <h3>Add Contact</h3>
+    <div class="modal-field"><label>Name</label><input type="text" id="newName" placeholder="Jane Smith"></div>
+    <div class="modal-field"><label>Firm</label><input type="text" id="newFirm" placeholder="Stantec, AECOM, etc."></div>
+    <div class="modal-field"><label>Email</label><input type="email" id="newEmail" placeholder="jane@firm.com"></div>
+    <div class="modal-field"><label>Role / Title</label><input type="text" id="newRole" placeholder="VP Engineering, Document Control, etc."></div>
+    <div class="modal-field"><label>Pain Point / Notes</label><textarea id="newNotes" placeholder="What you know about their situation..."></textarea></div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" id="modalCancel">Cancel</button>
+      <button class="modal-btn save" id="modalSave">Add &amp; Draft</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CONFIGURATION
+// ═══════════════════════════════════════════════════════
+const API_BASE = '';
+const OLLAMA_URL = 'http://localhost:11434';
+const MODEL = 'llama3';
+
+// ═══════════════════════════════════════════════════════
+//  API KEY HELPER
+// ═══════════════════════════════════════════════════════
+function apiHeaders(extra = {}) {
+  const h = { 'Content-Type': 'application/json', ...extra };
+  const key = localStorage.getItem('aecai_api_key');
+  if (key) h['Authorization'] = 'Bearer ' + key;
+  return h;
+}
+
+function authHeader() {
+  const key = localStorage.getItem('aecai_api_key');
+  return key ? { 'Authorization': 'Bearer ' + key } : {};
+}
+
+// ═══════════════════════════════════════════════════════
+//  VIEW SWITCHING
+// ═══════════════════════════════════════════════════════
+let activeView = 'process';
+
+function switchView(view) {
+  activeView = view;
+  document.getElementById('processView').classList.toggle('active', view === 'process');
+  document.getElementById('outreachView').classList.toggle('active', view === 'outreach');
+  document.querySelectorAll('.tool-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.view === view);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  SHARED UTILITIES
+// ═══════════════════════════════════════════════════════
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function formatDocType(type) {
+  if (!type) return 'Unknown';
+  return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function briefSyntaxHighlight(json) {
+  return json
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"([^"]+)"(?=\s*:)/g, '<span class="j-key">"$1"</span>')
+    .replace(/:\s*"([^"]*?)"/g, ': <span class="j-str">"$1"</span>')
+    .replace(/:\s*(\d+\.?\d*)/g, ': <span class="j-num">$1</span>')
+    .replace(/:\s*(true|false)/g, ': <span class="j-bool">$1</span>')
+    .replace(/:\s*(null)/g, ': <span class="j-null">$1</span>');
+}
+
+// ═══════════════════════════════════════════════════════
+//  HEALTH CHECK
+// ═══════════════════════════════════════════════════════
+async function checkHealth() {
+  // Engine / Server
+  try {
+    const r = await fetch('/api/health', { headers: authHeader(), signal: AbortSignal.timeout(3000) });
+    const d = await r.json();
+    document.getElementById('engineDot').className = 'status-dot on';
+    const parts = [];
+    if (d.pipeline) parts.push('pipeline');
+    else if (d.vanta_classify_v2) parts.push('classify');
+    if (d.ollama) parts.push(d.ollama_model || 'ollama');
+    document.getElementById('engineLabel').textContent = parts.length ? parts.join(' + ') : 'Connected';
+  } catch {
+    document.getElementById('engineDot').className = 'status-dot off';
+    document.getElementById('engineLabel').textContent = 'Offline';
+  }
+  // Ollama
+  try {
+    const r = await fetch(`${OLLAMA_URL}/api/tags`, { signal: AbortSignal.timeout(3000) });
+    const d = await r.json();
+    const has = d.models?.some(m => m.name?.includes(MODEL));
+    document.getElementById('ollamaDot').className = has ? 'status-dot on' : 'status-dot off';
+  } catch {
+    document.getElementById('ollamaDot').className = 'status-dot off';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  PROCESS STATE
+// ═══════════════════════════════════════════════════════
+let files = [];
+let selectedFileId = null;
+let processing = false;
+
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const fileListEl = document.getElementById('fileList');
+const fileCount = document.getElementById('fileCount');
+const processBtn = document.getElementById('processBtn');
+const clearBtn = document.getElementById('clearBtn');
+const exportBtn = document.getElementById('exportBtn');
+const resultsBody = document.getElementById('resultsBody');
+const resultsTitle = document.getElementById('resultsTitle');
+const resultsActions = document.getElementById('resultsActions');
+const batchBar = document.getElementById('batchBar');
+const batchCurrent = document.getElementById('batchCurrent');
+const batchTotal = document.getElementById('batchTotal');
+const batchFill = document.getElementById('batchFill');
+const batchLabel = document.getElementById('batchLabel');
+
+// ── File handling ──
+function addFiles(newFiles) {
+  for (const f of newFiles) {
+    const ext = f.name.toLowerCase().split('.').pop();
+    const allowed = ['pdf','docx','doc','txt','md','csv','xml','html','json','dxf','rtf','png','jpg','jpeg','tiff','tif','bmp','gif'];
+    if (!allowed.includes(ext)) continue;
+    if (files.find(x => x.file.name === f.name && x.file.size === f.size)) continue;
+    files.push({ id: crypto.randomUUID().slice(0, 8), file: f, status: 'queued', results: null, error: null });
+  }
+  renderFileList();
+}
+
+function removeFile(id) {
+  files = files.filter(f => f.id !== id);
+  if (selectedFileId === id) selectedFileId = null;
+  renderFileList();
+  renderResults();
+}
+
+// ── Render file list ──
+function renderFileList() {
+  const header = fileListEl.querySelector('.file-list-header');
+  fileListEl.innerHTML = '';
+  fileListEl.appendChild(header);
+  fileCount.textContent = files.length;
+  processBtn.disabled = processing || !files.some(f => f.status === 'queued');
+
+  for (const f of files) {
+    const el = document.createElement('div');
+    el.className = `file-item ${f.status}${f.id === selectedFileId ? ' selected' : ''}`;
+    el.onclick = () => { selectedFileId = f.id; renderFileList(); renderResults(); };
+
+    const sizeMB = (f.file.size / 1024 / 1024).toFixed(1);
+    const badgeClass = { queued: 'badge-queued', processing: 'badge-processing', complete: 'badge-complete', failed: 'badge-failed' }[f.status];
+
+    let typeLabel = '';
+    if (f.results?.classification?.type) {
+      typeLabel = ` <span style="color:var(--signal);font-size:10px">${formatDocType(f.results.classification.type)}</span>`;
+    }
+
+    el.innerHTML = `
+      <div class="file-name">${esc(f.file.name)}</div>
+      <div class="file-meta">
+        <span>${sizeMB} MB</span>
+        <span class="file-badge ${badgeClass}">${f.status}</span>
+        ${typeLabel}
+      </div>
+      ${f.status === 'processing' ? '<div class="file-progress"><div class="file-progress-bar" style="width:60%"></div></div>' : ''}
+      ${f.status === 'queued' ? '<button class="file-remove" onclick="event.stopPropagation();removeFile(\'' + esc(f.id) + '\')">&#10005;</button>' : ''}
+    `;
+    fileListEl.appendChild(el);
+  }
+}
+
+// ── Render results as Intelligence Brief ──
+function renderResults() {
+  const f = files.find(x => x.id === selectedFileId);
+
+  if (!f) {
+    resultsTitle.textContent = 'Select a document';
+    resultsActions.innerHTML = '';
+    resultsBody.innerHTML = `<div class="empty-state"><div class="empty-icon">&#9671;</div><div class="empty-title">No results yet</div><div class="empty-sub">Drop documents and click Process All</div></div>`;
+    return;
+  }
+
+  resultsTitle.textContent = f.file.name;
+
+  if (f.status === 'queued') {
+    resultsActions.innerHTML = '';
+    resultsBody.innerHTML = `<div class="empty-state"><div class="empty-icon">&#9671;</div><div class="empty-title">Queued</div><div class="empty-sub">Click Process All to begin</div></div>`;
+    return;
+  }
+
+  if (f.status === 'processing') {
+    resultsActions.innerHTML = '';
+    resultsBody.innerHTML = `<div class="empty-state"><div class="draft-spinner" style="width:40px;height:40px;margin-bottom:16px"></div><div class="empty-title">Processing...</div><div class="empty-sub">Running through Vanta pipeline</div></div>`;
+    return;
+  }
+
+  if (f.status === 'failed') {
+    resultsActions.innerHTML = '';
+    resultsBody.innerHTML = `<div class="empty-state"><div class="empty-icon" style="color:var(--red)">&#10005;</div><div class="empty-title" style="color:var(--red)">Processing Failed</div><div class="empty-sub">${esc(f.error || 'Unknown error')}</div></div>`;
+    return;
+  }
+
+  // ── COMPLETE: Render as Intelligence Brief ──
+  const r = f.results;
+  const cls = r.classification || {};
+  const fid = f.id;
+
+  const safeFid = esc(fid);
+  resultsActions.innerHTML = `
+    <button class="btn" onclick="copyJson('${safeFid}')">Copy JSON</button>
+    <button class="btn" onclick="downloadJson('${safeFid}')">Download</button>
+  `;
+
+  // Build finding cards
+  const risks = (r.sample_risks || []).map(s => `<li><span class="sev-high">HIGH</span> <span>${esc(typeof s === 'string' ? s : s.description || JSON.stringify(s))}</span></li>`).join('') || '<li class="none">None detected</li>';
+  const obligations = (r.sample_obligations || []).map(s => `<li><span class="sev-high">HIGH</span> <span>${esc(typeof s === 'string' ? s : s.description || JSON.stringify(s))}</span></li>`).join('') || '<li class="none">None detected</li>';
+  const standards = (r.sample_standards || []).map(s => `<li>${esc(typeof s === 'string' ? s : s.raw_reference || JSON.stringify(s))}</li>`).join('') || '<li class="none">None detected</li>';
+
+  let timelineItems = '<li class="none">None detected</li>';
+  const events = r.timeline_summary?.events || [];
+  if (events.length) {
+    timelineItems = events.slice(0, 5).map(e => `<li>${esc(typeof e === 'string' ? e : e.description || e.event || JSON.stringify(e))}</li>`).join('');
+  }
+
+  // Entity breakdown by type
+  const entityTypes = cls.entities || {};
+  const entityTypeLabels = { organizations: 'Orgs', people: 'People', standards_codes: 'Standards', locations: 'Locations', dates: 'Dates', monetary: 'Monetary', project_references: 'Projects' };
+  let entityBreakdownItems = '';
+  let entityBreakdownTotal = 0;
+  for (const [etype, vals] of Object.entries(entityTypes)) {
+    if (etype.startsWith('_') || !Array.isArray(vals) || !vals.length) continue;
+    const label = entityTypeLabels[etype] || etype.replace(/_/g, ' ');
+    entityBreakdownTotal += vals.length;
+    entityBreakdownItems += `<li><span class="sev-med">${vals.length}</span> <span>${esc(label)}</span></li>`;
+  }
+  if (!entityBreakdownItems) entityBreakdownItems = '<li class="none">None extracted</li>';
+
+  // Authority profile bar
+  const authProfile = r.knowledge_profile?.authority_profile || {};
+  const authTotal = Object.values(authProfile).reduce((s, v) => s + (v || 0), 0);
+  let authorityBarHtml = '';
+  if (authTotal > 0) {
+    const authColors = { mandatory: 'var(--sev-high)', directive: 'var(--signal)', recommended: '#5B9BD5', informational: 'var(--text-dim)' };
+    const authLabels = { mandatory: 'Mandatory', directive: 'Directive', recommended: 'Recommended', informational: 'Informational' };
+    let barSegments = '';
+    let legendItems = '';
+    for (const [level, color] of Object.entries(authColors)) {
+      const count = authProfile[level] || 0;
+      if (count === 0) continue;
+      const pct = ((count / authTotal) * 100).toFixed(1);
+      barSegments += `<div style="width:${pct}%;background:${color};height:100%" title="${authLabels[level]}: ${count} (${pct}%)"></div>`;
+      legendItems += `<span style="display:inline-flex;align-items:center;gap:4px;font-size:.625rem;color:var(--text-dim)"><span style="width:8px;height:8px;border-radius:2px;background:${color};display:inline-block"></span>${authLabels[level]} ${count}</span>`;
+    }
+    authorityBarHtml = `
+      <div style="padding:16px 28px;border-top:1px solid rgba(255,255,255,.06)">
+        <div style="font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--signal);margin-bottom:8px">Authority Profile</div>
+        <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;background:rgba(255,255,255,.04)">${barSegments}</div>
+        <div style="display:flex;gap:12px;margin-top:6px;flex-wrap:wrap">${legendItems}</div>
+      </div>`;
+  }
+
+  // Content domains
+  const domains = (r.content_domains || cls.disciplines || []);
+  const domainBadges = domains.length
+    ? domains.map(d => `<span class="file-badge badge-complete">${esc(d)}</span>`).join(' ')
+    : '';
+
+  // Pipeline stages
+  const stages = (r.pipeline_stages || []);
+
+  resultsBody.innerHTML = `
+    <div class="brief-card">
+      <div class="brief-header">
+        <div class="brief-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="brief-file">${esc(f.file.name)}</span>
+        <span class="brief-badge">Processed</span>
+      </div>
+
+      <div class="brief-classify">
+        <span class="brief-classify-type">${formatDocType(cls.type)}</span>
+        <span class="brief-classify-conf">${cls.confidence != null ? Math.round(cls.confidence * 100) + '% confidence' : ''}</span>
+        <span class="brief-classify-meta">${[
+          r.pages_analyzed ? r.pages_analyzed + ' pages' : '',
+          cls.industry || '',
+          (cls.disciplines || []).join(', ')
+        ].filter(Boolean).join(' &middot; ')}</span>
+      </div>
+
+      <div class="brief-stats">
+        <div class="brief-stat"><div class="brief-stat-num">${r.entities_found ?? 0}</div><div class="brief-stat-label">Entities</div></div>
+        <div class="brief-stat"><div class="brief-stat-num">${r.standards_found ?? 0}</div><div class="brief-stat-label">Standards</div></div>
+        <div class="brief-stat"><div class="brief-stat-num">${r.obligations_found ?? 0}</div><div class="brief-stat-label">Obligations</div></div>
+        <div class="brief-stat"><div class="brief-stat-num">${r.timelines_found ?? 0}</div><div class="brief-stat-label">Deadlines</div></div>
+        <div class="brief-stat"><div class="brief-stat-num">${r.financial_terms ?? 0}</div><div class="brief-stat-label">Financial</div></div>
+        <div class="brief-stat"><div class="brief-stat-num">${r.risk_flags ?? 0}</div><div class="brief-stat-label">Risk Flags</div></div>
+      </div>
+
+      ${r.content_summary || r.executive_summary ? `
+      <div class="brief-summary">
+        <div class="brief-summary-label">${r.executive_summary ? 'Executive Summary' : 'Content Summary'}</div>
+        <div class="brief-summary-text">${esc(r.executive_summary || r.content_summary)}</div>
+      </div>` : ''}
+
+      <div class="brief-findings">
+        <div class="finding">
+          <div class="finding-header"><span class="finding-icon">&#9888;&#65039;</span><span class="finding-title">Risk Flags</span><span class="finding-count">${r.risk_flags ?? 0}</span></div>
+          <ul class="finding-items">${risks}</ul>
+        </div>
+        <div class="finding">
+          <div class="finding-header"><span class="finding-icon">&#128203;</span><span class="finding-title">Obligations</span><span class="finding-count">${r.obligations_found ?? 0}</span></div>
+          <ul class="finding-items">${obligations}</ul>
+        </div>
+        <div class="finding">
+          <div class="finding-header"><span class="finding-icon">&#128208;</span><span class="finding-title">Standards Referenced</span><span class="finding-count">${r.standards_found ?? 0}</span></div>
+          <ul class="finding-items">${standards}</ul>
+        </div>
+        <div class="finding">
+          <div class="finding-header"><span class="finding-icon">&#128197;</span><span class="finding-title">Timeline</span><span class="finding-count">${r.timelines_found ?? 0}</span></div>
+          <ul class="finding-items">${timelineItems}</ul>
+        </div>
+        <div class="finding">
+          <div class="finding-header"><span class="finding-icon">&#127919;</span><span class="finding-title">Entities</span><span class="finding-count">${entityBreakdownTotal || r.entities_found || 0}</span></div>
+          <ul class="finding-items">${entityBreakdownItems}</ul>
+        </div>
+      </div>
+
+      ${authorityBarHtml}
+
+      <div class="brief-financials">
+        <div class="fin-item"><div class="fin-amount">${r.financial_terms ?? 0}</div><div class="fin-label">Financial References</div></div>
+        <div class="fin-item"><div class="fin-amount">${(r.word_count || 0).toLocaleString()}</div><div class="fin-label">Words Analyzed</div></div>
+        <div class="fin-item"><div class="fin-amount">${r.processing_time_seconds ?? '—'}s</div><div class="fin-label">Processing Time</div></div>
+        ${r.pii_detected ? '<div class="fin-item"><div class="fin-amount" style="color:var(--sev-high)">YES</div><div class="fin-label">PII Detected</div></div>' : ''}
+        ${r.semantic_units ? `<div class="fin-item"><div class="fin-amount">${r.semantic_units}</div><div class="fin-label">Semantic Units</div></div>` : ''}
+      </div>
+
+      ${domainBadges ? `
+      <div style="padding:16px 28px;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:.6875rem;color:var(--text-dim);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-right:8px">Domains</span>
+        ${domainBadges}
+      </div>` : ''}
+
+      ${stages.length ? `
+      <div style="padding:12px 28px;border-top:1px solid rgba(255,255,255,.06);font-family:var(--mono);font-size:.75rem;color:var(--text-dim)">
+        ${stages.join(' &#8594; ')}
+      </div>` : ''}
+
+      <div class="json-expand">
+        <button class="json-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+          <span class="arrow">&#9654;</span> View raw JSON output
+        </button>
+        <div class="json-body">
+          <div class="json-view">${briefSyntaxHighlight(JSON.stringify(r, null, 2))}</div>
+        </div>
+      </div>
+
+      <div class="brief-footer">
+        <div class="brief-note">&#128274; Processed locally &mdash; zero cloud exposure</div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <button class="btn" onclick="exportRichJson('${safeFid}')" style="font-size:.7rem;padding:5px 10px">Rich JSON</button>
+          <button class="btn" onclick="exportTraining('${safeFid}')" style="font-size:.7rem;padding:5px 10px">Export Training</button>
+          <span style="font-family:var(--mono);font-size:.6875rem;color:var(--text-dim)">v${r.vanta_version || '?'} &middot; ${r.engine || 'vanta'}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function copyJson(fileId) {
+  const f = files.find(x => x.id === fileId);
+  if (f?.results) {
+    navigator.clipboard.writeText(JSON.stringify(f.results, null, 2));
+    showToast('JSON copied to clipboard');
+  }
+}
+
+function downloadJson(fileId) {
+  const f = files.find(x => x.id === fileId);
+  if (f?.results) {
+    const blob = new Blob([JSON.stringify(f.results, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = f.file.name.replace(/\.[^.]+$/, '_vanta.json');
+    a.click();
+  }
+}
+
+async function exportRichJson(fileId) {
+  const f = files.find(x => x.id === fileId);
+  if (!f?.file) return;
+  showToast('Generating rich JSON...');
+  try {
+    const form = new FormData();
+    form.append('files', f.file);
+    const resp = await fetch('/api/process/rich', { method: 'POST', headers: authHeader(), body: form });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    const result = data.results?.[0];
+    if (result?.status !== 'processed') throw new Error(result?.error || 'Processing failed');
+    const blob = new Blob([JSON.stringify(result.results, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = f.file.name.replace(/\.[^.]+$/, '_rich.json');
+    a.click();
+    showToast('Rich JSON downloaded');
+  } catch (e) {
+    showToast('Rich export failed: ' + e.message);
+  }
+}
+
+async function exportTraining(fileId) {
+  const f = files.find(x => x.id === fileId);
+  if (!f?.file) return;
+  showToast('Generating training JSONL...');
+  try {
+    const form = new FormData();
+    form.append('files', f.file);
+    const resp = await fetch('/api/export/training', { method: 'POST', headers: authHeader(), body: form });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const blob = await resp.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = f.file.name.replace(/\.[^.]+$/, '_training.jsonl');
+    a.click();
+    showToast('Training JSONL downloaded');
+  } catch (e) {
+    showToast('Training export failed: ' + e.message);
+  }
+}
+
+async function batchExportTraining() {
+  const completed = files.filter(f => f.status === 'complete' && f.file);
+  if (!completed.length) { showToast('No completed files to export'); return; }
+  showToast(`Exporting ${completed.length} files as training data...`);
+  try {
+    const form = new FormData();
+    for (const f of completed) form.append('files', f.file);
+    const resp = await fetch('/api/export/training', { method: 'POST', headers: authHeader(), body: form });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const blob = await resp.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    const datestamp = new Date().toISOString().slice(0, 10);
+    a.download = `vanta_training_${datestamp}.jsonl`;
+    a.click();
+    showToast(`Batch training JSONL downloaded (${completed.length} files)`);
+  } catch (e) {
+    showToast('Batch export failed: ' + e.message);
+  }
+}
+
+// ── Process all ──
+async function processAll() {
+  const queued = files.filter(f => f.status === 'queued');
+  if (!queued.length || processing) return;
+
+  processing = true;
+  processBtn.disabled = true;
+  batchBar.classList.add('active');
+  batchTotal.textContent = queued.length;
+  let done = 0;
+
+  for (const f of queued) {
+    f.status = 'processing';
+    batchCurrent.textContent = done + 1;
+    batchLabel.textContent = f.file.name;
+    batchFill.style.width = `${(done / queued.length) * 100}%`;
+    renderFileList();
+
+    selectedFileId = f.id;
+    renderResults();
+
+    try {
+      const form = new FormData();
+      form.append('files', f.file);
+      const resp = await fetch('/api/process', { method: 'POST', headers: authHeader(), body: form });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({ detail: resp.statusText }));
+        throw new Error(err.detail || `HTTP ${resp.status}`);
+      }
+      const data = await resp.json();
+      const result = data.results?.[0];
+      if (result?.status === 'processed') {
+        f.status = 'complete';
+        f.results = result.results;
+      } else {
+        f.status = 'failed';
+        f.error = result?.error || 'Unknown error';
+      }
+    } catch (err) {
+      f.status = 'failed';
+      f.error = err.message;
+    }
+
+    done++;
+    batchFill.style.width = `${(done / queued.length) * 100}%`;
+    renderFileList();
+    renderResults();
+  }
+
+  batchLabel.textContent = `Done — ${done} processed`;
+  processing = false;
+  processBtn.disabled = false;
+  setTimeout(() => batchBar.classList.remove('active'), 3000);
+  renderFileList();
+}
+
+// ── Process events ──
+function setupProcessEvents() {
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => { addFiles(e.target.files); fileInput.value = ''; });
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); addFiles(e.dataTransfer.files); });
+  processBtn.addEventListener('click', processAll);
+  clearBtn.addEventListener('click', () => { if (processing) return; files = []; selectedFileId = null; renderFileList(); renderResults(); });
+  exportBtn.addEventListener('click', () => {
+    const completed = files.filter(f => f.status === 'complete' && f.results);
+    if (!completed.length) return;
+    const lines = completed.map(f => JSON.stringify({ timestamp: new Date().toISOString(), filename: f.file.name, results: f.results }));
+    const blob = new Blob([lines.join('\n') + '\n'], { type: 'application/x-ndjson' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `vanta_batch_${new Date().toISOString().slice(0, 10)}.jsonl`;
+    a.click();
+  });
+  document.getElementById('batchTrainingBtn').addEventListener('click', batchExportTraining);
+}
+
+// ═══════════════════════════════════════════════════════
+//  OUTREACH STATE
+// ═══════════════════════════════════════════════════════
+let leads = [];
+let selectedLead = null;
+let drafts = {};
+let editingDraft = null;
+
+const FOUNDER_CTX = `Kyle Vines, AECai founder. 13 years civil/geotech engineering. Worked at ENR #60 to #123 firms. Bought an engineering firm, went through bankruptcy. Built AI inside an ENR Top 200 firm — validated $1.85M/year operational value across 200 engineers. AECai runs 100% on client hardware. Air-gapped. No cloud. Offer: $800 AI Discovery Assessment, 2-week delivery, 100% credit toward full engagement ($15K-$75K).`;
+
+const TEMPLATES = {
+  linkedin: (name, firm, ctx) => `Write a LinkedIn DM from Kyle Vines (AECai founder) to ${name} at ${firm}.\n\nLEAD CONTEXT:\n${ctx}\n\nFOUNDER: ${FOUNDER_CTX}\n\nRULES: First person, casual but professional. Under 150 words. Reference their firm. Include $1.85M proof point naturally. End with soft question, not hard ask. No "revolutionary"/"game-changing"/emojis. Engineer-to-engineer tone.\n\nWrite only the message.`,
+  email: (name, firm, ctx) => `Write a cold email from Kyle Vines (AECai founder) to ${name} at ${firm}.\n\nLEAD CONTEXT:\n${ctx}\n\nFOUNDER: ${FOUNDER_CTX}\n\nRULES: Subject line: lowercase, max 6 words. Plain text, max 150 words body. Open specific to their firm. Include engineering credibility. One proof point ($1.85M, "page 247" story, or "Dave retired" story). End with question. Sign: Kyle Vines / AECai / aecai.io\n\nFormat:\nSubject: [line]\n\n[body]\n\nKyle Vines\nAECai | aecai.io`,
+  followup: (name, firm, ctx, num) => `Write follow-up #${num} from Kyle Vines to ${name} at ${firm}. Previous outreach was ~7 days ago.\n\nLEAD CONTEXT:\n${ctx}\n\nRULES: Under 80 words. Add ONE new angle. ${num >= 3 ? 'This is the break-up email — graceful, leave door open.' : 'More direct but not pushy.'} Never apologize for following up.\n\nNew angles: "Your best engineer is everyone's search engine — 3-5 interruptions/day" | "Spec review: page 247 had a compaction change contradicting geotech report" | "When a 30-year engineer walks out, knowledge is in files — nobody knows how to find it"\n\nWrite only the message.`,
+  custom: (name, firm, ctx, prompt) => `${prompt}\n\nLEAD CONTEXT: ${name} at ${firm}\n${ctx}\n\nFOUNDER: ${FOUNDER_CTX}\n\nWrite only the message. Under 150 words. Engineer-to-engineer tone.`
+};
+
+async function loadLeads() {
+  try {
+    const r = await fetch('/api/leads', { headers: authHeader() });
+    const d = await r.json();
+    leads = (d.leads || []).filter(l => l.name || l.email || l.firm);
+    const seen = new Set();
+    leads = leads.filter(l => {
+      const key = (l.email || '') + (l.name || '');
+      if (!key || key === '?' || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    document.getElementById('leadCount').textContent = leads.length;
+    renderLeadList();
+  } catch (e) {
+    console.error('Failed to load leads:', e);
+    document.getElementById('leadCount').textContent = 'ERR';
+  }
+}
+
+function renderLeadList(filter = '') {
+  const list = document.getElementById('leadList');
+  const filtered = leads.filter(l => {
+    if (!filter) return true;
+    const f = filter.toLowerCase();
+    return (l.name || '').toLowerCase().includes(f) || (l.firm || '').toLowerCase().includes(f) || (l.email || '').toLowerCase().includes(f);
+  });
+  list.innerHTML = filtered.map((l) => {
+    const idx = leads.indexOf(l);
+    const name = l.name && l.name !== '?' ? l.name : (l.email ? l.email.split('@')[0] : 'Unknown');
+    const firm = l.firm && l.firm !== '?' ? l.firm : '—';
+    const hasEmail = l.email && l.email.includes('@');
+    const source = l.source || '';
+    return `<div class="lead-card ${selectedLead === idx ? 'active' : ''}" data-idx="${idx}">
+      <div class="lead-name">${esc(name)}</div>
+      <div class="lead-firm">${esc(firm)}</div>
+      <div class="lead-meta">
+        ${hasEmail ? '<span class="lead-tag has-email">Email</span>' : '<span class="lead-tag no-email">No Email</span>'}
+        ${source ? `<span class="lead-tag source">${esc(source)}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('.lead-card').forEach(card => {
+    card.addEventListener('click', () => selectLead(parseInt(card.dataset.idx)));
+  });
+}
+
+function selectLead(idx) {
+  selectedLead = idx;
+  renderLeadList(document.getElementById('searchInput').value);
+  renderOutreachMain();
+}
+
+function renderOutreachMain() {
+  if (selectedLead === null) return;
+  const lead = leads[selectedLead];
+  const name = lead.name && lead.name !== '?' ? lead.name : lead.email?.split('@')[0] || 'Unknown';
+  const firm = lead.firm && lead.firm !== '?' ? lead.firm : '—';
+  const main = document.getElementById('mainContent');
+
+  main.innerHTML = `
+    <div class="lead-detail">
+      <div class="lead-detail-name">${esc(name)}</div>
+      <div class="lead-detail-firm">${esc(firm)}</div>
+      <div class="lead-detail-row">
+        ${lead.email && lead.email.includes('@') ? `<div class="lead-detail-item"><label>Email</label><a href="mailto:${esc(lead.email)}">${esc(lead.email)}</a></div>` : ''}
+        ${lead.role ? `<div class="lead-detail-item"><label>Role</label><span>${esc(lead.role)}</span></div>` : ''}
+        ${lead.source ? `<div class="lead-detail-item"><label>Source</label><span>${esc(lead.source)}</span></div>` : ''}
+        ${lead.timestamp ? `<div class="lead-detail-item"><label>First Contact</label><span>${lead.timestamp.substring(0, 10)}</span></div>` : ''}
+        ${lead.custom || lead.pain_point ? `<div class="lead-detail-item"><label>Notes</label><span>${esc(lead.custom || lead.pain_point)}</span></div>` : ''}
+      </div>
+    </div>
+    <div class="draft-controls">
+      <button class="draft-btn" data-type="linkedin"><span class="icon">&#128172;</span> LinkedIn DM</button>
+      <button class="draft-btn" data-type="email"><span class="icon">&#9993;&#65039;</span> Cold Email</button>
+      <button class="draft-btn" data-type="followup1"><span class="icon">&#8617;&#65039;</span> Follow-up #1</button>
+      <button class="draft-btn" data-type="followup2"><span class="icon">&#8617;&#65039;</span> Follow-up #2</button>
+      <button class="draft-btn" data-type="followup3"><span class="icon">&#128075;</span> Break-up #3</button>
+      <button class="draft-btn" data-type="custom"><span class="icon">&#9999;&#65039;</span> Custom Prompt</button>
+    </div>
+    <div class="draft-area">
+      <div class="draft-output" id="draftOutput">
+        ${renderDrafts(lead.id || selectedLead)}
+      </div>
+    </div>
+  `;
+
+  main.querySelectorAll('.draft-btn').forEach(btn => {
+    btn.addEventListener('click', () => generateDraft(btn.dataset.type));
+  });
+}
+
+async function generateDraft(type) {
+  const lead = leads[selectedLead];
+  const name = lead.name && lead.name !== '?' ? lead.name : lead.email?.split('@')[0] || 'there';
+  const firm = lead.firm && lead.firm !== '?' ? lead.firm : 'your firm';
+  const ctx = buildContext(lead);
+  const leadKey = lead.id || selectedLead;
+
+  document.querySelectorAll('.draft-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.querySelector(`[data-type="${type}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  let prompt;
+  if (type === 'custom') {
+    const userPrompt = window.prompt('What should the message accomplish?', 'Write a warm intro message offering a free 15-minute call to discuss document management challenges');
+    if (!userPrompt) return;
+    prompt = TEMPLATES.custom(name, firm, ctx, userPrompt);
+  } else if (type.startsWith('followup')) {
+    const num = parseInt(type.replace('followup', ''));
+    prompt = TEMPLATES.followup(name, firm, ctx, num);
+  } else {
+    prompt = TEMPLATES[type](name, firm, ctx);
+  }
+
+  const output = document.getElementById('draftOutput');
+  const loadingId = 'loading-' + Date.now();
+  output.insertAdjacentHTML('afterbegin', `
+    <div class="draft-loading" id="${loadingId}">
+      <div class="draft-spinner"></div>
+      <div class="draft-loading-text">Generating ${type.replace(/\d/, '')} draft via ${MODEL}...</div>
+    </div>
+  `);
+
+  try {
+    const response = await callOllama(prompt);
+    document.getElementById(loadingId)?.remove();
+
+    let subject = '';
+    let body = response;
+    const subjectMatch = response.match(/^Subject:\s*(.+)\n\n?([\s\S]*)/i);
+    if (subjectMatch) {
+      subject = subjectMatch[1].trim();
+      body = subjectMatch[2].trim();
+    }
+
+    if (!drafts[leadKey]) drafts[leadKey] = [];
+    const draft = {
+      id: Date.now(), type: type.replace(/\d/, ''), subtype: type,
+      subject, body, raw: response, timestamp: new Date().toISOString(),
+      lead: { name, firm, email: lead.email }
+    };
+    drafts[leadKey].unshift(draft);
+    output.insertAdjacentHTML('afterbegin', renderDraftCard(draft));
+    wireCardActions(draft.id);
+  } catch (e) {
+    document.getElementById(loadingId)?.remove();
+    output.insertAdjacentHTML('afterbegin', `<div class="draft-card" style="border-color:var(--red)"><div class="draft-card-body" style="color:var(--red)">Error: ${esc(e.message)}</div></div>`);
+  }
+}
+
+async function callOllama(prompt) {
+  const r = await fetch(`${OLLAMA_URL}/api/generate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: MODEL, prompt, stream: false, options: { temperature: 0.7, top_p: 0.9, num_predict: 500 } }),
+    signal: AbortSignal.timeout(60000)
+  });
+  if (!r.ok) throw new Error(`Ollama returned ${r.status}`);
+  const d = await r.json();
+  return (d.response || '').trim();
+}
+
+function buildContext(lead) {
+  const parts = [];
+  if (lead.name && lead.name !== '?') parts.push(`Name: ${lead.name}`);
+  if (lead.email && lead.email.includes('@')) parts.push(`Email: ${lead.email}`);
+  if (lead.firm && lead.firm !== '?') parts.push(`Firm: ${lead.firm}`);
+  if (lead.role) parts.push(`Role: ${lead.role}`);
+  if (lead.source) parts.push(`Source: ${lead.source}`);
+  if (lead.custom || lead.pain_point) parts.push(`Notes: ${lead.custom || lead.pain_point}`);
+  if (lead.team_size) parts.push(`Team: ${lead.team_size}`);
+  return parts.length ? parts.join('\n') : 'Minimal data — use general approach.';
+}
+
+function renderDrafts(leadKey) {
+  const ld = drafts[leadKey] || [];
+  if (!ld.length) return '<div class="main-empty" style="height:auto;padding:60px 0"><p>Click a button above to generate a draft.<br>Each draft uses Ollama (local AI) &mdash; nothing leaves your machine.</p></div>';
+  return ld.map(d => renderDraftCard(d)).join('');
+}
+
+function renderDraftCard(draft) {
+  const typeLabels = { linkedin: 'LinkedIn DM', email: 'Cold Email', followup: 'Follow-up', custom: 'Custom' };
+  const label = typeLabels[draft.type] || draft.type;
+  const time = new Date(draft.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  return `<div class="draft-card" id="draft-${draft.id}">
+    <div class="draft-card-header">
+      <span class="draft-card-type">${esc(label)}</span>
+      <span class="draft-card-time">${time}</span>
+    </div>
+    ${draft.subject ? `<div class="draft-card-subject">Subject: ${esc(draft.subject)}</div>` : ''}
+    <div class="draft-card-body" id="body-${draft.id}">${esc(draft.body)}</div>
+    <div class="draft-card-actions">
+      <button class="action-btn primary" data-action="copy" data-id="${draft.id}">Copy</button>
+      ${draft.type === 'email' && draft.lead?.email ? `<button class="action-btn" data-action="mail" data-id="${draft.id}">Open in Mail</button>` : ''}
+      <button class="action-btn" data-action="edit" data-id="${draft.id}">Edit</button>
+      <button class="action-btn" data-action="regen" data-id="${draft.id}">Regenerate</button>
+    </div>
+  </div>`;
+}
+
+function wireCardActions(draftId) {
+  const card = document.getElementById(`draft-${draftId}`);
+  if (!card) return;
+  card.querySelectorAll('.action-btn').forEach(btn => {
+    btn.addEventListener('click', () => handleDraftAction(btn.dataset.action, draftId));
+  });
+}
+
+function handleDraftAction(action, draftId) {
+  const leadKey = leads[selectedLead]?.id || selectedLead;
+  const draft = (drafts[leadKey] || []).find(d => d.id === draftId);
+  if (!draft) return;
+
+  if (action === 'copy') {
+    const text = draft.subject ? `Subject: ${draft.subject}\n\n${draft.body}` : draft.body;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector(`[data-action="copy"][data-id="${draftId}"]`);
+      if (btn) { btn.textContent = 'Copied ✓'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000); }
+      showToast('Draft copied to clipboard');
+    });
+  } else if (action === 'mail') {
+    const subject = encodeURIComponent(draft.subject || 'Quick question');
+    const body = encodeURIComponent(draft.body);
+    window.open(`mailto:${draft.lead?.email || ''}?subject=${subject}&body=${body}`);
+    showToast('Opening in Mail...');
+  } else if (action === 'edit') {
+    const bodyEl = document.getElementById(`body-${draftId}`);
+    const actionsEl = bodyEl.nextElementSibling;
+    if (bodyEl.tagName === 'TEXTAREA') {
+      draft.body = bodyEl.value;
+      bodyEl.outerHTML = `<div class="draft-card-body" id="body-${draftId}">${esc(draft.body)}</div>`;
+      actionsEl.querySelector('[data-action="edit"]').textContent = 'Edit';
+      showToast('Draft updated');
+    } else {
+      bodyEl.outerHTML = `<textarea class="draft-edit" id="body-${draftId}">${esc(draft.body)}</textarea>`;
+      document.getElementById(`body-${draftId}`).focus();
+      actionsEl.querySelector('[data-action="edit"]').textContent = 'Save';
+    }
+  } else if (action === 'regen') {
+    generateDraft(draft.subtype || draft.type);
+  }
+}
+
+function setupOutreachEvents() {
+  document.getElementById('searchInput').addEventListener('input', e => renderLeadList(e.target.value));
+
+  document.getElementById('addLeadBtn').addEventListener('click', () => {
+    document.getElementById('addLeadModal').classList.add('active');
+    document.getElementById('newName').focus();
+  });
+  document.getElementById('modalCancel').addEventListener('click', () => {
+    document.getElementById('addLeadModal').classList.remove('active');
+  });
+  document.getElementById('addLeadModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) e.currentTarget.classList.remove('active');
+  });
+
+  document.getElementById('modalSave').addEventListener('click', async () => {
+    const lead = {
+      name: document.getElementById('newName').value.trim(),
+      firm: document.getElementById('newFirm').value.trim(),
+      email: document.getElementById('newEmail').value.trim(),
+      role: document.getElementById('newRole').value.trim(),
+      custom: document.getElementById('newNotes').value.trim(),
+      timestamp: new Date().toISOString(),
+      source: 'outreach_tool',
+      id: 'custom-' + Date.now()
+    };
+    if (!lead.name && !lead.email && !lead.firm) { showToast('Enter at least a name, email, or firm'); return; }
+    try { await fetch('/api/leads', { method: 'POST', headers: apiHeaders(), body: JSON.stringify(lead) }); } catch {}
+    leads.push(lead);
+    document.getElementById('leadCount').textContent = leads.length;
+    renderLeadList();
+    document.getElementById('addLeadModal').classList.remove('active');
+    ['newName', 'newFirm', 'newEmail', 'newRole', 'newNotes'].forEach(id => document.getElementById(id).value = '');
+    selectLead(leads.length - 1);
+    showToast(`Added ${lead.name || lead.firm || 'contact'}`);
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.getElementById('addLeadModal').classList.remove('active');
+    if (e.key === 'n' && (e.metaKey || e.ctrlKey) && activeView === 'outreach') {
+      e.preventDefault();
+      document.getElementById('addLeadBtn').click();
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', async () => {
+  await checkHealth();
+  setInterval(checkHealth, 30000);
+  setupProcessEvents();
+  setupOutreachEvents();
+  await loadLeads();
+  renderFileList();
+  renderResults();
+});
+</script>
+</body>
+</html>

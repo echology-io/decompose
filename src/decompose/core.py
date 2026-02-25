@@ -143,7 +143,7 @@ def decompose_text(
             "risk_profile": risk_counts,
             "standards_found": list(dict.fromkeys(all_standards)),
             "dates_found": list(dict.fromkeys(all_dates)),
-            "_decompose": "0.1.1",
+            "_decompose": "0.2.0",
         },
     }
 

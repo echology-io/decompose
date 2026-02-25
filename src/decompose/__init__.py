@@ -3,7 +3,7 @@
 Deterministic text classification for AI agents. No LLM required.
 """
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 from decompose.core import decompose, decompose_text, filter_for_llm
 

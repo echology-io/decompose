@@ -14,43 +14,48 @@ AUTHORITY_PATTERNS: dict[str, dict] = {
     "mandatory": {
         "patterns": [
             r"\bshall\b(?!\s+not)", r"\bmust\b(?!\s+not)", r"\bis\s+required\b",
-            r"\bare\s+required\b", r"\bshall\s+comply\b", r"\bmandatory\b",
-            r"\brequired\s+to\b",
+            r"\bare\s+required\b", r"\bshall\s+comply\b", r"\bshall\s+conform\b",
+            r"\bmandatory\b", r"\brequired\s+to\b", r"\bwill\s+be\s+required\b",
         ],
         "weight": 1.0,
     },
     "prohibitive": {
         "patterns": [
             r"\bshall\s+not\b", r"\bmust\s+not\b", r"\bprohibit(?:ed|s)?\b",
-            r"\bnot\s+permitted\b",
+            r"\bforbid(?:den|s)?\b", r"\bnot\s+permitted\b",
+            r"\bunder\s+no\s+circumstances\b",
         ],
         "weight": 1.0,
     },
     "directive": {
         "patterns": [
             r"\bshould\b(?!\s+not)", r"\brecommend(?:ed|s)?\b",
-            r"\bexpect(?:ed|s)?\b", r"\badvised\s+to\b",
+            r"\bexpect(?:ed|s)?\b", r"\bis\s+to\b", r"\bare\s+to\b",
+            r"\badvised\s+to\b",
         ],
         "weight": 0.75,
     },
     "permissive": {
         "patterns": [
-            r"\bmay\b", r"\bpermit(?:ted|s)?\b", r"\bacceptable\b",
-            r"\ballow(?:ed|s|able)?\b", r"\boption(?:al|ally)?\b",
+            r"\bmay\b", r"\bcan\b", r"\bpermit(?:ted|s)?\b", r"\bacceptable\b",
+            r"\ballow(?:ed|s|able)?\b", r"\bat\s+the\s+(?:discretion|option)\b",
+            r"\boption(?:al|ally)?\b",
         ],
         "weight": 0.35,
     },
     "informational": {
         "patterns": [
             r"\bfor\s+information\b", r"\bnote\s*(?::|that)\b",
-            r"\binformational\s+only\b", r"\bnon-?binding\b",
+            r"\binformational\s+only\b", r"\bfor\s+reference\b", r"\bfyi\b",
+            r"\bnon-?binding\b",
         ],
         "weight": 0.25,
     },
     "conditional": {
         "patterns": [
             r"\bif\b[^.!?\n]*\bthen\b", r"\bwhen\b[^.!?\n]*\bshall\b", r"\bunless\b",
-            r"\bprovided\s+that\b", r"\bsubject\s+to\b",
+            r"\bexcept\s+(?:where|when|as)\b", r"\bprovided\s+that\b",
+            r"\bsubject\s+to\b", r"\bin\s+the\s+event\b",
         ],
         "weight": 0.60,
     },
@@ -96,8 +101,15 @@ RISK_PATTERNS: dict[str, list[str]] = {
 
 CONTENT_TYPE_PATTERNS: dict[str, list[str]] = {
     "requirement": [r"\bshall\b", r"\bmust\b", r"\brequired\b"],
-    "definition": [r"\bmeans\b", r"\bis\s+defined\s+as\b", r"\brefers?\s+to\b"],
-    "reference": [r"\bin\s+accordance\s+with\b", r"\bper\s+(?:section|article)\b", r"\bsee\s+(?:section|appendix)\b"],
+    "definition": [
+        r"\bmeans\b", r"\bis\s+defined\s+as\b", r"\brefers?\s+to\b",
+        r"\bhereinafter\b", r"\bfor\s+purposes?\s+of\b",
+    ],
+    "reference": [
+        r"\bin\s+accordance\s+with\b", r"\bper\s+(?:section|article)\b",
+        r"\bsee\s+(?:section|appendix)\b", r"\brefer\s+to\b",
+        r"\bas\s+(?:specified|described|defined)\s+in\b",
+    ],
     "constraint": [r"\bnot\s+(?:to\s+)?exceed\b", r"\bmaximum\b", r"\bminimum\b", r"\btolerance\b"],
     "narrative": [r"\bbackground\b", r"\boverview\b", r"\bintroduction\b", r"\bsummary\b"],
     "data": [r"\btable\b", r"\bfigure\b", r"\bschedule\b", r"\bappendix\b"],

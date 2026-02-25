@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AECai — Phase 1 Discovery</title>
+<meta name="description" content="A structured methodology for identifying, prioritizing, and sequencing AI automation opportunities in your AEC firm. The W.A.V.E. framework builds a ranked, defensible roadmap.">
+<meta property="og:title" content="AECai — Phase 1 Discovery">
+<meta property="og:description" content="W.A.V.E. — Workflow AI Value Evaluation. A structured methodology for AEC firms.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aecai.io/engage">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --phi-dark:#071C2D;
+  --phi-base:#0B2F4A;
+  --phi-light:#2A5C84;
+  --phi-highlight:#3A78A1;
+  --signal:#C9A24D;
+  --signal-dim:rgba(201,162,77,0.12);
+  --signal-border:rgba(201,162,77,0.18);
+  --graphite:#0E1114;
+  --calc-white:#F2F4F6;
+  --gray-warm:#D8D5D0;
+  --gray-mid:#9A9590;
+  --gray-cool:#6B6660;
+  --gray-faint:#E8E6E2;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',-apple-system,sans-serif;
+  --mono:'JetBrains Mono','Fira Code',monospace;
+  --max-w:1180px;
+  --section-pad:clamp(80px,11vw,140px);
+  --ease:cubic-bezier(0.16,1,0.3,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--graphite);background:var(--calc-white);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--signal);color:var(--calc-white)}
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px}
+.section-label{font-size:.6875rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--signal);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-label::before{content:'';width:24px;height:1px;background:var(--signal)}
+.section-label.center{justify-content:center}
+.section-label.center::after{content:'';width:24px;height:1px;background:var(--signal)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:15px 34px;border-radius:8px;font-weight:600;font-size:.9375rem;text-decoration:none;transition:all .3s var(--ease);border:none;cursor:pointer;font-family:var(--sans)}
+.btn-primary{background:var(--signal);color:var(--calc-white);box-shadow:0 2px 12px rgba(201,162,77,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(201,162,77,.4)}
+.btn-outline{background:transparent;color:var(--graphite);border:1.5px solid var(--gray-warm)}
+.btn-outline:hover{border-color:var(--graphite);transform:translateY(-2px)}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.1s}.rd2{transition-delay:.2s}.rd3{transition-delay:.3s}.rd4{transition-delay:.4s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(242,244,246,.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--gray-warm);transition:all .4s var(--ease)}
+.nav-inner{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:72px}
+.nav-logo{font-family:var(--sans);font-weight:700;font-size:1.5rem;color:var(--graphite);text-decoration:none;letter-spacing:-.03em}
+.nav-logo span{color:var(--signal)}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-size:.8125rem;font-weight:500;color:var(--gray-cool);text-decoration:none;transition:color .2s;position:relative}
+.nav-links a:not(.nav-cta)::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1.5px;background:var(--signal);transition:width .3s var(--ease)}
+.nav-links a:not(.nav-cta):hover{color:var(--graphite)}
+.nav-links a:not(.nav-cta):hover::after{width:100%}
+.nav-cta{background:var(--signal)!important;color:var(--calc-white)!important;padding:10px 22px!important;border-radius:6px;font-weight:600!important;transition:all .25s!important;box-shadow:0 2px 8px rgba(201,162,77,.25)}
+.nav-cta:hover{transform:translateY(-1px)}
+.mob-tog{display:none;background:none;border:none;cursor:pointer;padding:8px}
+.mob-tog span{display:block;width:22px;height:1.5px;background:var(--graphite);margin:5px 0}
+@media(max-width:768px){.nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--calc-white);flex-direction:column;padding:100px 32px;gap:28px;z-index:999}.nav-links.open{display:flex}.mob-tog{display:block;z-index:1001}}
+
+/* HERO */
+.hero{min-height:80vh;display:flex;align-items:center;padding:140px 24px 80px;position:relative;overflow:hidden;text-align:center}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,var(--signal-dim) 0%,transparent 60%),var(--calc-white)}
+.hero-content{position:relative;z-index:1;max-width:780px;margin:0 auto}
+.hero h1{font-family:var(--serif);font-size:clamp(2.5rem,5.5vw,4rem);line-height:1.08;color:var(--graphite);margin-bottom:24px;letter-spacing:-.025em;opacity:0;animation:fadeUp .9s .2s var(--ease) forwards}
+.hero h1 em{font-style:normal;color:var(--signal)}
+.hero-sub{font-size:clamp(1rem,1.5vw,1.125rem);color:var(--gray-cool);max-width:580px;margin:0 auto 40px;line-height:1.75;opacity:0;animation:fadeUp .9s .4s var(--ease) forwards}
+.hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp .9s .55s var(--ease) forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* PROBLEM */
+.problem{padding:var(--section-pad) 0;background:var(--calc-white);position:relative}
+.problem::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gray-warm),transparent)}
+.problem-inner{max-width:640px}
+.problem h2{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.15;margin-bottom:24px;letter-spacing:-.02em}
+.problem p{font-size:.9375rem;color:var(--gray-cool);line-height:1.8;margin-bottom:16px}
+.problem p:last-child{margin-bottom:0}
+
+/* WAVE FRAMEWORK */
+.wave{padding:var(--section-pad) 0;background:var(--calc-white);position:relative}
+.wave::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gray-warm),transparent)}
+.wave h2{font-family:var(--serif);font-size:clamp(1.75rem,3.5vw,2.5rem);text-align:center;margin-bottom:16px}
+.wave-sub{text-align:center;color:var(--gray-cool);max-width:560px;margin:0 auto 64px;font-size:1rem;line-height:1.75}
+.dim-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:900px){.dim-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.dim-grid{grid-template-columns:1fr}}
+.dim-card{background:var(--calc-white);border:1px solid var(--gray-faint);border-radius:16px;padding:32px 24px;transition:all .4s var(--ease);position:relative;overflow:hidden}
+.dim-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--signal);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
+.dim-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.05)}
+.dim-card:hover::before{transform:scaleX(1)}
+.dim-letter{font-family:var(--serif);font-size:3rem;color:var(--signal);line-height:1;margin-bottom:4px}
+.dim-name{font-size:.9375rem;font-weight:600;color:var(--graphite);margin-bottom:14px}
+.dim-question{font-size:.8125rem;color:var(--gray-cool);line-height:1.6;font-style:italic;margin-bottom:20px;min-height:48px}
+.dim-scale{display:flex;gap:4px}
+.dim-dot{flex:1;height:5px;border-radius:3px;background:var(--gray-faint);transition:background .3s}
+.dim-dot.active{background:var(--signal)}
+.dim-labels{display:flex;justify-content:space-between;margin-top:8px}
+.dim-labels span{font-size:.625rem;font-weight:600;color:var(--gray-mid);letter-spacing:.04em;text-transform:uppercase}
+
+/* SCORE */
+.score-section{margin-top:64px}
+.score-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;border-radius:14px;overflow:hidden}
+.score-seg{padding:24px 20px;text-align:center;transition:all .3s var(--ease)}
+.score-seg.high{background:rgba(201,162,77,.1);border:1px solid var(--signal-border)}
+.score-seg.mid{background:rgba(201,162,77,.04);border:1px solid var(--gray-faint)}
+.score-seg.low{background:var(--calc-white);border:1px solid var(--gray-faint)}
+.score-range{font-family:var(--serif);font-size:1.5rem;line-height:1}
+.score-seg.high .score-range{color:var(--signal)}
+.score-seg.mid .score-range{color:var(--gray-cool)}
+.score-seg.low .score-range{color:var(--gray-warm)}
+.score-phase{font-size:.6875rem;font-weight:600;color:var(--gray-mid);margin-top:6px;text-transform:uppercase;letter-spacing:.06em}
+.score-note{text-align:center;font-size:.8125rem;color:var(--gray-mid);margin-top:16px}
+@media(max-width:480px){.score-bar{grid-template-columns:1fr;gap:8px;border-radius:10px}}
+
+/* PROCESS — dark section */
+.process{padding:var(--section-pad) 0;background:var(--phi-dark);color:var(--calc-white);position:relative;overflow:hidden}
+.process::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(201,162,77,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(201,162,77,.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.process h2{font-family:var(--serif);font-size:clamp(1.75rem,3.5vw,2.5rem);text-align:center;margin-bottom:12px;position:relative;z-index:1}
+.process-sub{text-align:center;color:rgba(255,255,255,.5);max-width:560px;margin:0 auto 64px;font-size:1rem;position:relative;z-index:1}
+.steps{display:flex;flex-direction:column;gap:0;position:relative;padding-left:40px;max-width:680px;margin:0 auto;z-index:1}
+.steps::before{content:'';position:absolute;left:15px;top:28px;bottom:28px;width:1px;background:linear-gradient(to bottom,rgba(201,162,77,.4),rgba(201,162,77,.1))}
+.step{padding:24px 28px;position:relative;z-index:1;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:all .4s var(--ease);margin-bottom:16px}
+.step:last-child{margin-bottom:0}
+.step:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);transform:translateX(6px)}
+.step-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:.875rem;color:var(--signal);background:var(--phi-dark);border:1.5px solid rgba(201,162,77,.4);position:absolute;left:-40px;top:28px;transition:all .4s var(--ease)}
+.step:hover .step-num{border-color:var(--signal);background:rgba(201,162,77,.1)}
+.step h3{font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--calc-white)}
+.step p{font-size:.8125rem;color:rgba(255,255,255,.55);line-height:1.7}
+.step-cue{display:inline-block;margin-top:12px;padding:4px 14px;border-radius:100px;background:rgba(201,162,77,.08);font-size:.75rem;font-style:italic;color:var(--signal);border:1px solid rgba(201,162,77,.12)}
+
+/* DELIVERABLE */
+.deliverable{padding:var(--section-pad) 0;background:var(--calc-white);position:relative}
+.deliverable::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gray-warm),transparent)}
+.deliverable h2{font-family:var(--serif);font-size:clamp(1.75rem,3.5vw,2.5rem);text-align:center;margin-bottom:16px}
+.deliverable-sub{text-align:center;color:var(--gray-cool);max-width:540px;margin:0 auto 64px;font-size:1rem}
+.del-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:900px){.del-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.del-grid{grid-template-columns:1fr}}
+.del-card{background:var(--calc-white);border:1px solid var(--gray-faint);border-radius:14px;padding:28px 24px;transition:all .4s var(--ease);position:relative;overflow:hidden}
+.del-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--signal);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
+.del-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.05)}
+.del-card:hover::before{transform:scaleX(1)}
+.del-card h3{font-size:.9375rem;font-weight:600;margin-bottom:8px}
+.del-card p{font-size:.8125rem;color:var(--gray-cool);line-height:1.7}
+
+/* WHO */
+.who{padding:var(--section-pad) 0;background:var(--calc-white);position:relative}
+.who::before{content:'';position:absolute;top:0;left:5%;right:5%;height:1px;background:linear-gradient(90deg,transparent,var(--gray-warm) 20%,var(--gray-warm) 80%,transparent)}
+.who-inner{max-width:720px;margin:0 auto}
+.who h2{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2rem);margin-bottom:8px}
+.who-title{color:var(--signal);font-weight:500;font-size:.9375rem;margin-bottom:24px}
+.who p{color:var(--gray-cool);line-height:1.8;margin-bottom:16px;font-size:.9375rem}
+.creds{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px}
+@media(max-width:640px){.creds{grid-template-columns:repeat(2,1fr)}}
+.cred{text-align:center;padding:20px 12px;border-radius:12px;border:1px solid var(--gray-faint);transition:all .3s var(--ease)}
+.cred:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.04)}
+.cred-num{font-family:var(--serif);font-size:1.5rem;color:var(--signal);line-height:1.1;margin-bottom:4px}
+.cred-label{font-size:.6875rem;color:var(--gray-mid);font-weight:500}
+
+/* TERMS — featured card */
+.terms{padding:var(--section-pad) 0;background:linear-gradient(180deg,#EDF1F5 0%,var(--calc-white) 100%);position:relative}
+.terms::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gray-warm),transparent)}
+.terms-card{max-width:520px;margin:0 auto;background:var(--calc-white);border-radius:20px;overflow:hidden;border:1px solid var(--gray-warm);box-shadow:0 24px 80px rgba(0,0,0,.06);position:relative}
+.terms-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--signal)}
+.terms-header{padding:48px 40px 0;text-align:center}
+.terms-price{font-family:var(--serif);font-size:3rem;color:var(--signal);line-height:1}
+.terms-subtitle{font-size:.9375rem;color:var(--gray-cool);margin-top:6px}
+.terms-body{padding:32px 40px}
+.terms-list{list-style:none;margin-bottom:28px}
+.terms-list li{padding:10px 0;border-bottom:1px solid var(--gray-faint);font-size:.8125rem;color:var(--gray-cool);display:flex;align-items:baseline;gap:12px;line-height:1.5}
+.terms-list li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--signal);flex-shrink:0;margin-top:5px}
+.terms-list li:last-child{border:none}
+.terms-credit{padding:16px 20px;background:var(--signal-dim);border:1px solid var(--signal-border);border-radius:10px;margin-bottom:24px;font-size:.8125rem;color:var(--gray-cool);line-height:1.6}
+.terms-credit strong{color:var(--graphite)}
+.terms-body .btn{width:100%;justify-content:center}
+@media(max-width:560px){.terms-header{padding:36px 24px 0}.terms-body{padding:24px}.terms-price{font-size:2.25rem}}
+
+/* CTA — dark */
+.cta{padding:var(--section-pad) 0;background:var(--phi-dark);color:var(--calc-white);text-align:center;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(201,162,77,.08) 0%,transparent 70%)}
+.cta .container{position:relative;z-index:1}
+.cta h2{font-family:var(--serif);font-size:clamp(1.75rem,4vw,2.75rem);margin-bottom:16px}
+.cta p{color:rgba(255,255,255,.5);max-width:520px;margin:0 auto 40px;font-size:1rem;line-height:1.7}
+.cta .btn-outline{color:var(--calc-white);border-color:rgba(255,255,255,.2)}
+.cta .btn-outline:hover{border-color:var(--calc-white)}
+
+/* FOOTER */
+footer{padding:48px 0;background:#0A0F14;color:rgba(255,255,255,.35);font-size:.8125rem}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-brand{font-weight:700;font-size:1.125rem;color:var(--calc-white)}
+.footer-brand span{color:var(--signal)}
+</style>
+</head>
+<body>
+
+<nav><div class="nav-inner">
+  <a href="/" class="nav-logo">AEC<span>ai</span></a>
+  <div class="nav-links" id="navLinks">
+    <a href="/">Platform</a>
+    <a href="/engage">Discovery</a>
+    <a href="#who">About</a>
+    <a href="#terms" class="nav-cta">Book Discovery</a>
+  </div>
+  <button class="mob-tog" id="mobTog" aria-label="Menu"><span></span><span></span><span></span></button>
+</div></nav>
+
+<!-- 1. HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <h1>Phase 1<br><em>Discovery.</em></h1>
+    <p class="hero-sub">A structured methodology for identifying where AI creates measurable value in your firm. Not a product demo. Not a sales pitch. A framework for making decisions.</p>
+    <div class="hero-actions">
+      <a href="#methodology" class="btn btn-primary">See the Methodology</a>
+      <a href="#terms" class="btn btn-outline">Engagement Terms</a>
+    </div>
+  </div>
+</section>
+
+<!-- 2. THE PROBLEM -->
+<section class="problem">
+  <div class="container">
+    <div class="section-label reveal">The Problem</div>
+    <div class="problem-inner">
+      <h2 class="reveal rd1">Most firms start in the wrong place.</h2>
+      <p class="reveal rd2">AEC firms are told they need AI. Vendors sell them products. What they actually need is a clear understanding of which workflows benefit from automation, in what order, and at what risk.</p>
+      <p class="reveal rd3">Without that, firms either automate the wrong things, underestimate complexity, or stall entirely. The result is the same: wasted budget, skeptical teams, and no measurable improvement.</p>
+      <p class="reveal rd4">Phase 1 Discovery solves this. Before any technology decision, we score every candidate workflow against four dimensions and produce a ranked roadmap your leadership can defend.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. W.A.V.E. FRAMEWORK -->
+<section class="wave" id="methodology">
+  <div class="container">
+    <div class="section-label center reveal">W.A.V.E. Framework</div>
+    <h2 class="reveal">Four dimensions. One score.</h2>
+    <p class="wave-sub reveal">Every candidate workflow is scored across four dimensions. The composite score determines phase priority. Objective. Repeatable. Defensible.</p>
+
+    <div class="dim-grid">
+      <div class="dim-card reveal rd1">
+        <div class="dim-letter">W</div>
+        <div class="dim-name">Workflow Clarity</div>
+        <div class="dim-question">Is this workflow defined well enough to automate safely?</div>
+        <div class="dim-scale">
+          <div class="dim-dot"></div>
+          <div class="dim-dot"></div>
+          <div class="dim-dot active"></div>
+          <div class="dim-dot active"></div>
+          <div class="dim-dot active"></div>
+        </div>
+        <div class="dim-labels"><span>Ad-hoc</span><span>Standardized</span></div>
+      </div>
+
+      <div class="dim-card reveal rd2">
+        <div class="dim-letter">A</div>
+        <div class="dim-name">Adoption &amp; Reach</div>
+        <div class="dim-question">How many people and projects does this affect?</div>
+        <div class="dim-scale">
+          <div class="dim-dot"></div>
+          <div class="dim-dot"></div>
+          <div class="dim-dot"></div>
+          <div class="dim-dot active"></div>
+          <div class="dim-dot active"></div>
+        </div>
+        <div class="dim-labels"><span>Individual</span><span>Firm-wide</span></div>
+      </div>
+
+      <div class="dim-card reveal rd3">
+        <div class="dim-letter">V</div>
+        <div class="dim-name">Business Value</div>
+        <div class="dim-question">What meaningful outcome does improvement unlock?</div>
+        <div class="dim-scale">
+          <div class="dim-dot"></div>
+          <div class="dim-dot"></div>
+          <div class="dim-dot"></div>
+          <div class="dim-dot"></div>
+          <div class="dim-dot active"></div>
+        </div>
+        <div class="dim-labels"><span>Convenience</span><span>Material impact</span></div>
+      </div>
+
+      <div class="dim-card reveal rd4">
+        <div class="dim-letter">E</div>
+        <div class="dim-name">Effort &amp; Risk</div>
+        <div class="dim-question">How difficult and risky is this to automate?</div>
+        <div class="dim-scale">
+          <div class="dim-dot active"></div>
+          <div class="dim-dot active"></div>
+          <div class="dim-dot active"></div>
+          <div class="dim-dot"></div>
+          <div class="dim-dot"></div>
+        </div>
+        <div class="dim-labels"><span>High risk</span><span>Low risk</span></div>
+      </div>
+    </div>
+
+    <!-- Score interpretation -->
+    <div class="score-section reveal">
+      <div class="section-label center">Composite Score</div>
+      <div class="score-bar">
+        <div class="score-seg high">
+          <div class="score-range">16 &ndash; 20</div>
+          <div class="score-phase">Phase 1 &mdash; Immediate</div>
+        </div>
+        <div class="score-seg mid">
+          <div class="score-range">12 &ndash; 15</div>
+          <div class="score-phase">Phase 2 &mdash; Planned</div>
+        </div>
+        <div class="score-seg low">
+          <div class="score-range">&lt; 12</div>
+          <div class="score-phase">Backlog</div>
+        </div>
+      </div>
+      <p class="score-note">Each dimension scored 1&ndash;5. Sum of four scores determines implementation priority.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. HOW DISCOVERY WORKS -->
+<section class="process">
+  <div class="container">
+    <div class="section-label center reveal" style="color:rgba(201,162,77,.8)">The Engagement</div>
+    <h2 class="reveal">How Phase 1 works.</h2>
+    <p class="process-sub reveal">A collaborative working session, not a presentation. We score your workflows together and walk out with a prioritized roadmap.</p>
+
+    <div class="steps">
+      <div class="step reveal rd1">
+        <div class="step-num">1</div>
+        <h3>Listen</h3>
+        <p>You describe the workflows that slow your firm down. Document review bottlenecks, spec compliance gaps, knowledge silos, manual QC processes. We capture every candidate as a scored row.</p>
+        <span class="step-cue">"What slows you down the most?"</span>
+      </div>
+
+      <div class="step reveal rd2">
+        <div class="step-num">2</div>
+        <h3>Score</h3>
+        <p>Each workflow is scored collaboratively across all four W.A.V.E. dimensions. You provide domain context. We provide automation feasibility assessment. The scoring is transparent — you see every number and why.</p>
+        <span class="step-cue">"Would you say this affects everyone or just power users?"</span>
+      </div>
+
+      <div class="step reveal rd3">
+        <div class="step-num">3</div>
+        <h3>Rank</h3>
+        <p>Composite scores sort automatically. Workflows cluster into phases. Patterns emerge: which workflows share infrastructure, which are prerequisites for others, where the highest-value opportunities sit.</p>
+        <span class="step-cue">"Based on these scores, here's what I'd start with and why."</span>
+      </div>
+
+      <div class="step reveal rd4">
+        <div class="step-num">4</div>
+        <h3>Deliver</h3>
+        <p>You receive a complete roadmap document with every workflow scored, ranked, and annotated. Implementation phases sequenced by dependency and value. A decision framework your leadership team can evaluate without us in the room.</p>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-num">5</div>
+        <h3>Validate</h3>
+        <p>We process a representative sample of your documents through the AECai pipeline — parsing, classification, standards cross-referencing, entity extraction — and include the results as evidence supporting the roadmap priorities.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. THE DELIVERABLE -->
+<section class="deliverable">
+  <div class="container">
+    <div class="section-label center reveal">The Deliverable</div>
+    <h2 class="reveal">A ranked, defensible roadmap.</h2>
+    <p class="deliverable-sub reveal">Not a pile of feature requests. Not a vendor pitch. A structured document your firm can act on.</p>
+
+    <div class="del-grid">
+      <div class="del-card reveal rd1">
+        <h3>Workflow Inventory</h3>
+        <p>Every candidate workflow identified during discovery, with current state, pain points, and stakeholders documented.</p>
+      </div>
+      <div class="del-card reveal rd2">
+        <h3>W.A.V.E. Scorecards</h3>
+        <p>Individual scores across all four dimensions for every workflow. Transparent methodology your team can audit and update.</p>
+      </div>
+      <div class="del-card reveal rd3">
+        <h3>Priority Matrix</h3>
+        <p>Workflows ranked by composite score and grouped into implementation phases. Dependencies mapped. Quick wins identified.</p>
+      </div>
+      <div class="del-card reveal rd1">
+        <h3>Document Intelligence Report</h3>
+        <p>Results from processing your sample documents through AECai: standards detected, obligations flagged, entities mapped, risk areas quantified.</p>
+      </div>
+      <div class="del-card reveal rd2">
+        <h3>Implementation Sequence</h3>
+        <p>Recommended order of operations accounting for technical dependencies, team readiness, and compounding value across phases.</p>
+      </div>
+      <div class="del-card reveal rd3">
+        <h3>ROI Projections</h3>
+        <p>Time recovery estimates, risk reduction analysis, and cost-of-inaction modeling for the top-priority workflows.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. WHO -->
+<section class="who" id="who">
+  <div class="container">
+    <div class="who-inner">
+      <div class="section-label reveal">Who</div>
+      <h2 class="reveal">Kyle Vines, PE</h2>
+      <div class="who-title reveal">Founder, Echology</div>
+      <p class="reveal">13 years inside AEC firms — designer, CAD manager, CEO of a geotechnical engineering firm. Every seat at the table. Phase 1 Discovery is led by someone who's lived the problems your firm is trying to solve.</p>
+      <p class="reveal">AECai isn't a product built by a software company guessing at AEC workflows. It's a platform built by an engineer who spent a career inside them.</p>
+      <div class="creds reveal">
+        <div class="cred">
+          <div class="cred-num">13</div>
+          <div class="cred-label">Years in AEC</div>
+        </div>
+        <div class="cred">
+          <div class="cred-num">PE</div>
+          <div class="cred-label">Licensed Engineer</div>
+        </div>
+        <div class="cred">
+          <div class="cred-num">17</div>
+          <div class="cred-label">Platform Systems</div>
+        </div>
+        <div class="cred">
+          <div class="cred-num">0</div>
+          <div class="cred-label">Cloud Dependencies</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. TERMS -->
+<section class="terms" id="terms">
+  <div class="container">
+    <div class="terms-card reveal">
+      <div class="terms-header">
+        <div class="terms-price">$800</div>
+        <div class="terms-subtitle">Phase 1 Discovery Engagement</div>
+      </div>
+      <div class="terms-body">
+        <ul class="terms-list">
+          <li>Collaborative W.A.V.E. scoring session with your team</li>
+          <li>Sample documents processed through the AECai pipeline</li>
+          <li>Scored workflow inventory with full methodology</li>
+          <li>Ranked implementation roadmap with phased priorities</li>
+          <li>Document intelligence report from your actual files</li>
+          <li>Two-week turnaround from kickoff</li>
+          <li>All processing on-premise — no data leaves your building</li>
+        </ul>
+        <div class="terms-credit">
+          <strong>Credits 100% toward a full engagement.</strong> The discovery fee applies in full to any subsequent work. If the roadmap doesn't surface anything actionable, you owe nothing more.
+        </div>
+        <a href="/#contact" class="btn btn-primary">Request Phase 1 Discovery</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. CTA -->
+<section class="cta">
+  <div class="container">
+    <h2 class="reveal">Your firm knows it needs AI.<br>Start with the right question.</h2>
+    <p class="reveal">Not "which product should we buy" — but "which workflows should we automate first, and in what order."</p>
+    <div class="hero-actions reveal">
+      <a href="/#contact" class="btn btn-primary">Request Discovery</a>
+      <a href="/" class="btn btn-outline">See the Platform</a>
+    </div>
+  </div>
+</section>
+
+<footer><div class="container"><div class="footer-inner">
+  <div><span class="footer-brand">AEC<span>ai</span></span> &middot; Echology, Inc. &middot; Charleston, SC</div>
+  <div>&copy; 2026 Echology, Inc. All rights reserved.</div>
+</div></div></footer>
+
+<script>
+// NAV
+document.getElementById('mobTog').addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('open'));
+document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open')));
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();window.scrollTo({top:t.offsetTop-80,behavior:'smooth'})}}));
+
+// REVEAL
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+</script>
+
+</body>
+</html>

@@ -33,6 +33,44 @@ class TestAuthority:
         c = classify("The sky is blue today.")
         assert c.authority == "informational"
 
+    # ── v0.2.0: Backported patterns from AECai ──
+
+    def test_shall_conform_is_mandatory(self):
+        c = classify("Materials shall conform to ASTM standards.")
+        assert c.authority == "mandatory"
+
+    def test_will_be_required_is_mandatory(self):
+        c = classify("A permit will be required before construction begins.")
+        assert c.authority == "mandatory"
+
+    def test_forbidden_is_prohibitive(self):
+        c = classify("Open flames are forbidden in the storage area.")
+        assert c.authority == "prohibitive"
+
+    def test_under_no_circumstances_is_prohibitive(self):
+        c = classify("Under no circumstances is welding permitted in the storage area.")
+        assert c.authority == "prohibitive"
+
+    def test_is_to_is_directive(self):
+        c = classify("The inspector is to verify all welds before covering.")
+        assert c.authority == "directive"
+
+    def test_at_discretion_is_permissive(self):
+        c = classify("Additional testing at the discretion of the engineer.")
+        assert c.authority == "permissive"
+
+    def test_except_where_is_conditional(self):
+        c = classify("All joints shall be welded except where bolted connections are specified.")
+        assert c.authority in ("mandatory", "conditional")
+
+    def test_in_the_event_is_conditional(self):
+        c = classify("In the event of failure, the contractor shall notify the owner.")
+        assert c.authority in ("mandatory", "conditional")
+
+    def test_fyi_is_informational(self):
+        c = classify("FYI — the schedule has been updated with new milestones.")
+        assert c.authority == "informational"
+
 
 class TestRisk:
     def test_safety_critical_detected(self):
