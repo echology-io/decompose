@@ -174,17 +174,22 @@ def _process_channel(event: ShippingEvent, channel: str, event_db_id: int,
 
 def _markdown_to_html(text: str) -> str:
     """Simple markdown-to-HTML for blog body content."""
+    import html as _html
     import re
     lines = text.split("\n")
     html_parts = []
     in_code_block = False
     code_lines = []
+    in_list = False
 
     for line in lines:
         if line.strip().startswith("```"):
+            if in_list:
+                html_parts.append("            </ul>")
+                in_list = False
             if in_code_block:
                 html_parts.append(
-                    '<div class="code-block">' + "\n".join(code_lines) + "</div>"
+                    '<div class="code-block">' + _html.escape("\n".join(code_lines)) + "</div>"
                 )
                 code_lines = []
                 in_code_block = False
@@ -198,27 +203,46 @@ def _markdown_to_html(text: str) -> str:
 
         stripped = line.strip()
         if not stripped:
+            if in_list:
+                html_parts.append("            </ul>")
+                in_list = False
             continue
         elif stripped.startswith("## "):
-            html_parts.append(f"            <h2>{stripped[3:]}</h2>")
+            if in_list:
+                html_parts.append("            </ul>")
+                in_list = False
+            html_parts.append(f"            <h2>{_html.escape(stripped[3:])}</h2>")
         elif stripped.startswith("### "):
-            html_parts.append(f"            <h3>{stripped[4:]}</h3>")
+            if in_list:
+                html_parts.append("            </ul>")
+                in_list = False
+            html_parts.append(f"            <h3>{_html.escape(stripped[4:])}</h3>")
         elif stripped.startswith("- ") or stripped.startswith("* "):
-            html_parts.append(f"            <ul>\n                <li>{stripped[2:]}</li>")
-        elif html_parts and "<li>" in html_parts[-1] and (stripped.startswith("- ") or stripped.startswith("* ")):
-            html_parts.append(f"                <li>{stripped[2:]}</li>")
+            if not in_list:
+                html_parts.append("            <ul>")
+                in_list = True
+            html_parts.append(f"                <li>{_html.escape(stripped[2:])}</li>")
         elif stripped.startswith("> "):
+            if in_list:
+                html_parts.append("            </ul>")
+                in_list = False
             html_parts.append(
-                f'            <blockquote><p>{stripped[2:]}</p></blockquote>'
+                f'            <blockquote><p>{_html.escape(stripped[2:])}</p></blockquote>'
             )
         else:
-            processed = re.sub(r"`([^`]+)`", r"<code>\1</code>", stripped)
+            if in_list:
+                html_parts.append("            </ul>")
+                in_list = False
+            escaped = _html.escape(stripped)
+            processed = re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
             processed = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", processed)
             html_parts.append(f"            <p>{processed}</p>")
 
+    if in_list:
+        html_parts.append("            </ul>")
     if in_code_block and code_lines:
         html_parts.append(
-            '<div class="code-block">' + "\n".join(code_lines) + "</div>"
+            '<div class="code-block">' + _html.escape("\n".join(code_lines)) + "</div>"
         )
 
     return "\n\n".join(html_parts)

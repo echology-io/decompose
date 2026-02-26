@@ -76,16 +76,28 @@ class _HTMLToText(HTMLParser):
         return "".join(self._parts).strip()
 
 
+_MAX_RESPONSE_BYTES = 10 * 1024 * 1024  # 10 MB — matches MAX_INPUT in core.py
+
+
+class _NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Block HTTP redirects to prevent SSRF via open redirect."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        _validate_url(newurl)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
 def _fetch_url(url: str, timeout: int = 15) -> str:
     """Fetch URL content, convert HTML to plain text. Stdlib only."""
     _validate_url(url)
     req = urllib.request.Request(
         url,
-        headers={"User-Agent": "decompose/0.1", "Accept": "text/markdown, text/plain, text/html"},
+        headers={"User-Agent": "decompose/0.2", "Accept": "text/markdown, text/plain, text/html"},
     )
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
+    opener = urllib.request.build_opener(_NoRedirectHandler)
+    with opener.open(req, timeout=timeout) as resp:
         content_type = resp.headers.get("Content-Type", "")
-        body = resp.read().decode("utf-8", errors="replace")
+        body = resp.read(_MAX_RESPONSE_BYTES).decode("utf-8", errors="replace")
 
         if "text/markdown" in content_type or "text/plain" in content_type:
             return body
