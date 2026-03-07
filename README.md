@@ -225,6 +225,10 @@ Decompose is built by [Echology](https://echology.io) and extracted from [AECai]
 
 Decompose earned its independence — it started as AECai's text classification module, proved general enough to work across domains (insurance, trading, regulatory), and was released standalone. Free, MIT-licensed.
 
+### Case Study: Open Scripture Intelligence
+
+The same chunking and entity extraction patterns that classify engineering specs also structure the Bible. [Open Scripture Intelligence](https://github.com/echology-io/open-scripture-intelligence) uses Decompose's Markdown-aware chunker and regex entity extraction to transform 31,100 verses into a knowledge graph with 344,799 cross-reference edges and semantic embeddings — proving the methodology is domain-agnostic.
+
 ### Blog
 
 - [When Regex Beats an LLM](https://echology.io/blog/regex-beats-llm) — Decompose classifies the MCP spec in 3.78ms
