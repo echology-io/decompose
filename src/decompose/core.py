@@ -192,13 +192,12 @@ def filter_for_llm(
 
     filtered = []
     for u in units:
-        if u.get("authority") in authorities:
-            filtered.append(u)
-        elif u.get("risk") in risks:
-            filtered.append(u)
-        elif u.get("type") in types:
-            filtered.append(u)
-        elif min_attention > 0 and u.get("attention", 0) >= min_attention:
+        if (
+            u.get("authority") in authorities
+            or u.get("risk") in risks
+            or u.get("type") in types
+            or (min_attention > 0 and u.get("attention", 0) >= min_attention)
+        ):
             filtered.append(u)
 
     # Build text with optional heading context
