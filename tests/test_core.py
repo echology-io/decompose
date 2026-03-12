@@ -10,15 +10,15 @@ class TestDecomposeText:
         assert r["meta"]["total_units"] == 0
 
     def test_simple_text(self):
-        r = decompose_text("The contractor shall provide all materials per ASTM C150-20.")
+        r = decompose_text("The contractor shall provide all materials per ISO 9001:2015.")
         assert r["meta"]["total_units"] == 1
         unit = r["units"][0]
         assert unit["authority"] == "mandatory"
         assert unit["irreducible"] is True
-        assert "ASTM" in str(unit.get("entities", []))
+        assert "ISO" in str(unit.get("entities", []))
 
     def test_multi_unit_output(self):
-        text = "# Requirements\nShall comply with IBC 2021.\n# Background\nGeneral project notes."
+        text = "# Requirements\nShall comply with ISO 9001.\n# Background\nGeneral project notes."
         r = decompose_text(text)
         assert r["meta"]["total_units"] >= 2
 
@@ -37,7 +37,7 @@ class TestDecomposeText:
         assert "entities" not in unit or unit.get("entities")
 
     def test_standards_collected_in_meta(self):
-        text = "Per ASTM A615 and ACI 318-19, all rebar shall be Grade 60."
+        text = "Per ISO 9001:2015 and IEEE 802.11, all systems shall comply."
         r = decompose_text(text)
         assert len(r["meta"]["standards_found"]) >= 2
 
@@ -49,8 +49,8 @@ class TestDecomposeText:
 
     def test_safety_critical_text(self):
         text = (
-            "Life safety systems shall be maintained. Seismic design shall comply "
-            "with ASCE 7-22. Structural collapse prevention is mandatory."
+            "Life safety systems shall be maintained. Emergency procedures are mandatory. "
+            "Hazardous materials handling shall comply with all regulations."
         )
         r = decompose_text(text)
         unit = r["units"][0]
@@ -58,7 +58,7 @@ class TestDecomposeText:
         assert unit["attention"] > 5.0
 
     def test_financial_text(self):
-        text = "Contract value: $2,500,000. Retainage: 10%. Liquidated damages of $500 per day."
+        text = "Contract value: $2,500,000. Payment: 10%. Liquidated damages of $500 per day."
         r = decompose_text(text)
         unit = r["units"][0]
         assert unit["risk"] == "financial"
@@ -180,9 +180,9 @@ class TestFilterForLlm:
 
     def test_end_to_end(self):
         text = (
-            "The contractor shall provide all steel per ASTM A992. "
+            "The vendor shall provide all materials per ISO 9001. "
             "This is general background information about the project. "
-            "Maximum concrete strength shall not exceed 6000 psi."
+            "Maximum weight shall not exceed 6000 lb."
         )
         dr = decompose_text(text)
         r = filter_for_llm(dr)

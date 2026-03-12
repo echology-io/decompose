@@ -65,10 +65,8 @@ AUTHORITY_PATTERNS: dict[str, dict] = {
 
 RISK_PATTERNS: dict[str, list[str]] = {
     "safety_critical": [
-        r"\blife\s+safety\b", r"\bseismic\b", r"\bcollapse\b",
-        r"\bfire\s+(?:rated?|resistance|protection|safety)\b",
-        r"\bstructural\s+(?:integrity|failure|capacity)\b",
-        r"\bemergency\b", r"\bhazard(?:ous)?\b",
+        r"\blife\s+safety\b", r"\bemergency\b", r"\bhazard(?:ous)?\b",
+        r"\bdanger(?:ous)?\b", r"\bfatal(?:ity|ities)?\b",
     ],
     "security": [
         r"\battack(?:er|s)?\b", r"\bunauthorized\s+access\b",
@@ -82,9 +80,8 @@ RISK_PATTERNS: dict[str, list[str]] = {
         r"\binspection\b", r"\bpermit(?:ting)?\b",
     ],
     "financial": [
-        r"\$\s*[\d,]+", r"\bretainage\b", r"\bliquidated\s+damages\b",
+        r"\$\s*[\d,]+", r"\bliquidated\s+damages\b",
         r"\bpayment\b", r"\bcontract\s+(?:value|amount|sum)\b",
-        r"\bchange\s+order\b",
     ],
     "contractual": [
         r"\bindemnif(?:y|ication)\b", r"\bliabilit(?:y|ies)\b",

@@ -6,31 +6,15 @@ import re
 from dataclasses import dataclass, field
 
 # ── Standards and code references ─────────────────────────────────
+# Universal standards bodies only. Domain-specific standards (AEC, medical,
+# etc.) are handled by the engine's domain system, not here.
 
-_STANDARD_US = re.compile(
-    r"\b(ASTM|ASCE|ACI|AISC|ASHRAE|AWS|AASHTO|NFPA|IEEE|ANSI|UL|FM|ASME)"
-    r"\s*[/-]?\s*([A-Z]?\d{1,5}(?:[./]\d+)?)\s*(?:[-/]\s*(\d{2,4}))?\b"
-)
 _STANDARD_INTL = re.compile(
-    r"\b(ISO|EN|BS|DIN|JIS|AS|NZS|CSA|CEN|IEC)"
-    r"\s*(\d{3,6}(?:[.-]\d+)?)\s*(?:[-:]\s*(\d{4}))?\b"
-)
-_BUILDING_CODE = re.compile(
-    r"\b(IBC|IRC|IPC|IMC|IFC|IECC|NEC|NBC|NBCC|Eurocode\s*\d?)"
-    r"\s*(\d{4})?\b"
-)
-_OSHA = re.compile(r"\bOSHA\s*(?:29\s*CFR\s*)?(\d{4}\.\d+)\b")
-
-# State DOT and military standards
-_DOT = re.compile(r"\b([A-Z]{2})\s*DOT\s*(?:Section\s*)?(\d+(?:\.\d+)?)\b")
-_MILITARY = re.compile(r"\b(NAVFAC|USACE|MIL-STD|UFC)\s*[-/]?\s*(\d+(?:[.-]\d+)*)\b")
-
-# Additional standards bodies
-_ADDITIONAL = re.compile(
-    r"\b(AAMA|SMACNA|NRCA|APA|PCI|PTI|CRSI|SDI|SJI|TMS)"
-    r"\s*[-/]?\s*(\d{1,5}(?:[.-]\d+)?)\s*(?:[-/]\s*(\d{2,4}))?\b"
+    r"\b(ISO|EN|BS|DIN|JIS|AS|NZS|CSA|CEN|IEC|IEEE|ANSI|UL|ASME)"
+    r"\s*[/-]?\s*([A-Z]?\d{1,6}(?:[.-]\d+)?)\s*(?:[-/:]\s*(\d{2,4}))?\b"
 )
 
+# Legal/regulatory references
 _CFR = re.compile(r"\b(\d+)\s+C\.?F\.?R\.?\s*(?:(?:Part|§)\s*)?(\d+(?:\.\d+)?)\b")
 _USC = re.compile(r"\b(\d+)\s+U\.?S\.?C\.?\s*§?\s*(\d+)\b")
 
@@ -64,10 +48,9 @@ def extract_entities(text: str) -> Entities:
     financial: list[str] = []
     references: list[str] = []
 
-    # Standards
-    for rx in (_STANDARD_US, _STANDARD_INTL, _BUILDING_CODE, _OSHA, _DOT, _MILITARY, _ADDITIONAL):
-        for m in rx.finditer(text):
-            standards.append(m.group(0).strip())
+    # Standards (universal bodies only)
+    for m in _STANDARD_INTL.finditer(text):
+        standards.append(m.group(0).strip())
 
     # Legal/regulatory references
     for rx in (_CFR, _USC):

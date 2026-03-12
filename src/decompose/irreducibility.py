@@ -6,8 +6,8 @@ import re
 from dataclasses import dataclass, field
 
 IRREDUCIBLE_PATTERNS: list[tuple[str, str]] = [
-    (r"\bshall\s+(?:not\s+)?(?:be|provide|install|submit|comply)\b", "legal_mandate"),
-    (r"\b\d+(?:\.\d+)?\s*(?:psf|psi|ksi|kip|lb|kN|MPa|mm|in\.?|ft)\b", "engineering_value"),
+    (r"\bshall\s+(?:not\s+)?(?:be|provide|comply|ensure|maintain)\b", "legal_mandate"),
+    (r"\b\d+(?:\.\d+)?\s*(?:kg|lb|km|mi|m|cm|mm|ft|in\.?|%)\b", "measured_value"),
     (r"\bNOT\s+(?:TO\s+)?(?:EXCEED|LESS\s+THAN)\b", "limit_specification"),
     (r"\b(?:minimum|maximum|exact|precisely|tolerance)\b[^.!?\n]*\b\d", "precision_requirement"),
     (r"\b(?:ARTICLE|SECTION|CLAUSE)\s+\d+(?:\.\d+)*\b", "legal_reference"),
