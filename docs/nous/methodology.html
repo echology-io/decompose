@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Methodology | Nous</title>
+    <meta name="description" content="The three-twin architecture: how Nous builds a virtual model of your business from raw perception through validated truth to optimized intelligence. Deterministic classification. Human gates. On your hardware.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="content">
+
+    <nav>
+        <div class="container">
+            <a href="/" class="logo"><span>nous</span><span style="color: var(--muted)">.</span></a>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/methodology" class="active">Methodology</a>
+                <a href="/proof">Proof</a>
+                <a href="/contact">Contact</a>
+                <a href="/pt/" style="font-size: 11px; letter-spacing: 1px;">PT</a>
+                <button class="mode-toggle" onclick="toggleMode()" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">&#9789;</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero" style="padding-bottom: 60px;">
+        <div class="container container--narrow">
+            <p class="section-label">Methodology</p>
+            <h1 style="font-size: 36px;">The three-twin<br><span>architecture</span></h1>
+            <p class="sub">Nous builds your operational model in three progressive phases. Each produces a deliverable. Each transition requires your approval. The system never acts without permission.</p>
+        </div>
+    </div>
+
+    <!-- Principle -->
+    <div class="page-section" style="padding-top: 0;">
+        <div class="container container--narrow">
+            <p class="section-label">Principle</p>
+            <div class="section-lead">Deterministic before probabilistic.</div>
+            <p class="section-sub">File classification, work scoring, gap detection, and dependency mapping use deterministic algorithms. No language model. No hallucination. No inference cost. AI models are layered on top for generation and analysis -- never in place of the deterministic foundation. You choose which models: local (on your hardware), external (Claude, GPT), or both.</p>
+        </div>
+    </div>
+
+    <!-- Phase 1 -->
+    <div class="page-section">
+        <div class="container container--narrow">
+            <p class="section-label">Phase 1</p>
+            <div class="section-lead">Raw Twin: what exists</div>
+            <p style="font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;">
+                The system recursively scans your document environment. Every file is classified by type, indexed with a content hash, and linked to its source path. Multi-server support means distributed environments (multiple offices, cloud drives, local machines) merge into a single view.
+            </p>
+            <p style="font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;">
+                No data is copied. The raw twin is a map of what exists, not a duplicate. Placeholders link back to your living documents. If a file changes, the next scan detects it.
+            </p>
+            <p style="font-size: 15px; color: var(--muted); line-height: 1.8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;">
+                <strong>Output:</strong> Raw twin report -- file index with classifications, activity signals, cross-machine detection.<br>
+                <strong>Human gate:</strong> You review what was found before anything enters the operational model.
+            </p>
+        </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="page-section">
+        <div class="container container--narrow">
+            <p class="section-label">Phase 2</p>
+            <div class="section-lead">True Twin: what the system perceives</div>
+            <p style="font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;">
+                From the approved raw data, Nous builds a complete operational model in a standalone database. Initiatives and their steps. Pipeline and leads. Financial position. Decision history. Milestones. Content calendar. Corpus index. Your business as the system perceives it.
+            </p>
+            <p style="font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;">
+                The true twin is standalone -- it can run independently with its own requirements.txt. It does not depend on your live systems after creation.
+            </p>
+            <p style="font-size: 15px; color: var(--muted); line-height: 1.8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;">
+                <strong>Output:</strong> True twin report -- your operational reality as a structured model. 3-model AI comparison (local, base, external) with deterministic scoring.<br>
+                <strong>Human gate:</strong> You confirm the model accurately represents your business before optimization.
+            </p>
+        </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="page-section">
+        <div class="container container--narrow">
+            <p class="section-label">Phase 3</p>
+            <div class="section-lead">Optimized Twin: what matters</div>
+            <p style="font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;">
+                The same data, reorganized by structural importance. Every work item scored on four deterministic factors: revenue proximity, foundation alignment, dependency weight, and effort-to-impact ratio. Structural gaps detected -- not just what is present, but what is absent. Dependency chains mapped from foundation to revenue.
+            </p>
+            <p style="font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;">
+                The comparison report shows the delta: what the optimization revealed that was invisible in the raw perception. The raw twin saw files. The optimized twin derived intelligence. The difference is the deliverable.
+            </p>
+            <p style="font-size: 15px; color: var(--muted); line-height: 1.8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;">
+                <strong>Output:</strong> Optimized twin report -- scored, gapped, dependency-mapped with executable opportunities ranked. Twin comparison report.<br>
+                <strong>Human gate:</strong> You approve the optimization scope before any action is taken.
+            </p>
+        </div>
+    </div>
+
+    <!-- AI Architecture -->
+    <div class="page-section">
+        <div class="container container--narrow">
+            <p class="section-label">AI Architecture</p>
+            <div class="section-lead">Three tiers. The right tool at the right layer.</div>
+        </div>
+        <div class="container">
+            <div class="process-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="process-step">
+                    <h4>Deterministic</h4>
+                    <p>Classification, scoring, gap detection, dependency mapping. Zero hallucination. Zero cost. Zero latency beyond computation. This layer never changes regardless of which AI models are available.</p>
+                </div>
+                <div class="process-step">
+                    <h4>Local AI</h4>
+                    <p>Models fine-tuned on your approved corpus. Run on your hardware. Optimized for narrow, specific tasks: operational Q&A, domain inference, context-aware analysis. You own the model.</p>
+                </div>
+                <div class="process-step">
+                    <h4>External AI</h4>
+                    <p>Claude, GPT, or any API for high-quality generation when you choose. All outputs scored deterministically against ground truth. The system suggests the best. You select. No vendor lock-in.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="page-section" style="text-align: center;">
+        <div class="container container--narrow">
+            <div class="section-lead">See the methodology in action.</div>
+            <p class="section-sub" style="margin-left: auto; margin-right: auto;">The proof page shows real data from the first deployment. Every number is from the system's own database.</p>
+            <div class="btn-group">
+                <a href="/proof" class="btn btn-primary">See the Proof</a>
+                <a href="/contact" class="btn btn-outline">Request an Audit</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="copy">&copy; 2026 Nous | An <a href="https://echology.io">echology</a> product</div>
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/proof">Proof</a>
+                <a href="https://echology.io">echology.io</a>
+                <a href="https://geode.digital">geode.digital</a>
+                <a href="mailto:kyle@echology.io">contact</a>
+            </div>
+        </div>
+    </footer>
+
+</div>
+<script>
+function toggleMode() { document.body.classList.toggle('light'); localStorage.setItem('mode', document.body.classList.contains('light') ? 'light' : 'dark'); }
+if (localStorage.getItem('mode') === 'light') document.body.classList.add('light');
+</script>
+</body>
+</html>
