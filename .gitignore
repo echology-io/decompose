@@ -24,6 +24,8 @@ htmlcov/
 docs/tests/
 lab/results.json
 LAUNCH.md
+ECHOLOGY.md
+TASKS.md
 # Ops — track markdown/code, ignore binaries and secrets
 ops/**/*.docx
 ops/**/*.xlsx
