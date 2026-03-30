@@ -236,3 +236,8 @@ The same chunking and entity extraction patterns that classify engineering specs
 - [What "Simulation-Aware" Actually Means](https://echology.io/blog/simulation-aware) — the architecture behind AECai
 
 **License:** MIT — Copyright (c) 2025-2026 Echology, Inc.
+
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/echology-io-decompose).
+
